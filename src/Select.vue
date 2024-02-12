@@ -380,7 +380,7 @@ onBeforeUnmount(() => {
   --vs-menu-border: 1px solid #e4e4e7;
   --vs-menu-bg: #fff;
   --vs-menu-box-shadow: none;
-  --vs-menu-z-index: 1;
+  --vs-menu-z-index: 2;
 
   --vs-option-padding: 8px 12px;
   --vs-option-font-size: var(--vs-font-size);

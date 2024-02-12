@@ -90,29 +90,31 @@ const search = ref("");
 const menuOpen = ref(false);
 const focusedOption = ref(-1);
 
+/**
+ * Filter-out already selected values from a list of options, should be used
+ * whenever the select is in multi mode.
+ *
+ * @param options Array of options.
+ */
+const filterMultiValue = (options: Option[]) => options.filter(
+  (option) => !(selected.value as string[]).includes(option.value),
+);
+
 const filteredOptions = computed(() => {
   if (props.isSearchable && search.value) {
     const matchingOptions = props.options.filter((option) =>
       props.getOptionLabel(option).toLowerCase().includes(search.value.toLowerCase()),
     );
 
-    if (props.isMulti) {
-      return matchingOptions.filter((option) => !(selected.value as string[]).includes(option.value));
-    }
-
-    return matchingOptions;
+    return props.isMulti ? filterMultiValue(matchingOptions) : matchingOptions;
   }
 
-  if (props.isMulti) {
-    return props.options.filter((option) => !(selected.value as string[]).includes(option.value));
-  }
-
-  return props.options;
+  return props.isMulti ? filterMultiValue(props.options) : props.options;
 });
 
 const selectedOptions = computed(() => {
   if (props.isMulti) {
-    return props.options.filter((option) => (selected.value as string[]).includes(option.value));
+    return filterMultiValue(props.options);
   }
 
   const found = props.options.find((option) => option.value === selected.value);

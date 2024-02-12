@@ -2,8 +2,8 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
 import type { Option } from "./types";
-import ChevronDownIcon from "./ChevronDownIcon.vue";
-import XMarkIcon from "./XMarkIcon.vue";
+import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
+import XMarkIcon from "./icons/XMarkIcon.vue";
 import MenuOption from "./MenuOption.vue";
 
 const props = withDefaults(

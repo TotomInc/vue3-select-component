@@ -334,7 +334,7 @@ onBeforeUnmount(() => {
   --vs-input-bg: #fff;
   --vs-input-outline: #3b82f6;
   --vs-padding: 0.25rem 0.5rem;
-  --vs-border-color: #e4e4e7;
+  --vs-border: 1px solid #e4e4e7;
   --vs-border-radius: 4px;
   --vs-font-size: 16px;
   --vs-font-weight: 400;
@@ -342,11 +342,20 @@ onBeforeUnmount(() => {
   --vs-text-color: #18181b;
   --vs-line-height: 1.5;
 
+  --vs-menu-offset-top: 8px;
   --vs-menu-height: 200px;
+  --vs-menu-padding: 8px 0;
+  --vs-menu-border: 1px solid #e4e4e7;
   --vs-menu-bg: #fff;
   --vs-menu-box-shadow: none;
 
-  --vs-option-focused-color: #dbeafe;
+  --vs-option-padding: 8px 12px;
+  --vs-option-font-size: var(--vs-font-size);
+  --vs-option-font-weight: var(--vs-font-weight);
+  --vs-option-text-color: var(--vs-text-color);
+  --vs-option-bg: var(--vs-menu-bg);
+  --vs-option-hover-color: #dbeafe;
+  --vs-option-focused-color: var(--vs-option-hover-color);
   --vs-option-selected-color: #93c5fd;
 
   --vs-multi-value-gap: 4px;
@@ -394,7 +403,7 @@ onBeforeUnmount(() => {
 .control {
   display: flex;
   min-height: 32px;
-  border: 1px solid var(--vs-border-color);
+  border: var(--vs-border);
   border-radius: var(--vs-border-radius);
   background-color: var(--vs-input-bg);
 
@@ -511,11 +520,11 @@ onBeforeUnmount(() => {
   position: absolute;
   left: 0;
   right: 0;
-  padding: 8px 0;
-  margin-top: 8px;
+  padding: var(--vs-menu-padding);
+  margin-top: var(--vs-menu-offset-top);
   max-height: var(--vs-menu-height);
   overflow-y: auto;
-  border: 1px solid var(--vs-border-color);
+  border: var(--vs-menu-border);
   border-radius: var(--vs-border-radius);
   box-shadow: var(--vs-menu-box-shadow);
   background-color: var(--vs-menu-bg);
@@ -526,15 +535,16 @@ onBeforeUnmount(() => {
   width: 100%;
   border: 0;
   margin: 0;
-  padding: 8px 12px;
-  font-size: var(--vs-font-size);
+  padding: var(--vs-option-padding);
+  font-size: var(--vs-option-font-size);
+  font-weight: var(--vs-option-font-weight);
   font-family: var(--vs-font-family);
-  color: var(--vs-text-color);
-  background-color: #fff;
+  color: var(--vs-option-text-color);
+  background-color: var(--vs-option-bg);
   cursor: pointer;
 
   &:hover {
-    background-color: var(--vs-option-focused-color);
+    background-color: var(--vs-option-hover-color);
   }
 
   &.focused {
@@ -547,7 +557,7 @@ onBeforeUnmount(() => {
 }
 
 .no-results {
-  padding: 8px 12px;
+  padding: var(--vs-option-padding);
   font-size: var(--vs-font-size);
   font-family: var(--vs-font-family);
   color: var(--vs-text-color);

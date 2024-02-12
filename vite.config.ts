@@ -12,7 +12,10 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevtools(),
-    dts(),
+    dts({
+      tsconfigPath: "tsconfig.build.json",
+      cleanVueFileName: true,
+    }),
   ],
 
   resolve: {

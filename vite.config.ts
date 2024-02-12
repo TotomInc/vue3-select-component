@@ -5,6 +5,8 @@ import vue from "@vitejs/plugin-vue";
 import vueDevtools from "vite-plugin-vue-devtools";
 import dts from "vite-plugin-dts";
 
+const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -15,16 +17,17 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@": resolve("./src"),
     },
   },
 
   build: {
+    target: "es2015",
     lib: {
       name: "vue3-select-component",
-      entry: fileURLToPath(new URL("./src/index.ts", import.meta.url)),
-      formats: ["es"],
-      fileName: "index",
+      entry: resolve("./src/index.ts"),
+      formats: ["es", "umd"],
+      fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {
       external: ["vue"],

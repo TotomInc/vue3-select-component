@@ -8,6 +8,7 @@ This component includes the following features:
 - Great styling out-of-the-box, customization with CSS variables & Vue `:deep`
 - Single & multi-select
 - Deep customization with `<slot>`s
+- Teleport/portal menu
 
 ## Installation
 
@@ -110,6 +111,34 @@ This function is used to display the options in the dropdown, and to display the
 A function to get the label of an option. This is useful when you want to use a property different from `label` as the label of the option.
 
 This function is used to display the selected options (**multi-value**) in the select.
+
+### Customization
+
+There are 2 types of customization available in the component.
+
+#### CSS variables
+
+CSS variables is the easiest way to customize the component style but provides less flexibility over your design. When importing the component, you will notice that CSS variables are injected into the `:root` scope and are prefixed with `--vs-select-[...]`.
+
+For a complete list of CSS variables, we recommend to take a look at the source-code ([`/src/Select.vue`](https://github.com/TotomInc/vue3-select-component/blob/master/src/Select.vue)) or look at your DevTools when using the component _(open DevTools => `Elements` tab => pick `<html />` node => view all CSS variables inside the `:root` scope)_.
+
+#### Scoped styling inside SFC
+
+You can apply any custom styling using [the `:deep` selector](https://vuejs.org/api/sfc-css-features.html#deep-selectors) inside a `<style scoped>`.
+
+Here's an example:
+
+```vue
+<style scoped>
+:deep(.vue-select) {
+  width: 320px;
+}
+
+:deep(.vue-select .menu-option) {
+  background-color: #f4f4f5;
+}
+</style>
+```
 
 ## License
 

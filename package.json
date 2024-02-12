@@ -33,7 +33,8 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev:playground": "vite --mode playground",
+    "dev:website": "vite --mode website",
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",
     "lint": "eslint .",

@@ -114,7 +114,81 @@ A function to get the label of an option. This is useful when you want to use a 
 
 This function is used to display the selected options (**multi-value**) in the select.
 
-### Customization
+### Slots
+
+This component provides multiple `<slot />`s in order to allow for more customization.
+
+**option**: `slotProps: { option: Option }`
+
+Customize the rendered HTML of an option inside the menu. You can use the slot props to retrieve the current menu option that will be rendered.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #option="{ option }">
+      {{ option.label }} - {{ option.value }}
+    </template>
+  </VueSelect>
+</template>
+```
+
+**value**: `slotProps: { option: Option }`
+
+Customize the rendered HTML if a selected option (inside the select control). You can use the slot props to retrieve the current selected option.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #value="{ option }">
+      My value is: {{ option.value }}
+    </template>
+  </VueSelect>
+</template>
+```
+
+**no-options**: `slotProps: {}`
+
+Customize the rendered HTML when there are no options matching the search, inside the menu.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #no-options>
+      No options found.
+    </template>
+  </VueSelect>
+</template>
+```
+
+**dropdown**: `slotProps: {}`
+
+Customize the rendered HTML for the dropdown icon. Please note that the slot is placed **inside the button**, so you don't have to deal with attaching event-listeners.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #dropdown>
+      <MyCustomIcon />
+    </template>
+  </VueSelect>
+</template>
+```
+
+**clear**: `slotProps: {}`
+
+Customize the rendered HTML for the clear icon. Please note that the slot is placed **inside the button**, so you don't have to deal with attaching event-listeners.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #clear>
+      <MyCustomIcon />
+    </template>
+  </VueSelect>
+</template>
+```
+
+### Style customization
 
 There are 2 types of customization available in the component.
 

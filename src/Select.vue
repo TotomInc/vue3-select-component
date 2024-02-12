@@ -40,6 +40,12 @@ const props = withDefaults(
      */
     closeOnSelect?: boolean;
     /**
+     * Teleport the menu to another part of the DOM with higher priority such as `body`.
+     * This way, you can avoid z-index issues. Menu position will be calculated using
+     * JavaScript, instead of using CSS absolute & relative positioning.
+     */
+    teleport?: string;
+    /**
      * A function to get the label of an option. By default, it assumes the option is an
      * object with a `label` property. Used to display the selected option in the input &
      * inside the options menu.
@@ -63,6 +69,7 @@ const props = withDefaults(
     isSearchable: true,
     isMulti: false,
     closeOnSelect: true,
+    teleport: undefined,
     getOptionLabel: (option: Option) => option.label,
     getMultiValueLabel: (option: Option) => option.label,
   },
@@ -210,6 +217,21 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
+const calculateMenuPosition = () => {
+  if (container.value) {
+    const rect = container.value.getBoundingClientRect();
+
+    return {
+      left: `${rect.x}px`,
+      top: `${rect.y + rect.height}px`,
+    };
+  }
+
+  console.warn("Unable to calculate dynamic menu position because of missing internal DOM reference.");
+
+  return { top: "0px", left: "0px" };
+};
+
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   document.addEventListener("keydown", handleNavigation);
@@ -304,33 +326,43 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <div v-if="menuOpen" class="menu">
-      <MenuOption
-        v-for="(option, i) in filteredOptions"
-        :key="option.value"
-        type="button"
-        class="menu-option"
-        :class="{ focused: focusedOption === i, selected: option.value === selected }"
-        :is-focused="focusedOption === i"
-        :is-selected="option.value === selected"
-        @select="setOption(option.value)"
+    <Teleport :to="teleport" :disabled="!teleport">
+      <div
+        v-if="menuOpen"
+        class="menu"
+        :style="{
+          width: props.teleport ? `${container?.getBoundingClientRect().width}px` : '100%',
+          top: props.teleport ? calculateMenuPosition().top : 'unset',
+          left: props.teleport ? calculateMenuPosition().left : 'unset',
+        }"
       >
-        <slot name="option" :option="option">
-          {{ getOptionLabel(option) }}
-        </slot>
-      </MenuOption>
+        <MenuOption
+          v-for="(option, i) in filteredOptions"
+          :key="option.value"
+          type="button"
+          class="menu-option"
+          :class="{ focused: focusedOption === i, selected: option.value === selected }"
+          :is-focused="focusedOption === i"
+          :is-selected="option.value === selected"
+          @select="setOption(option.value)"
+        >
+          <slot name="option" :option="option">
+            {{ getOptionLabel(option) }}
+          </slot>
+        </MenuOption>
 
-      <div v-if="filteredOptions.length === 0" class="no-results">
-        <slot name="no-options">
-          No results found
-        </slot>
+        <div v-if="filteredOptions.length === 0" class="no-results">
+          <slot name="no-options">
+            No results found
+          </slot>
+        </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.vue-select {
+<style>
+:root {
   --vs-input-bg: #fff;
   --vs-input-outline: #3b82f6;
   --vs-padding: 0.25rem 0.5rem;
@@ -348,6 +380,7 @@ onBeforeUnmount(() => {
   --vs-menu-border: 1px solid #e4e4e7;
   --vs-menu-bg: #fff;
   --vs-menu-box-shadow: none;
+  --vs-menu-z-index: 1;
 
   --vs-option-padding: 8px 12px;
   --vs-option-font-size: var(--vs-font-size);
@@ -373,7 +406,11 @@ onBeforeUnmount(() => {
   --vs-icon-color: var(--vs-text-color);
 
   --vs-dropdown-transition: transform 0.25s ease-out;
+}
+</style>
 
+<style lang="scss" scoped>
+.vue-select {
   position: relative;
   box-sizing: border-box;
   width: 100%;
@@ -528,6 +565,7 @@ onBeforeUnmount(() => {
   border-radius: var(--vs-border-radius);
   box-shadow: var(--vs-menu-box-shadow);
   background-color: var(--vs-menu-bg);
+  z-index: var(--vs-menu-z-index);
 }
 
 .menu-option {

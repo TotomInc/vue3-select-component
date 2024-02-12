@@ -93,6 +93,12 @@ Whether the select should allow multiple selections. If `true`, the `v-model` sh
 
 Whether the dropdown should close after an option is selected.
 
+**teleport**: `string` (default: `undefined`)
+
+Teleport the menu outside of the component DOM tree. You can pass a valid string according to the official Vue 3 Teleport documentation (e.g. `teleport="body"` will teleport the menu into the `<body>` tree). This can be used in case you are having `z-index` issues within your DOM tree structure.
+
+**Note**: top and left properties are calculated using a ref on the `.vue-select` with a `container.getBoundingClientRect()`.
+
 **getOptionLabel**: `(option: Option) => string` (default: `option => option.label`)
 
 A function to get the label of an option. This is useful when you want to use a property different from `label` as the label of the option.

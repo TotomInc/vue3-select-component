@@ -10,8 +10,8 @@ const options = ref<string[]>([]);
 <template>
   <div class="container">
     <VueSelect
-      v-model="options"
-      :is-multi="true"
+      v-model="option"
+      :is-multi="false"
       :options="[
         { label: 'Alice\'s Adventures in Wonderland', value: 'alice_in_wonderland', extra: 'hello' },
         { label: 'A Wizard of Earthsea', value: 'wizard_earthsea', extra: 'world' },
@@ -35,11 +35,25 @@ body {
   margin: 0;
   font-family: "Inter", sans-serif;
 }
+</style>
 
+<style lang="scss" scoped>
 .container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f4f4f5;
+}
+
+:deep(.vue-select) {
   width: 100%;
-  max-width: 512px;
-  padding: 2rem;
-  margin: 0 auto;
+  max-width: 400px;
+}
+
+:deep(.vue-select .menu-option) {
+  background-color: red;
 }
 </style>

@@ -25,6 +25,8 @@ Use it in your Vue 3 app:
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 
+import "vue3-select-component/dist/style.css";
+
 const option = ref("");
 </script>
 

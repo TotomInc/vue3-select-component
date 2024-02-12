@@ -579,6 +579,7 @@ onBeforeUnmount(() => {
   font-family: var(--vs-font-family);
   color: var(--vs-option-text-color);
   background-color: var(--vs-option-bg);
+  text-align: -webkit-auto;
   cursor: pointer;
 
   &:hover {

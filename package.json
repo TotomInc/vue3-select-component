@@ -9,7 +9,11 @@
     "type": "git",
     "url": "https://github.com/TotomInc/vue3-select-component.git"
   },
-  "keywords": ["vue3", "select", "dropdown"],
+  "keywords": [
+    "vue3",
+    "select",
+    "dropdown"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -25,7 +29,9 @@
   "main": "dist/index.umd.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -33,7 +39,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
-    "type-check": "vue-tsc --build --force"
+    "type-check": "vue-tsc --build --force",
+    "bumpp": "bumpp package.json"
   },
   "peerDependencies": {
     "vue": "^3.4.0"
@@ -44,6 +51,7 @@
     "@types/node": "20.11.17",
     "@vitejs/plugin-vue": "5.0.4",
     "@vue/tsconfig": "0.5.1",
+    "bumpp": "9.3.0",
     "eslint": "8.56.0",
     "npm-run-all2": "6.1.2",
     "sass": "1.70.0",

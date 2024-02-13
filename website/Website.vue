@@ -17,7 +17,7 @@ import CustomOption from "./CustomOption.vue";
     <a
       href="https://github.com/TotomInc/vue3-select-component"
       target="_blank"
-      class="mt-4 border border-neutral-200 bg-white rounded text-sm font-medium px-4 py-2 text-neutral-950 flex items-center self-start mx-auto hover:bg-neutral-50 focus:outline-none gap-1.5"
+      class="mt-4 border border-neutral-200 bg-white rounded text-sm font-medium px-4 py-2 text-neutral-950 flex items-center self-start mx-auto hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 gap-1.5"
     >
       View docs on GitHub
       <svg

@@ -30,14 +30,14 @@ watch(
 </script>
 
 <template>
-  <button
+  <div
     ref="option"
-    type="button"
-    class="menu-option"
     tabindex="-1"
+    role="option"
     :class="{ focused: isFocused, selected: isSelected }"
+    :aria-disabled="false"
     @click="emit('select')"
   >
     <slot />
-  </button>
+  </div>
 </template>

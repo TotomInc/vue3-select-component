@@ -102,6 +102,10 @@ Teleport the menu outside of the component DOM tree. You can pass a valid string
 
 **Note**: top and left properties are calculated using a ref on the `.vue-select` with a `container.getBoundingClientRect()`.
 
+**aria**: `{ labelledby?: string }` (default: `undefined`)
+
+Aria attributes to be passed to the select control to improve accessibility.
+
 **getOptionLabel**: `(option: Option) => string` (default: `option => option.label`)
 
 A function to get the label of an option. This is useful when you want to use a property different from `label` as the label of the option.

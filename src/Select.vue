@@ -46,6 +46,12 @@ const props = withDefaults(
      */
     teleport?: string;
     /**
+     * ARIA attributes to describe the select component. This is useful for accessibility.
+     */
+    aria?: {
+      labelledby?: string;
+    };
+    /**
      * A function to get the label of an option. By default, it assumes the option is an
      * object with a `label` property. Used to display the selected option in the input &
      * inside the options menu.
@@ -70,6 +76,7 @@ const props = withDefaults(
     isMulti: false,
     closeOnSelect: true,
     teleport: undefined,
+    aria: undefined,
     getOptionLabel: (option: Option) => option.label,
     getMultiValueLabel: (option: Option) => option.label,
   },
@@ -261,7 +268,10 @@ onBeforeUnmount(() => {
         :class="{ multi: isMulti }"
         role="combobox"
         :aria-expanded="menuOpen"
-        :aria-label="placeholder"
+        :aria-describedby="placeholder"
+        :aria-description="placeholder"
+        :aria-labelledby="aria?.labelledby"
+        :aria-label="selectedOptions.length ? selectedOptions.map(getOptionLabel).join(', ') : ''"
       >
         <div
           v-if="!props.isMulti && selectedOptions[0]"
@@ -336,6 +346,9 @@ onBeforeUnmount(() => {
       <div
         v-if="menuOpen"
         class="menu"
+        role="listbox"
+        :aria-label="aria?.labelledby"
+        :aria-multiselectable="isMulti"
         :style="{
           width: props.teleport ? `${container?.getBoundingClientRect().width}px` : '100%',
           top: props.teleport ? calculateMenuPosition().top : 'unset',

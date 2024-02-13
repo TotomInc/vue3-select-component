@@ -1,7 +1,7 @@
 {
   "name": "vue3-select-component",
   "type": "module",
-  "version": "0.0.1-beta.2",
+  "version": "0.0.1-beta.3",
   "description": "A flexible & modern select-input control for Vue 3.",
   "author": "Thomas Cazade <cazade.thomas@gmail.com>",
   "license": "MIT",
@@ -41,7 +41,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "vue-tsc --build --force",
-    "bumpp": "bumpp package.json"
+    "bumpp": "bumpp package.json package-lock.json"
   },
   "peerDependencies": {
     "vue": "^3.4.0"

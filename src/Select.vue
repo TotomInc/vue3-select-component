@@ -50,6 +50,7 @@ const props = withDefaults(
      */
     aria?: {
       labelledby?: string;
+      required?: boolean;
     };
     /**
      * A function to get the label of an option. By default, it assumes the option is an
@@ -308,6 +309,7 @@ onBeforeUnmount(() => {
         :aria-description="placeholder"
         :aria-labelledby="aria?.labelledby"
         :aria-label="selectedOptions.length ? selectedOptions.map(getOptionLabel).join(', ') : ''"
+        :aria-required="aria?.required"
       >
         <div
           v-if="!props.isMulti && selectedOptions[0]"

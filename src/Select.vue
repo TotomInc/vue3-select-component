@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { Option } from "./types";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
@@ -46,6 +46,13 @@ const props = withDefaults(
      */
     teleport?: string;
     /**
+     * ARIA attributes to describe the select component. This is useful for accessibility.
+     */
+    aria?: {
+      labelledby?: string;
+      required?: boolean;
+    };
+    /**
      * A function to get the label of an option. By default, it assumes the option is an
      * object with a `label` property. Used to display the selected option in the input &
      * inside the options menu.
@@ -70,6 +77,7 @@ const props = withDefaults(
     isMulti: false,
     closeOnSelect: true,
     teleport: undefined,
+    aria: undefined,
     getOptionLabel: (option: Option) => option.label,
     getMultiValueLabel: (option: Option) => option.label,
   },
@@ -90,8 +98,9 @@ const selected = defineModel<string | string[]>({
   },
 });
 
-const container = ref<HTMLElement | null>(null);
+const container = ref<HTMLDivElement | null>(null);
 const input = ref<HTMLInputElement | null>(null);
+const menu = ref<HTMLDivElement | null>(null);
 
 const search = ref("");
 const menuOpen = ref(false);
@@ -121,7 +130,7 @@ const filteredOptions = computed(() => {
 
 const selectedOptions = computed(() => {
   if (props.isMulti) {
-    return props.options.filter((option) => (selected.value as string[]).includes(option.value));
+    return (selected.value as string[]).map((value) => props.options.find((option) => option.value === value)!);
   }
 
   const found = props.options.find((option) => option.value === selected.value);
@@ -138,10 +147,9 @@ const openMenu = (options?: { focusInput?: boolean }) => {
   }
 };
 
-const focusInput = () => {
-  if (input.value) {
-    input.value.focus();
-  }
+const closeMenu = () => {
+  menuOpen.value = false;
+  search.value = "";
 };
 
 const setOption = (value: string) => {
@@ -202,11 +210,43 @@ const handleNavigation = (e: KeyboardEvent) => {
       setOption(filteredOptions.value[focusedOption.value].value);
     }
 
+    // When pressing space with menu open but no search, select the focused option.
+    if (e.code === "Space" && search.value.length === 0) {
+      e.preventDefault();
+      setOption(filteredOptions.value[focusedOption.value].value);
+    }
+
     if (e.key === "Escape") {
       e.preventDefault();
       menuOpen.value = false;
       search.value = "";
     }
+
+    // When pressing backspace with no search, remove the last selected option.
+    if (e.key === "Backspace" && search.value.length === 0 && selected.value.length > 0) {
+      e.preventDefault();
+
+      if (props.isMulti) {
+        selected.value = (selected.value as string[]).slice(0, -1);
+      }
+      else {
+        selected.value = "";
+      }
+    }
+  }
+};
+
+/**
+ * When pressing space inside the input, open the menu only if the search is
+ * empty. Otherwise, the user is typing and we should skip this action.
+ *
+ * @param e KeyboardEvent
+ */
+const handleInputSpace = (e: KeyboardEvent) => {
+  if (!menuOpen.value && search.value.length === 0) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openMenu();
   }
 };
 
@@ -232,6 +272,16 @@ const calculateMenuPosition = () => {
   return { top: "0px", left: "0px" };
 };
 
+// When focusing the input and typing, open the menu automatically.
+watch(
+  () => search.value,
+  () => {
+    if (search.value && !menuOpen.value) {
+      openMenu();
+    }
+  },
+);
+
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
   document.addEventListener("keydown", handleNavigation);
@@ -256,12 +306,16 @@ onBeforeUnmount(() => {
         :class="{ multi: isMulti }"
         role="combobox"
         :aria-expanded="menuOpen"
-        :aria-label="placeholder"
+        :aria-describedby="placeholder"
+        :aria-description="placeholder"
+        :aria-labelledby="aria?.labelledby"
+        :aria-label="selectedOptions.length ? selectedOptions.map(getOptionLabel).join(', ') : ''"
+        :aria-required="aria?.required"
       >
         <div
           v-if="!props.isMulti && selectedOptions[0]"
           class="single-value"
-          @click="focusInput"
+          @click="input?.focus()"
         >
           <slot name="value" :option="selectedOptions[0]">
             {{ getOptionLabel(selectedOptions[0]) }}
@@ -294,7 +348,9 @@ onBeforeUnmount(() => {
           tabindex="0"
           :disabled="isDisabled"
           :placeholder="selectedOptions.length === 0 ? placeholder : ''"
-          @focus="openMenu({ focusInput: false })"
+          @mousedown="openMenu()"
+          @keydown.tab="closeMenu"
+          @keydown.space="handleInputSpace"
         >
       </div>
 
@@ -329,7 +385,11 @@ onBeforeUnmount(() => {
     <Teleport :to="teleport" :disabled="!teleport">
       <div
         v-if="menuOpen"
+        ref="menu"
         class="menu"
+        role="listbox"
+        :aria-label="aria?.labelledby"
+        :aria-multiselectable="isMulti"
         :style="{
           width: props.teleport ? `${container?.getBoundingClientRect().width}px` : '100%',
           top: props.teleport ? calculateMenuPosition().top : 'unset',
@@ -342,6 +402,8 @@ onBeforeUnmount(() => {
           type="button"
           class="menu-option"
           :class="{ focused: focusedOption === i, selected: option.value === selected }"
+          :menu="menu"
+          :index="i"
           :is-focused="focusedOption === i"
           :is-selected="option.value === selected"
           @select="setOption(option.value)"

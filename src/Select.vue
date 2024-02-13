@@ -128,7 +128,7 @@ const filteredOptions = computed(() => {
 
 const selectedOptions = computed(() => {
   if (props.isMulti) {
-    return props.options.filter((option) => (selected.value as string[]).includes(option.value));
+    return (selected.value as string[]).map((value) => props.options.find((option) => option.value === value)!);
   }
 
   const found = props.options.find((option) => option.value === selected.value);

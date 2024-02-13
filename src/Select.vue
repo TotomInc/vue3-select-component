@@ -138,6 +138,11 @@ const openMenu = (options?: { focusInput?: boolean }) => {
   }
 };
 
+const closeMenu = () => {
+  menuOpen.value = false;
+  search.value = "";
+};
+
 const focusInput = () => {
   if (input.value) {
     input.value.focus();
@@ -295,6 +300,7 @@ onBeforeUnmount(() => {
           :disabled="isDisabled"
           :placeholder="selectedOptions.length === 0 ? placeholder : ''"
           @focus="openMenu({ focusInput: false })"
+          @keydown.tab="closeMenu"
         >
       </div>
 

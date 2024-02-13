@@ -219,6 +219,18 @@ const handleNavigation = (e: KeyboardEvent) => {
       menuOpen.value = false;
       search.value = "";
     }
+
+    // When pressing backspace with no search, remove the last selected option.
+    if (e.key === "Backspace" && search.value.length === 0 && selected.value.length > 0) {
+      e.preventDefault();
+
+      if (props.isMulti) {
+        selected.value = (selected.value as string[]).slice(0, -1);
+      }
+      else {
+        selected.value = "";
+      }
+    }
   }
 };
 

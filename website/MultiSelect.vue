@@ -23,6 +23,7 @@ const selectedCountries = ref<string[]>([]);
       v-model="selectedCountries"
       :options="options"
       :is-multi="true"
+      :aria="{ labelledby: 'Countries', required: true }"
       placeholder="Select at least one country"
     />
 

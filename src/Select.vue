@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { Option } from "./types";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
@@ -150,12 +150,6 @@ const closeMenu = () => {
   search.value = "";
 };
 
-const focusInput = () => {
-  if (input.value) {
-    input.value.focus();
-  }
-};
-
 const setOption = (value: string) => {
   if (props.isMulti) {
     selected.value = [...selected.value, value];
@@ -214,11 +208,31 @@ const handleNavigation = (e: KeyboardEvent) => {
       setOption(filteredOptions.value[focusedOption.value].value);
     }
 
+    // When pressing space with menu open but no search, select the focused option.
+    if (e.code === "Space" && search.value.length === 0) {
+      e.preventDefault();
+      setOption(filteredOptions.value[focusedOption.value].value);
+    }
+
     if (e.key === "Escape") {
       e.preventDefault();
       menuOpen.value = false;
       search.value = "";
     }
+  }
+};
+
+/**
+ * When pressing space inside the input, open the menu only if the search is
+ * empty. Otherwise, the user is typing and we should skip this action.
+ *
+ * @param e KeyboardEvent
+ */
+const handleInputSpace = (e: KeyboardEvent) => {
+  if (!menuOpen.value && search.value.length === 0) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openMenu();
   }
 };
 
@@ -243,6 +257,16 @@ const calculateMenuPosition = () => {
 
   return { top: "0px", left: "0px" };
 };
+
+// When focusing the input and typing, open the menu automatically.
+watch(
+  () => search.value,
+  () => {
+    if (search.value && !menuOpen.value) {
+      openMenu();
+    }
+  },
+);
 
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
@@ -276,7 +300,7 @@ onBeforeUnmount(() => {
         <div
           v-if="!props.isMulti && selectedOptions[0]"
           class="single-value"
-          @click="focusInput"
+          @click="input?.focus()"
         >
           <slot name="value" :option="selectedOptions[0]">
             {{ getOptionLabel(selectedOptions[0]) }}
@@ -309,8 +333,9 @@ onBeforeUnmount(() => {
           tabindex="0"
           :disabled="isDisabled"
           :placeholder="selectedOptions.length === 0 ? placeholder : ''"
-          @focus="openMenu({ focusInput: false })"
+          @mousedown="openMenu()"
           @keydown.tab="closeMenu"
+          @keydown.space="handleInputSpace"
         >
       </div>
 

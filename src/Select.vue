@@ -98,8 +98,9 @@ const selected = defineModel<string | string[]>({
   },
 });
 
-const container = ref<HTMLElement | null>(null);
+const container = ref<HTMLDivElement | null>(null);
 const input = ref<HTMLInputElement | null>(null);
+const menu = ref<HTMLDivElement | null>(null);
 
 const search = ref("");
 const menuOpen = ref(false);
@@ -384,6 +385,7 @@ onBeforeUnmount(() => {
     <Teleport :to="teleport" :disabled="!teleport">
       <div
         v-if="menuOpen"
+        ref="menu"
         class="menu"
         role="listbox"
         :aria-label="aria?.labelledby"
@@ -400,6 +402,8 @@ onBeforeUnmount(() => {
           type="button"
           class="menu-option"
           :class="{ focused: focusedOption === i, selected: option.value === selected }"
+          :menu="menu"
+          :index="i"
           :is-focused="focusedOption === i"
           :is-selected="option.value === selected"
           @select="setOption(option.value)"

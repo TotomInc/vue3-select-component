@@ -106,6 +106,14 @@ Teleport the menu outside of the component DOM tree. You can pass a valid string
 
 Aria attributes to be passed to the select control to improve accessibility.
 
+**filterBy**: `(option: Option, label: string, search: string) => boolean`
+
+Callback function to determine if the current option should match the search query. This function is called for each option and should return a boolean.
+
+The `label` is provided as a convenience, using `getOptionLabel` or `getMultiValueLabel` depending on the `isMulti` prop.
+
+**By default**, the following callback function is used `(option, label, search) => label.toLowerCase().includes(search.toLowerCase())`
+
 **getOptionLabel**: `(option: Option) => string` (default: `option => option.label`)
 
 A function to get the label of an option. This is useful when you want to use a property different from `label` as the label of the option.

@@ -53,6 +53,18 @@ const props = withDefaults(
       required?: boolean;
     };
     /**
+     * Callback to filter the options based on the search input. By default, it filters
+     * the options based on the `label` property of the option. The label is retrieved using:
+     *
+     * - `getOptionLabel` when `isMulti` is `false`.
+     * - `getMultiValueLabel` when `isMulti` is `true`.
+     *
+     * @param option The option to filter.
+     * @param label The label of the option.
+     * @param search The search input value.
+     */
+    filterBy?: (option: Option, label: string, search: string) => boolean;
+    /**
      * A function to get the label of an option. By default, it assumes the option is an
      * object with a `label` property. Used to display the selected option in the input &
      * inside the options menu.
@@ -78,6 +90,7 @@ const props = withDefaults(
     closeOnSelect: true,
     teleport: undefined,
     aria: undefined,
+    filterBy: (option: Option, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionLabel: (option: Option) => option.label,
     getMultiValueLabel: (option: Option) => option.label,
   },
@@ -106,26 +119,23 @@ const search = ref("");
 const menuOpen = ref(false);
 const focusedOption = ref(-1);
 
-/**
- * Filter-out already selected values from a list of options, should be used
- * whenever the select is in multi mode.
- *
- * @param options Array of options.
- */
-const filterMultiValue = (options: Option[]) => options.filter(
-  (option) => !(selected.value as string[]).includes(option.value),
-);
-
 const filteredOptions = computed(() => {
-  if (props.isSearchable && search.value) {
-    const matchingOptions = props.options.filter((option) =>
-      props.getOptionLabel(option).toLowerCase().includes(search.value.toLowerCase()),
-    );
+  // Remove already selected values from the list of options, when in multi-select mode.
+  const filterSelectedValues = (options: Option[]) => options.filter(
+    (option) => !(selected.value as string[]).includes(option.value),
+  );
 
-    return props.isMulti ? filterMultiValue(matchingOptions) : matchingOptions;
+  if (props.isSearchable && search.value) {
+    const matchingOptions = props.options.filter((option) => {
+      const optionLabel = props.isMulti ? props.getMultiValueLabel(option) : props.getOptionLabel(option);
+
+      return props.filterBy(option, optionLabel, search.value);
+    });
+
+    return props.isMulti ? filterSelectedValues(matchingOptions) : matchingOptions;
   }
 
-  return props.isMulti ? filterMultiValue(props.options) : props.options;
+  return props.isMulti ? filterSelectedValues(props.options) : props.options;
 });
 
 const selectedOptions = computed(() => {

@@ -102,6 +102,10 @@ Teleport the menu outside of the component DOM tree. You can pass a valid string
 
 **Note**: top and left properties are calculated using a ref on the `.vue-select` with a `container.getBoundingClientRect()`.
 
+**inputId**: `string` (default: `undefined`)
+
+The `id` attribute to be passed to the `<input />` element. This is useful for accessibility or forms.
+
 **aria**: `{ labelledby?: string; required?: boolean; }` (default: `undefined`)
 
 Aria attributes to be passed to the select control to improve accessibility.

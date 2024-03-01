@@ -46,6 +46,10 @@ const props = withDefaults(
      */
     teleport?: string;
     /**
+     * The ID of the input element. This is useful for accessibility or forms.
+     */
+    inputId?: string;
+    /**
      * ARIA attributes to describe the select component. This is useful for accessibility.
      */
     aria?: {
@@ -89,6 +93,7 @@ const props = withDefaults(
     isMulti: false,
     closeOnSelect: true,
     teleport: undefined,
+    inputId: undefined,
     aria: undefined,
     filterBy: (option: Option, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionLabel: (option: Option) => option.label,
@@ -346,6 +351,7 @@ onBeforeUnmount(() => {
         </template>
 
         <input
+          :id="inputId"
           ref="input"
           v-model="search"
           class="search-input"

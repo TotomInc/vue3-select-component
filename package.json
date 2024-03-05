@@ -34,14 +34,15 @@
   ],
   "scripts": {
     "dev:playground": "vite --mode development:playground",
-    "dev:website": "vite --mode development:website",
     "build": "run-p type-check \"build-only {@}\" --",
-    "build:website": "vite build --mode website:production",
     "build-only": "vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "vue-tsc --build --force",
-    "bumpp": "bumpp package.json package-lock.json"
+    "bumpp": "bumpp package.json package-lock.json",
+    "docs:dev": "vitepress dev docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:build": "vitepress build docs"
   },
   "peerDependencies": {
     "vue": "^3.4.0"
@@ -54,16 +55,15 @@
     "@vue/tsconfig": "0.5.1",
     "autoprefixer": "10.4.17",
     "bumpp": "9.3.0",
-    "countries-list": "3.0.6",
     "eslint": "8.57.0",
     "npm-run-all2": "6.1.2",
     "postcss": "8.4.35",
     "sass": "1.71.1",
-    "tailwindcss": "3.4.1",
     "typescript": "5.3.3",
     "vite": "5.1.1",
     "vite-plugin-dts": "3.7.3",
     "vite-plugin-vue-devtools": "7.0.15",
+    "vitepress": "1.0.0-rc.44",
     "vue": "3.4.21",
     "vue-tsc": "1.8.27"
   }

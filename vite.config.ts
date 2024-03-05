@@ -43,16 +43,12 @@ export default defineConfig((configEnv) => {
     };
   }
 
-  if (["development", "development:playground", "development:website"].includes(configEnv.mode)) {
+  if (["development", "development:playground"].includes(configEnv.mode)) {
     config.plugins!.push(vueDevtools());
   }
 
   if (configEnv.mode.includes("playground")) {
     config.root = resolve("./playground");
-  }
-
-  if (configEnv.mode.includes("website")) {
-    config.root = resolve("./website");
   }
 
   return config;

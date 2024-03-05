@@ -1,8 +1,8 @@
 ---
 layout: home
 
-title: VitePress
-titleTemplate: Vite & Vue Powered Static Site Generator
+title: Vue 3 Select Component
+titleTemplate: The Selecting solution for Vue 3.
 
 hero:
   name: Vue 3 Select Component

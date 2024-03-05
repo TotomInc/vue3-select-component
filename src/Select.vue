@@ -443,6 +443,8 @@ onBeforeUnmount(() => {
 :root {
   --vs-input-bg: #fff;
   --vs-input-outline: #3b82f6;
+  --vs-input-placeholder-color: #52525b;
+
   --vs-padding: 0.25rem 0.5rem;
   --vs-border: 1px solid #e4e4e7;
   --vs-border-radius: 4px;
@@ -592,6 +594,10 @@ onBeforeUnmount(() => {
   color: var(--vs-text-color);
   outline: none;
   z-index: 1;
+
+  &::placeholder {
+    color: var(--vs-input-placeholder-color);
+  }
 }
 
 .indicators-container {

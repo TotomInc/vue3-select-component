@@ -5,6 +5,11 @@ export default defineConfig({
   title: "Vue 3 Select Component",
   description: "A performant & accessible Select component for Vue 3. Best in class Selecting solution for Vue 3.",
 
+  head: [
+    ["script", {}, `window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };`],
+    ["script", { src: "/_vercel/insights/script.js", defer: "true" }],
+  ],
+
   sitemap: {
     hostname: "https://vue3-select-component.vercel.app",
   },

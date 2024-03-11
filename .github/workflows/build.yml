@@ -22,7 +22,10 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm ci --no-audit
+        run: npm i --no-audit
+
+      - name: Run Vitest
+        run: npm run test
 
       # Build script also run a type-check to ensure there are no type errors.
       - name: Build

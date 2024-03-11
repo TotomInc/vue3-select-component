@@ -2,6 +2,8 @@
 
 A select component for Vue 3 which helps you to develop a _simple yet powerful_ select control with ease that works out-of-the-box, while still allowing you to customize it to your needs.
 
+**Documentation & demos with code**: https://vue3-select-component.vercel.app
+
 This component includes the following features:
 
 - Easy data manipulation with `v-model`

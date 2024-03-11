@@ -4,6 +4,7 @@ import { ref } from "vue";
 import VueSelect from "../src/Select.vue";
 
 const option = ref<string>("");
+// eslint-disable-next-line unused-imports/no-unused-vars
 const options = ref<string[]>([]);
 </script>
 

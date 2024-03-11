@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { URL, fileURLToPath } from "node:url";
 
 import { type UserConfig, defineConfig } from "vite";
@@ -14,6 +16,9 @@ export default defineConfig((configEnv) => {
     plugins: [vue()],
     resolve: {
       alias: { "@": resolve("./src") },
+    },
+    test: {
+      environment: "happy-dom",
     },
   };
 

@@ -3,8 +3,10 @@
 #
 # This action will use `changelogithub` which generates a changelog using
 # conventional commits, inside the GitHub release.
+#
+# See: https://github.com/antfu/changelogithub
 
-name: Release
+name: Generate changelog
 
 permissions:
   contents: write
@@ -15,16 +17,20 @@ on:
       - "v*"
 
 jobs:
-  release:
+  changelog:
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
+          registry-url: "https://registry.npmjs.org"
 
       - run: npx changelogithub
         env:

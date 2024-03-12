@@ -1,7 +1,7 @@
 {
   "name": "vue3-select-component",
   "type": "module",
-  "version": "0.1.3",
+  "version": "0.1.4-test.4",
   "description": "A flexible & modern select-input control for Vue 3.",
   "author": "Thomas Cazade <cazade.thomas@gmail.com>",
   "license": "MIT",

@@ -41,7 +41,7 @@ import "vue3-select-component/dist/style.css";
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 
-const selected = ref<string | null>(null);
+const selected = ref("");
 </script>
 
 <template>

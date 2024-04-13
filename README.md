@@ -46,6 +46,40 @@ const option = ref("");
 </template>
 ```
 
+## Advanced TypeScript usage
+
+Vue 3 Select Component creates a type-safe relationship between the `option.value` and the `v-model` prop.
+
+It also leverages the power of generics to provide types for additional properties on the options.
+
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import VueSelect, { type Option } from "vue3-select-component";
+
+import "vue3-select-component/dist/style.css";
+
+type UserOption = Option<number> & { username: string };
+
+const selectedUser = ref<number>();
+
+const userOptions: UserOption[] = [
+  { label: "Alice", value: 1, username: "alice15" },
+  { label: "Bob", value: 2, username: "bob01" },
+  { label: "Charlie", value: 3, username: "charlie20" },
+];
+</script>
+
+<template>
+  <VueSelect
+    v-model="selectedUser"
+    :options="userOptions"
+    :get-option-label="(option) => `${option.label} (${option.username})`"
+    placeholder="Pick a user"
+  />
+</template>
+```
+
 ## License
 
 MIT Licensed. Copyright (c) Thomas Cazade 2024.

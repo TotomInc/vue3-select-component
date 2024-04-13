@@ -2,33 +2,52 @@
 import { ref } from "vue";
 
 import VueSelect from "../src/Select.vue";
+import type { Option } from "../src/types";
 
-const option = ref<string>("");
-// eslint-disable-next-line unused-imports/no-unused-vars
-const options = ref<string[]>([]);
+type BookOption = Option<string>;
+type UserOption = Option<number> & { username: string };
+
+const activeBook = ref<string>();
+const activeUser = ref<number>();
+
+const bookOptions: BookOption[] = [
+  { label: "Alice's Adventures in Wonderland", value: "alice" },
+  { label: "A Wizard of Earthsea", value: "wizard" },
+  { label: "Harry Potter and the Philosopher's Stone", value: "harry_potter_1" },
+  { label: "Harry Potter and the Chamber of Secrets", value: "harry_potter_2" },
+];
+
+const userOptions: UserOption[] = [
+  { label: "Alice", value: 1, username: "alice" },
+  { label: "Bob", value: 2, username: "bob" },
+  { label: "Charlie", value: 3, username: "charlie" },
+  { label: "David", value: 4, username: "david" },
+];
 </script>
 
 <template>
   <div class="container">
     <form class="form-container" @submit.prevent="null">
       <VueSelect
-        v-model="option"
+        v-model="activeBook"
+        :options="bookOptions"
         :is-multi="false"
-        :options="[
-          { label: 'Alice\'s Adventures in Wonderland', value: 'alice_in_wonderland', extra: 'hello' },
-          { label: 'A Wizard of Earthsea', value: 'wizard_earthsea', extra: 'world' },
-          { label: 'Harry Potter and the Philosopher\'s Stone', value: 'harry_potter_1997', extra: 'hw' },
-          { label: 'Harry Potter and the Chamber of Secrets', value: 'harry_potter_1998', extra: 'hw2' },
-          { label: 'Harry Potter and the Prisoner of Azkaban', value: 'harry_potter_1999', extra: 'hw3' },
-          { label: 'The Lord of the Rings', value: 'tlotr', extra: 'hw4' },
-          { label: 'The Hobbit', value: 'hobbit', extra: 'hw5' },
-          { label: 'The Silmarillion', value: 'silmarillion', extra: 'hw6' },
-        ]"
         placeholder="Pick a book"
       />
 
       <p class="selected-value">
-        Selected value: {{ option || "none" }}
+        Selected book value: {{ activeBook || "none" }}
+      </p>
+
+      <VueSelect
+        v-model="activeUser"
+        :options="userOptions"
+        :is-multi="false"
+        placeholder="Pick a user"
+      />
+
+      <p class="selected-value">
+        Selected user value: {{ activeUser || "none" }}
       </p>
     </form>
   </div>

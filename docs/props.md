@@ -10,11 +10,15 @@ This component is **ready to be used in production**. However, if there is a fea
 
 ## v-model
 
-**Type**: `string | string[]`
+**Type**: `any | any[]`
 
 **Required**: `true`
 
-The value of the select. If `isMulti` is `true`, the `v-model` should be an array of string `string[]`.
+The value of the select. If `isMulti` is `true`, the `v-model` should be an array of any `any[]`.
+
+::: info
+If using TypeScript, you can leverage proper type-safety between `option.value` & `v-model`. By doing this, you don't have an `any` type. Read more about [TypeScript usage](/typescript).
+:::
 
 ## options
 
@@ -27,15 +31,18 @@ A list of options to choose from. Each option should have a `label` and a `value
 **Type interface**:
 
 ```ts
-type Option = {
+type Option<T> = {
   label: string;
-  value: string;
-  [key: string]: any;
+  value: T;
 };
 ```
 
 ::: tip
 This type is exported from the component and can be imported in your application.
+:::
+
+::: info
+If you are using TypeScript, you can leverage proper type-safety between `option.value` & `v-model`. Read more about [TypeScript usage](/typescript).
 :::
 
 ## autoscroll

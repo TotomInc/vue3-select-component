@@ -234,8 +234,10 @@ const handleNavigation = (e: KeyboardEvent) => {
       search.value = "";
     }
 
+    const hasSelectedValue = props.isMulti ? (selected.value as OptionValue[]).length > 0 : !!selected.value;
+
     // When pressing backspace with no search, remove the last selected option.
-    if (e.key === "Backspace" && search.value.length === 0 && selected.value.length > 0) {
+    if (e.key === "Backspace" && search.value.length === 0 && hasSelectedValue) {
       e.preventDefault();
 
       if (props.isMulti) {

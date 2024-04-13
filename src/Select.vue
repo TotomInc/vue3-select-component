@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import type { Option } from "./types";
@@ -8,7 +8,7 @@ import MenuOption from "./MenuOption.vue";
 
 const props = withDefaults(
   defineProps<{
-    options: Option[];
+    options: GenericOption[];
     /**
      * When set to true, automatically scroll the menu to keep the focused option in view.
      */
@@ -67,7 +67,7 @@ const props = withDefaults(
      * @param label The label of the option.
      * @param search The search input value.
      */
-    filterBy?: (option: Option, label: string, search: string) => boolean;
+    filterBy?: (option: GenericOption, label: string, search: string) => boolean;
     /**
      * A function to get the label of an option. By default, it assumes the option is an
      * object with a `label` property. Used to display the selected option in the input &
@@ -75,14 +75,14 @@ const props = withDefaults(
      *
      * @param option The option to render.
      */
-    getOptionLabel?: (option: Option) => string;
+    getOptionLabel?: (option: GenericOption) => string;
     /**
      * A function to get the label of a multi-value option. By default, it assumes the
      * option is an object with a `label` property. Used only in the multi-value tag.
      *
      * @param option The option to render.
      */
-    getMultiValueLabel?: (option: Option) => string;
+    getMultiValueLabel?: (option: GenericOption) => string;
   }>(),
   {
     autoscroll: true,
@@ -95,25 +95,19 @@ const props = withDefaults(
     teleport: undefined,
     inputId: undefined,
     aria: undefined,
-    filterBy: (option: Option, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
-    getOptionLabel: (option: Option) => option.label,
-    getMultiValueLabel: (option: Option) => option.label,
+    filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
+    getOptionLabel: (option: GenericOption) => option.label,
+    getMultiValueLabel: (option: GenericOption) => option.label,
   },
 );
 
 /**
- * The value of the selected option. When `isMulti` is true, this should be an
- * array of strings.
+ * The value of the selected option. When `isMulti` prop is set to `true`, this
+ * should be an array of `OptionValue`.
  */
-const selected = defineModel<string | string[]>({
+const selected = defineModel<OptionValue | OptionValue[]>({
   required: true,
-  validator: (value, _props) => {
-    if (_props.isMulti) {
-      return Array.isArray(value) && value.every((v) => typeof v === "string");
-    }
-
-    return typeof value === "string";
-  },
+  validator: (value, _props) => _props.isMulti ? Array.isArray(value) : !Array.isArray(value),
 });
 
 const container = ref<HTMLDivElement | null>(null);
@@ -126,8 +120,8 @@ const focusedOption = ref(-1);
 
 const filteredOptions = computed(() => {
   // Remove already selected values from the list of options, when in multi-select mode.
-  const filterSelectedValues = (options: Option[]) => options.filter(
-    (option) => !(selected.value as string[]).includes(option.value),
+  const filterMultiSelectedValues = (options: GenericOption[]) => options.filter(
+    (option) => !(selected.value as OptionValue[]).includes(option.value),
   );
 
   if (props.isSearchable && search.value) {
@@ -137,15 +131,18 @@ const filteredOptions = computed(() => {
       return props.filterBy(option, optionLabel, search.value);
     });
 
-    return props.isMulti ? filterSelectedValues(matchingOptions) : matchingOptions;
+    return props.isMulti ? filterMultiSelectedValues(matchingOptions) : matchingOptions;
   }
 
-  return props.isMulti ? filterSelectedValues(props.options) : props.options;
+  return props.isMulti ? filterMultiSelectedValues(props.options) : props.options;
 });
 
 const selectedOptions = computed(() => {
   if (props.isMulti) {
-    return (selected.value as string[]).map((value) => props.options.find((option) => option.value === value)!);
+    // We can safely assume it's an array due to the `isMulti` prop validation done earlier.
+    return (selected.value as OptionValue[]).map(
+      (value) => props.options.find((option) => option.value === value)!,
+    );
   }
 
   const found = props.options.find((option) => option.value === selected.value);
@@ -167,9 +164,9 @@ const closeMenu = () => {
   search.value = "";
 };
 
-const setOption = (value: string) => {
+const setOption = (value: OptionValue) => {
   if (props.isMulti) {
-    selected.value = [...selected.value, value];
+    (selected.value as OptionValue[]).push(value);
   }
   else {
     selected.value = value;
@@ -186,9 +183,9 @@ const setOption = (value: string) => {
   }
 };
 
-const removeOption = (value: string) => {
+const removeOption = (value: OptionValue) => {
   if (props.isMulti) {
-    selected.value = (selected.value as string[]).filter((v) => v !== value);
+    selected.value = (selected.value as OptionValue[]).filter((v) => v !== value);
   }
 };
 
@@ -197,7 +194,7 @@ const clear = () => {
     selected.value = [];
   }
   else {
-    selected.value = "";
+    selected.value = undefined as OptionValue;
   }
 
   menuOpen.value = false;
@@ -242,10 +239,10 @@ const handleNavigation = (e: KeyboardEvent) => {
       e.preventDefault();
 
       if (props.isMulti) {
-        selected.value = (selected.value as string[]).slice(0, -1);
+        selected.value = (selected.value as OptionValue[]).slice(0, -1);
       }
       else {
-        selected.value = "";
+        selected.value = undefined as OptionValue;
       }
     }
   }
@@ -339,8 +336,8 @@ onBeforeUnmount(() => {
 
         <template v-if="props.isMulti && selectedOptions.length">
           <button
-            v-for="option in selectedOptions"
-            :key="option.value"
+            v-for="(option, i) in selectedOptions"
+            :key="i"
             type="button"
             class="multi-value"
             @click="removeOption(option.value)"
@@ -414,7 +411,7 @@ onBeforeUnmount(() => {
       >
         <MenuOption
           v-for="(option, i) in filteredOptions"
-          :key="option.value"
+          :key="i"
           type="button"
           class="menu-option"
           :class="{ focused: focusedOption === i, selected: option.value === selected }"

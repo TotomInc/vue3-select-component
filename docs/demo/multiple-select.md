@@ -7,7 +7,7 @@ title: 'Multiple Select'
 The following example demonstrates how to use the `VueSelect` component to create a multiple select dropdown.
 
 ::: warning
-Setting `is-multi` to `true` will change the `v-model` to become an array of strings `string[]`. Make sure to update your `v-model` accordingly.
+Setting `is-multi` to `true` will change the `v-model` to become an array of any `any[]`. Make sure to update your `v-model` accordingly.
 :::
 
 <script setup>

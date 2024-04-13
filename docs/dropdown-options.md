@@ -14,6 +14,10 @@ When using the `options` prop, you can pass an array of objects to the component
 </template>
 ```
 
+::: info
+If you are using TypeScript, make sure to read the [TypeScript usage](/typescript) section to leverage proper type-safety.
+:::
+
 ## Passing extra properties
 
 You can pass extra properties to the options object. The component will ignore them but you will be able to manipulate those extra properties using some props and slots.
@@ -26,3 +30,7 @@ You can pass extra properties to the options object. The component will ignore t
   />
 </template>
 ```
+
+::: info
+If you are using TypeScript, make sure to read the [TypeScript usage](/typescript) section to leverage proper type-safety.
+:::

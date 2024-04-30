@@ -101,6 +101,11 @@ const props = withDefaults(
   },
 );
 
+const emit = defineEmits<{
+  (e: "optionSelected", option: GenericOption): void;
+  (e: "optionDeselected", option: GenericOption | null): void;
+}>();
+
 /**
  * The value of the selected option. When `isMulti` prop is set to `true`, this
  * should be an array of `OptionValue`.
@@ -164,13 +169,15 @@ const closeMenu = () => {
   search.value = "";
 };
 
-const setOption = (value: OptionValue) => {
+const setOption = (option: GenericOption) => {
   if (props.isMulti) {
-    (selected.value as OptionValue[]).push(value);
+    (selected.value as OptionValue[]).push(option.value);
   }
   else {
-    selected.value = value;
+    selected.value = option.value;
   }
+
+  emit("optionSelected", option);
 
   search.value = "";
 
@@ -183,18 +190,21 @@ const setOption = (value: OptionValue) => {
   }
 };
 
-const removeOption = (value: OptionValue) => {
+const removeOption = (option: GenericOption) => {
   if (props.isMulti) {
-    selected.value = (selected.value as OptionValue[]).filter((v) => v !== value);
+    selected.value = (selected.value as OptionValue[]).filter((value) => value !== option.value);
+    emit("optionDeselected", option);
   }
 };
 
 const clear = () => {
   if (props.isMulti) {
     selected.value = [];
+    emit("optionDeselected", null);
   }
   else {
     selected.value = undefined as OptionValue;
+    emit("optionDeselected", selectedOptions.value[0]);
   }
 
   menuOpen.value = false;
@@ -219,13 +229,13 @@ const handleNavigation = (e: KeyboardEvent) => {
 
     if (e.key === "Enter") {
       e.preventDefault();
-      setOption(filteredOptions.value[focusedOption.value].value);
+      setOption(filteredOptions.value[focusedOption.value]);
     }
 
     // When pressing space with menu open but no search, select the focused option.
     if (e.code === "Space" && search.value.length === 0) {
       e.preventDefault();
-      setOption(filteredOptions.value[focusedOption.value].value);
+      setOption(filteredOptions.value[focusedOption.value]);
     }
 
     if (e.key === "Escape") {
@@ -342,7 +352,7 @@ onBeforeUnmount(() => {
             :key="i"
             type="button"
             class="multi-value"
-            @click="removeOption(option.value)"
+            @click="removeOption(option)"
           >
             {{ getMultiValueLabel(option) }}
             <XMarkIcon />
@@ -421,7 +431,7 @@ onBeforeUnmount(() => {
           :index="i"
           :is-focused="focusedOption === i"
           :is-selected="option.value === selected"
-          @select="setOption(option.value)"
+          @select="setOption(option)"
         >
           <slot name="option" :option="option">
             {{ getOptionLabel(option) }}

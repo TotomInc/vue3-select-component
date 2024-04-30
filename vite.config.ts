@@ -22,6 +22,10 @@ export default defineConfig((configEnv) => {
   if (configEnv.mode === "test") {
     config.test = {
       environment: "happy-dom",
+      coverage: {
+        provider: "v8",
+        include: ["src/**/*.vue", "src/**/*.ts"],
+      },
     };
   }
 

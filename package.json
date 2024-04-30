@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "dev:playground": "vite --mode development:playground",
-    "test": "vitest",
+    "test": "vitest --coverage",
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",
     "lint": "eslint .",
@@ -53,6 +53,7 @@
     "@tsconfig/node20": "20.1.4",
     "@types/node": "20.12.7",
     "@vitejs/plugin-vue": "5.0.4",
+    "@vitest/coverage-v8": "1.5.3",
     "@vue/test-utils": "2.4.5",
     "@vue/tsconfig": "0.5.1",
     "autoprefixer": "10.4.19",

@@ -269,6 +269,15 @@ const handleInputSpace = (e: KeyboardEvent) => {
   }
 };
 
+const handleInputKeydown = (e: KeyboardEvent) => {
+  if (e.key === "Tab") {
+    closeMenu();
+  }
+  else if (e.key === "Space") {
+    handleInputSpace(e);
+  }
+};
+
 const handleClickOutside = (event: MouseEvent) => {
   if (container.value && !container.value.contains(event.target as Node)) {
     menuOpen.value = false;
@@ -369,8 +378,7 @@ onBeforeUnmount(() => {
           :disabled="isDisabled"
           :placeholder="selectedOptions.length === 0 ? placeholder : ''"
           @mousedown="openMenu()"
-          @keydown.tab="closeMenu"
-          @keydown.space="handleInputSpace"
+          @keydown="handleInputKeydown"
         >
       </div>
 

@@ -43,7 +43,7 @@ describe("input + menu interactions behavior", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown.space");
+    await wrapper.get("input").trigger("keydown", { key: "Space" });
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });
@@ -52,7 +52,7 @@ describe("input + menu interactions behavior", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await wrapper.get("input").trigger("mousedown");
-    await wrapper.get("input").trigger("keydown.tab");
+    await wrapper.get("input").trigger("keydown", { key: "Tab" });
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
   });
@@ -132,7 +132,7 @@ describe("single-select option", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown.space");
+    await wrapper.get("input").trigger("keydown", { key: "Space" });
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
     await wrapper.vm.$nextTick();
@@ -169,7 +169,7 @@ describe("single-select option", () => {
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
 
     await wrapper.get("input").setValue("F");
-    await wrapper.get("input").trigger("keydown.backspace");
+    await wrapper.get("input").trigger("keydown", { key: "Backspace" });
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);

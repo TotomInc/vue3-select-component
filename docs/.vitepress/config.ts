@@ -6,6 +6,7 @@ export default defineConfig({
   description: "A performant & accessible Select component for Vue 3. Best in class Selecting solution for Vue 3.",
 
   head: [
+    ["link", { rel: "icon", type: "image/png", href: "/favicon.png" }],
     ["meta", { name: "google-site-verification", content: "qv0rGOlwG3_UHi5HWsY3NtpsLZHcQ79xQHAgH2q_1WA" }],
     ["script", {}, `window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };`],
     ["script", { src: "/_vercel/insights/script.js", defer: "true" }],

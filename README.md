@@ -1,16 +1,16 @@
 # Vue3-Select-Component [![npm](https://img.shields.io/npm/v/vue3-select-component.svg)](https://www.npmjs.com/package/vue3-select-component) [![build status](https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml) [![Download](https://img.shields.io/npm/dm/vue3-select-component)](https://www.npmjs.com/package/vue3-select-component)
 
-A select component for Vue 3 which helps you to develop a _simple yet powerful_ select control with ease that works out-of-the-box, while still allowing you to customize it to your needs.
+> Best-in-class select component for Vue 3, with a focus on DX, accessibility and ease-of-use.
 
 **Documentation & demos with code**: https://vue3-select-component.vercel.app
 
-This component includes the following features:
-
-- Easy data manipulation with `v-model`
-- Great styling out-of-the-box, customization with CSS variables & Vue `:deep`
-- Single & multi-select
-- Deep customization with `<slot>`s
-- Teleport/portal menu
+- ⚙️ Data manipulation with `v-model`
+- 🔑 Type-safe
+- 🎨 Great styling out-of-the-box, customization with CSS variables & Vue `:deep`
+- ✅ Single & multi-select
+- 🖌️ Customization with `<slot>`s
+- 🪄 Teleport/portal menu
+- 📦 Extremely light (3.1kb gzip)
 
 ## Installation
 
@@ -82,4 +82,4 @@ const userOptions: UserOption[] = [
 
 ## License
 
-MIT Licensed. Copyright (c) Thomas Cazade 2024.
+MIT Licensed. Copyright (c) Thomas Cazade 2024 - present.

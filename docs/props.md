@@ -45,14 +45,6 @@ This type is exported from the component and can be imported in your application
 If you are using TypeScript, you can leverage proper type-safety between `option.value` & `v-model`. Read more about [TypeScript usage](/typescript).
 :::
 
-## autoscroll
-
-**Type**: `boolean`
-
-**Default**: `true`
-
-Whether the dropdown should automatically scroll to the selected option, when using keyboard navigation.
-
 ## placeholder
 
 **Type**: `string`

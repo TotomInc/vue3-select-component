@@ -10,10 +10,6 @@ const props = withDefaults(
   defineProps<{
     options: GenericOption[];
     /**
-     * When set to true, automatically scroll the menu to keep the focused option in view.
-     */
-    autoscroll?: boolean;
-    /**
      * The placeholder text to display when no option is selected.
      */
     placeholder?: string;
@@ -85,7 +81,6 @@ const props = withDefaults(
     getMultiValueLabel?: (option: GenericOption) => string;
   }>(),
   {
-    autoscroll: true,
     placeholder: "Select an option",
     isClearable: true,
     isDisabled: false,

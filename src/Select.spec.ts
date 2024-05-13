@@ -174,6 +174,20 @@ describe("single-select option", () => {
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
   });
+
+  it("cannot select an option when there are no matching options", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await wrapper.get("input").trigger("mousedown");
+    await wrapper.get("input").setValue("Foo");
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted("update:modelValue")).toBeUndefined();
+  });
 });
 
 describe("clear button", () => {

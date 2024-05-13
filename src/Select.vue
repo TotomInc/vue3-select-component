@@ -223,14 +223,24 @@ const handleNavigation = (e: KeyboardEvent) => {
     }
 
     if (e.key === "Enter") {
+      const selectedOption = filteredOptions.value[focusedOption.value];
+
       e.preventDefault();
-      setOption(filteredOptions.value[focusedOption.value]);
+
+      if (selectedOption) {
+        setOption(selectedOption);
+      }
     }
 
     // When pressing space with menu open but no search, select the focused option.
     if (e.code === "Space" && search.value.length === 0) {
+      const selectedOption = filteredOptions.value[focusedOption.value];
+
       e.preventDefault();
-      setOption(filteredOptions.value[focusedOption.value]);
+
+      if (selectedOption) {
+        setOption(selectedOption);
+      }
     }
 
     if (e.key === "Escape") {

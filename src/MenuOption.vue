@@ -48,6 +48,7 @@ watch(
     :class="{ focused: isFocused, selected: isSelected }"
     :aria-disabled="false"
     @click="emit('select')"
+    @keydown.enter="emit('select')"
   >
     <slot />
   </div>

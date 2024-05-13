@@ -34,6 +34,7 @@
   ],
   "scripts": {
     "dev:playground": "vite --mode development:playground",
+    "test": "vitest --coverage",
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",
     "lint": "eslint .",
@@ -52,10 +53,13 @@
     "@tsconfig/node20": "20.1.4",
     "@types/node": "20.12.7",
     "@vitejs/plugin-vue": "5.0.4",
+    "@vitest/coverage-v8": "1.5.3",
+    "@vue/test-utils": "2.4.5",
     "@vue/tsconfig": "0.5.1",
     "autoprefixer": "10.4.19",
     "bumpp": "9.4.1",
     "eslint": "8.57.0",
+    "happy-dom": "14.7.1",
     "npm-run-all2": "6.1.2",
     "postcss": "8.4.38",
     "sass": "1.75.0",
@@ -64,6 +68,7 @@
     "vite-plugin-dts": "3.9.0",
     "vite-plugin-vue-devtools": "7.1.3",
     "vitepress": "1.1.4",
+    "vitest": "1.5.3",
     "vue": "3.4.26",
     "vue-tsc": "2.0.15"
   }

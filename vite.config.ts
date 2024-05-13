@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { URL, fileURLToPath } from "node:url";
 
 import { type UserConfig, defineConfig } from "vite";
@@ -16,6 +17,17 @@ export default defineConfig((configEnv) => {
       alias: { "@": resolve("./src") },
     },
   };
+
+  // When running vitest, add the test config.
+  if (configEnv.mode === "test") {
+    config.test = {
+      environment: "happy-dom",
+      coverage: {
+        provider: "v8",
+        include: ["src/**/*.vue", "src/**/*.ts"],
+      },
+    };
+  }
 
   // Build library when in production mode (npm run build).
   if (configEnv.mode === "production") {

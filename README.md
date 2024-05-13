@@ -1,4 +1,4 @@
-# Vue3-Select-Component
+# Vue3-Select-Component [![npm](https://img.shields.io/npm/v/vue3-select-component.svg)](https://www.npmjs.com/package/vue3-select-component) [![build status](https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml) [![Download](https://img.shields.io/npm/dm/vue3-select-component)](https://www.npmjs.com/package/vue3-select-component)
 
 A select component for Vue 3 which helps you to develop a _simple yet powerful_ select control with ease that works out-of-the-box, while still allowing you to customize it to your needs.
 

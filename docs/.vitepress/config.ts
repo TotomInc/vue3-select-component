@@ -56,5 +56,7 @@ export default defineConfig({
       { icon: "github", link: "https://github.com/TotomInc/vue3-select-component" },
       { icon: "npm", link: "https://www.npmjs.com/package/vue3-select-component" },
     ],
+
+    search: { provider: "local" },
   },
 });

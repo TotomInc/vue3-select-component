@@ -17,6 +17,7 @@ export default defineConfig({
   },
 
   themeConfig: {
+    logo: "/logo.png",
     nav: [
       { text: "Home", link: "/" },
       { text: "Docs", link: "/getting-started" },

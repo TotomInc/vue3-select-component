@@ -21,7 +21,12 @@ export default defineConfig({
       { text: "Home", link: "/" },
       { text: "Docs", link: "/getting-started" },
       { text: "Demo", link: "/demo/single-select" },
+      { text: "Changelog", link: "https://github.com/TotomInc/vue3-select-component/releases" },
     ],
+
+    footer: {
+      copyright: "Released under the MIT License.",
+    },
 
     sidebar: [
       {
@@ -48,6 +53,7 @@ export default defineConfig({
 
     socialLinks: [
       { icon: "github", link: "https://github.com/TotomInc/vue3-select-component" },
+      { icon: "npm", link: "https://www.npmjs.com/package/vue3-select-component" },
     ],
   },
 });

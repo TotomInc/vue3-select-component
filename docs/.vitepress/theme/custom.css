@@ -1,3 +1,11 @@
+:root {
+  --vp-c-brand-1: #34d399;
+  --vp-c-brand-2: #059669;
+  --vp-c-brand-3: #047857;
+
+  --vp-c-brand-soft: rgb(52 211 153 / 20%);
+}
+
 /* Home-page large title. */
 .VPHero.VPHomeHero .name,
 .VPHero.VPHomeHero .text {

@@ -1,0 +1,5 @@
+/* Home-page large title. */
+.VPHero.VPHomeHero .name,
+.VPHero.VPHomeHero .text {
+  max-width: unset;
+}

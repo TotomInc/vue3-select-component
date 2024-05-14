@@ -1,8 +1,28 @@
-# Vue3-Select-Component [![npm](https://img.shields.io/npm/v/vue3-select-component.svg)](https://www.npmjs.com/package/vue3-select-component) [![build status](https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml) [![Download](https://img.shields.io/npm/dm/vue3-select-component)](https://www.npmjs.com/package/vue3-select-component)
+# Vue3-Select-Component
+
+<p align="center">
+  <img src="https://vue3-select-component.vercel.app/logo.png" alt="Vue3 Select Component" height="256" width="256" />
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/vue3-select-component">
+    <img src="https://img.shields.io/npm/v/vue3-select-component.svg" alt="npm package" />
+  </a>
+
+  <a href="https://www.npmjs.com/package/vue3-select-component">
+    <img src="https://img.shields.io/npm/dm/vue3-select-component" alt="npm package" />
+  </a>
+
+  <a href="https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml">
+    <img src="https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml/badge.svg?branch=master" alt="CI status" />
+  </a>
+</p>
+
+<p align="center">
+  <b>Docs & demos</b>: <a href="https://vue3-select-component.vercel.app">vue3-select-component.vercel.app</a>
+</p>
 
 > Best-in-class select component for Vue 3, with a focus on DX, accessibility and ease-of-use.
-
-**Documentation & demos with code**: https://vue3-select-component.vercel.app
 
 - ⚙️ Data manipulation with `v-model`
 - 🔑 Type-safe

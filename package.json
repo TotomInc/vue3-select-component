@@ -49,7 +49,7 @@
     "vue": "^3.4.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "2.19.1",
+    "@antfu/eslint-config": "2.19.2",
     "@tsconfig/node20": "20.1.4",
     "@types/node": "20.12.13",
     "@vitejs/plugin-vue": "5.0.5",

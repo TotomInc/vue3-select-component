@@ -8,8 +8,7 @@ export default defineConfig({
   head: [
     ["link", { rel: "icon", type: "image/png", href: "/favicon.png" }],
     ["meta", { name: "google-site-verification", content: "qv0rGOlwG3_UHi5HWsY3NtpsLZHcQ79xQHAgH2q_1WA" }],
-    ["script", {}, `window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };`],
-    ["script", { src: "/_vercel/insights/script.js", defer: "true" }],
+    ["script", { "src": "https://cloud.umami.is/script.js", "data-website-id": "8fb344f7-10d2-44d7-bdc7-d8a4952b91c5", "defer": "true" }],
   ],
 
   sitemap: {

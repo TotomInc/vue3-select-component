@@ -47,3 +47,21 @@ Emitted when an option is deselected, in the same tick where the `v-model` is up
 ```
 
 **Note**: this is emitted on the same tick as the v-model is updated, before a DOM re-render.
+
+## `@search`
+
+Emitted when the search value is updated.
+
+::: warning
+Search value is cleared when the menu is closed. This will trigger an empty string emit event. See tests implementations for more details.
+:::
+
+```vue
+<template>
+  <VueSelect
+    v-model="selectedValue"
+    :options="options"
+    @search="(search) => console.log('search value:', search)"
+  />
+</template>
+```

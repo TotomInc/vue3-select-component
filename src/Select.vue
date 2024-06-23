@@ -99,6 +99,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: "optionSelected", option: GenericOption): void;
   (e: "optionDeselected", option: GenericOption | null): void;
+  (e: "search", value: string): void;
 }>();
 
 /**
@@ -310,10 +311,12 @@ const calculateMenuPosition = () => {
   return { top: "0px", left: "0px" };
 };
 
-// When focusing the input and typing, open the menu automatically.
 watch(
   () => search.value,
   () => {
+    emit("search", search.value);
+
+    // When starting to type, open the menu automatically.
     if (search.value && !menuOpen.value) {
       openMenu();
     }

@@ -212,6 +212,26 @@ describe("clear button", () => {
   });
 });
 
+describe("search emit", () => {
+  it("should emit the search event when typing in the input", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await wrapper.get("input").setValue("United");
+
+    expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
+  });
+
+  it("should emit an empty string for the search when the menu is closed", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await wrapper.get("input").setValue("United");
+    document.dispatchEvent(new MouseEvent("click"));
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
+  });
+});
+
 describe("component props", () => {
   it("should display the placeholder in the input when no option is selected", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, placeholder: "Pick an option" } });

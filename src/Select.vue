@@ -481,7 +481,7 @@ onBeforeUnmount(() => {
 
   --vs-menu-offset-top: 8px;
   --vs-menu-height: 200px;
-  --vs-menu-padding: 8px 0;
+  --vs-menu-padding: 0;
   --vs-menu-border: 1px solid #e4e4e7;
   --vs-menu-bg: #fff;
   --vs-menu-box-shadow: none;

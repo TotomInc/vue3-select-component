@@ -437,6 +437,8 @@ onBeforeUnmount(() => {
           left: props.teleport ? calculateMenuPosition().left : 'unset',
         }"
       >
+        <slot name="menu-header" />
+
         <MenuOption
           v-for="(option, i) in filteredOptions"
           :key="i"

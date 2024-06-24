@@ -42,6 +42,24 @@ Customize the rendered HTML if a selected option (inside the select control). Yo
 </template>
 ```
 
+## menu-header
+
+**Type**: `slotProps: {}`
+
+Customize the rendered HTML for the menu header. This slot is placed **before** the options.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #menu-header>
+      <div>
+        <h3>My custom header</h3>
+      </div>
+    </template>
+  </VueSelect>
+</template>
+```
+
 ## no-options
 
 **Type**: `slotProps: {}`

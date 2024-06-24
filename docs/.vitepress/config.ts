@@ -47,6 +47,7 @@ export default defineConfig({
           { text: "Single Select", link: "/demo/single-select" },
           { text: "Multiple Select", link: "/demo/multiple-select" },
           { text: "Custom Option Slot", link: "/demo/custom-option-slot" },
+          { text: "With Menu Header", link: "/demo/with-menu-header" },
         ],
       },
     ],

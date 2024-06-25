@@ -187,7 +187,7 @@ const setOption = (option: GenericOption) => {
 };
 
 const removeOption = (option: GenericOption) => {
-  if (props.isMulti) {
+  if (props.isMulti && !props.isDisabled) {
     selected.value = (selected.value as OptionValue[]).filter((value) => value !== option.value);
     emit("optionDeselected", option);
   }

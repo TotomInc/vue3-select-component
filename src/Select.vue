@@ -10,6 +10,11 @@ const props = withDefaults(
   defineProps<{
     options: GenericOption[];
     /**
+     * When passed to the component, only these specific options will be rendered
+     * on the list of options.
+     */
+    displayedOptions?: GenericOption[];
+    /**
      * The placeholder text to display when no option is selected.
      */
     placeholder?: string;
@@ -119,14 +124,16 @@ const search = ref("");
 const menuOpen = ref(false);
 const focusedOption = ref(-1);
 
-const filteredOptions = computed(() => {
+const availableOptions = computed(() => {
+  const options = props.displayedOptions || props.options;
+
   // Remove already selected values from the list of options, when in multi-select mode.
   const filterMultiSelectedValues = (options: GenericOption[]) => options.filter(
     (option) => !(selected.value as OptionValue[]).includes(option.value),
   );
 
   if (props.isSearchable && search.value) {
-    const matchingOptions = props.options.filter((option) => {
+    const matchingOptions = options.filter((option) => {
       const optionLabel = props.isMulti ? props.getMultiValueLabel(option) : props.getOptionLabel(option);
 
       return props.filterBy(option, optionLabel, search.value);
@@ -135,7 +142,7 @@ const filteredOptions = computed(() => {
     return props.isMulti ? filterMultiSelectedValues(matchingOptions) : matchingOptions;
   }
 
-  return props.isMulti ? filterMultiSelectedValues(props.options) : props.options;
+  return props.isMulti ? filterMultiSelectedValues(options) : options;
 });
 
 const selectedOptions = computed(() => {
@@ -215,7 +222,7 @@ const handleNavigation = (e: KeyboardEvent) => {
   if (menuOpen.value) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      focusedOption.value = Math.min(focusedOption.value + 1, filteredOptions.value.length - 1);
+      focusedOption.value = Math.min(focusedOption.value + 1, availableOptions.value.length - 1);
     }
 
     if (e.key === "ArrowUp") {
@@ -224,7 +231,7 @@ const handleNavigation = (e: KeyboardEvent) => {
     }
 
     if (e.key === "Enter") {
-      const selectedOption = filteredOptions.value[focusedOption.value];
+      const selectedOption = availableOptions.value[focusedOption.value];
 
       e.preventDefault();
 
@@ -235,7 +242,7 @@ const handleNavigation = (e: KeyboardEvent) => {
 
     // When pressing space with menu open but no search, select the focused option.
     if (e.code === "Space" && search.value.length === 0) {
-      const selectedOption = filteredOptions.value[focusedOption.value];
+      const selectedOption = availableOptions.value[focusedOption.value];
 
       e.preventDefault();
 
@@ -440,7 +447,7 @@ onBeforeUnmount(() => {
         <slot name="menu-header" />
 
         <MenuOption
-          v-for="(option, i) in filteredOptions"
+          v-for="(option, i) in availableOptions"
           :key="i"
           type="button"
           class="menu-option"
@@ -456,7 +463,7 @@ onBeforeUnmount(() => {
           </slot>
         </MenuOption>
 
-        <div v-if="filteredOptions.length === 0" class="no-results">
+        <div v-if="availableOptions.length === 0" class="no-results">
           <slot name="no-options">
             No results found
           </slot>

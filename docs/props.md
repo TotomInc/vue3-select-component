@@ -26,7 +26,7 @@ If using TypeScript, you can leverage proper type-safety between `option.value` 
 
 **Required**: `true`
 
-A list of options to choose from. Each option should have a `label` and a `value` property. You can add any other properties to the options, which will be passed to the `option` slot.
+A list of all possible options to choose from. Each option should have a `label` and a `value` property. You can add any other properties to the options, which will be passed to the `option` slot.
 
 **Type interface**:
 
@@ -44,6 +44,24 @@ This type is exported from the component and can be imported in your application
 ::: info
 If you are using TypeScript, you can leverage proper type-safety between `option.value` & `v-model`. Read more about [TypeScript usage](/typescript).
 :::
+
+## displayedOptions
+
+**Type**: `Option[]`
+
+**Required**: `false`
+
+A list of specific options to display inside the option menu. This is useful when you want to create a complex filter logic inside the options menu.
+
+::: warning
+When this prop is passed to the component, the `options` prop won't be used anymore for the rendering of the options menu.
+
+However, **it is still used internally to keep track of selected value(s)**.
+
+You should pass a list of all possible options to the `options` prop, and a list of specific options to display inside the option menu to the `displayedOptions` prop.
+:::
+
+For more details, see the [With complex menu filter](/demo/with-complex-menu-filter) demo.
 
 ## placeholder
 

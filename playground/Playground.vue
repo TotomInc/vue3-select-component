@@ -8,7 +8,7 @@ type BookOption = Option<string>;
 type UserOption = Option<number> & { username: string };
 
 const activeBook = ref<string>();
-const activeUser = ref<number>();
+const activeUsers = ref<number[]>([1, 3]);
 
 const bookOptions: BookOption[] = [
   { label: "Alice's Adventures in Wonderland", value: "alice" },
@@ -40,14 +40,14 @@ const userOptions: UserOption[] = [
       </p>
 
       <VueSelect
-        v-model="activeUser"
+        v-model="activeUsers"
         :options="userOptions"
-        :is-multi="false"
-        placeholder="Pick a user"
+        :is-multi="true"
+        placeholder="Pick users"
       />
 
       <p class="selected-value">
-        Selected user value: {{ activeUser || "none" }}
+        Selected user value: {{ activeUsers || "none" }}
       </p>
     </form>
   </div>

@@ -350,7 +350,7 @@ onBeforeUnmount(() => {
         :aria-describedby="placeholder"
         :aria-description="placeholder"
         :aria-labelledby="aria?.labelledby"
-        :aria-label="selectedOptions.length ? selectedOptions.map(getOptionLabel).join(', ') : ''"
+        :aria-label="selectedOptions.length ? selectedOptions.map(isMulti ? getMultiValueLabel : getOptionLabel).join(', ') : ''"
         :aria-required="aria?.required"
       >
         <div

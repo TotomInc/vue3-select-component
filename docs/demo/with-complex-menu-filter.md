@@ -97,17 +97,19 @@ function switchFilter() {
 };
 </script>
 
-<VueSelect
-  v-model="selectedUsers"
-  :options="options"
-  :displayed-options="displayedOptions"
-  :is-multi="true"
-  placeholder="Select users"
->
-  <template #menu-header>
-    <button type="button" @click="switchFilter" >
-      Switch filter type (current: {{ filter }})
-    </button>
-  </template>
-</VueSelect>
+<template>
+  <VueSelect
+    v-model="selectedUsers"
+    :options="options"
+    :displayed-options="displayedOptions"
+    :is-multi="true"
+    placeholder="Select users"
+  >
+    <template #menu-header>
+      <button type="button" @click="switchFilter">
+        Switch filter type (current: {{ filter }})
+      </button>
+    </template>
+  </VueSelect>
+</template>
 ```

@@ -59,22 +59,24 @@ import VueSelect from "vue3-select-component";
 const selected = ref("");
 </script>
 
-<VueSelect
-  v-model="selected"
-  :options="[
-    { label: 'Option #1', value: 'option_1' },
-    { label: 'Option #2', value: 'option_2' },
-    { label: 'Option #3', value: 'option_3' },
-    { label: 'Option #4', value: 'option_4' },
-    { label: 'Option #5', value: 'option_5' },
-  ]"
->
-  <template #menu-header>
-    <div class="menu-header">
-      <h3>Books</h3>
-    </div>
-  </template>
-</VueSelect>
+<template>
+  <VueSelect
+    v-model="selected"
+    :options="[
+      { label: 'Option #1', value: 'option_1' },
+      { label: 'Option #2', value: 'option_2' },
+      { label: 'Option #3', value: 'option_3' },
+      { label: 'Option #4', value: 'option_4' },
+      { label: 'Option #5', value: 'option_5' },
+    ]"
+  >
+    <template #menu-header>
+      <div class="menu-header">
+        <h3>Books</h3>
+      </div>
+    </template>
+  </VueSelect>
+</template>
 
 <style scoped>
 .menu-header {

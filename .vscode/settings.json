@@ -42,5 +42,5 @@
   ],
 
   // Vue Official extension should not have the hybrid mode.
-  "vue.server.hybridMode": false,
+  "vue.server.hybridMode": false
 }

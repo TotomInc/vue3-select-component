@@ -64,7 +64,7 @@
     "postcss": "8.4.38",
     "sass": "1.77.6",
     "typescript": "5.5.2",
-    "vite": "5.3.1",
+    "vite": "5.3.2",
     "vite-plugin-dts": "3.9.1",
     "vite-plugin-vue-devtools": "7.3.4",
     "vitepress": "1.2.3",

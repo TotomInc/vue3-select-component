@@ -47,9 +47,7 @@ const multiSelected = ref(["option_3", "option_5"]);
 ## Demo source-code
 
 ```vue
-<script setup>
-import "vue3-select-component/dist/style.css";
-
+<script setup lang="ts">
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 

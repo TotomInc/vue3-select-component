@@ -67,8 +67,6 @@ function switchFilter() {
 
 ```vue
 <script setup lang="ts">
-import "vue3-select-component/dist/style.css";
-
 import { computed, ref } from "vue";
 import VueSelect from "vue3-select-component";
 

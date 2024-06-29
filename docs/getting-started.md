@@ -36,8 +36,6 @@ Import the component with the styling, and use it in your Vue 3 application:
 
 ```vue
 <script setup lang="ts">
-import "vue3-select-component/dist/style.css";
-
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 
@@ -70,8 +68,6 @@ To enable the multiselect feature, all you need to do is:
 
 ```vue
 <script setup>
-import "vue3-select-component/dist/style.css";
-
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 

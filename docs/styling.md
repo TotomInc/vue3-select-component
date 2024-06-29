@@ -6,6 +6,10 @@ title: 'Styling'
 
 Vue 3 Select Component provides 2 types of customization available in the component.
 
+::: tip
+The default component styling is already included with the VueSelect component, you don't need to import any CSS file to make it work.
+:::
+
 ## CSS variables
 
 CSS variables is the easiest way to customize the component style but provides less flexibility over your design. When importing the component, you will notice that CSS variables are injected into the `:root` scope and are prefixed with `--vs-select-[...]`.

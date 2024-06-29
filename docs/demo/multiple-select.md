@@ -34,8 +34,6 @@ Selected value(s): **{{ selected.length ? selected.join(", ") : "none" }}**
 
 ```vue
 <script setup lang="ts">
-import "vue3-select-component/dist/style.css";
-
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 

@@ -47,8 +47,6 @@ Use it in your Vue 3 app:
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 
-import "vue3-select-component/dist/style.css";
-
 const option = ref("");
 </script>
 
@@ -76,8 +74,6 @@ It also leverages the power of generics to provide types for additional properti
 <script setup lang="ts">
 import { ref } from "vue";
 import VueSelect, { type Option } from "vue3-select-component";
-
-import "vue3-select-component/dist/style.css";
 
 type UserOption = Option<number> & { username: string };
 

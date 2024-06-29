@@ -51,8 +51,6 @@ const selected = ref("");
 
 ```vue
 <script setup>
-import "vue3-select-component/dist/style.css";
-
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
 

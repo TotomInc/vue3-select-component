@@ -6,6 +6,7 @@ const props = defineProps<{
   index: number;
   isFocused: boolean;
   isSelected: boolean;
+  isDisabled: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -45,8 +46,9 @@ watch(
     ref="option"
     tabindex="-1"
     role="option"
-    :class="{ focused: isFocused, selected: isSelected }"
-    :aria-disabled="false"
+    :class="{ focused: isFocused, selected: isSelected, disabled: isDisabled }"
+    :aria-disabled="isDisabled"
+    :aria-selected="isSelected"
     @click="emit('select')"
     @keydown.enter="emit('select')"
   >

@@ -24,7 +24,7 @@ List of available CSS variables (pulled from the demo):
   --vs-input-outline: #3b82f6;
   --vs-input-placeholder-color: #52525b;
 
-  --vs-padding: .25rem .5rem;
+  --vs-padding: 0.25rem 0.5rem;
   --vs-border: 1px solid #e4e4e7;
   --vs-border-radius: 4px;
   --vs-font-size: 16px;
@@ -35,7 +35,7 @@ List of available CSS variables (pulled from the demo):
 
   --vs-menu-offset-top: 8px;
   --vs-menu-height: 200px;
-  --vs-menu-padding: 8px 0;
+  --vs-menu-padding: 0;
   --vs-menu-border: 1px solid #e4e4e7;
   --vs-menu-bg: #fff;
   --vs-menu-box-shadow: none;
@@ -49,6 +49,8 @@ List of available CSS variables (pulled from the demo):
   --vs-option-hover-color: #dbeafe;
   --vs-option-focused-color: var(--vs-option-hover-color);
   --vs-option-selected-color: #93c5fd;
+  --vs-option-disabled-color: #f4f4f5;
+  --vs-option-disabled-text-color: #52525b;
 
   --vs-multi-value-gap: 4px;
   --vs-multi-value-padding: 4px;
@@ -64,7 +66,7 @@ List of available CSS variables (pulled from the demo):
   --vs-icon-size: 20px;
   --vs-icon-color: var(--vs-text-color);
 
-  --vs-dropdown-transition: transform .25s ease-out;
+  --vs-dropdown-transition: transform 0.25s ease-out;
 }
 ```
 

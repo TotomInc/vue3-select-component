@@ -1,36 +1,46 @@
-# Vue3-Select-Component
+<br />
 
 <p align="center">
-  <img src="https://vue3-select-component.vercel.app/logo.png" alt="Vue3 Select Component" height="256" width="256" />
-</p>
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/vue3-select-component">
-    <img src="https://img.shields.io/npm/v/vue3-select-component.svg" alt="npm package" />
-  </a>
-
-  <a href="https://www.npmjs.com/package/vue3-select-component">
-    <img src="https://img.shields.io/npm/dm/vue3-select-component" alt="npm package" />
-  </a>
-
-  <a href="https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml">
-    <img src="https://github.com/TotomInc/vue3-select-component/actions/workflows/build.yml/badge.svg?branch=master" alt="CI status" />
+  <a href="https://vue3-select-component.vercel.app/">
+    <img src="https://vue3-select-component.vercel.app/logo.png" alt="Vue3 Select Component" height="256" width="256" />
   </a>
 </p>
 
+<h1 align="center">
+  Vue3-Select-Component
+</h1>
+
 <p align="center">
-  <b>Docs & demos</b>: <a href="https://vue3-select-component.vercel.app">vue3-select-component.vercel.app</a>
+  Best-in-class select component for Vue 3, with a focus on DX, accessibility and ease-of-use.
 </p>
 
-> Best-in-class select component for Vue 3, with a focus on DX, accessibility and ease-of-use.
+<p align="center">
+  <a href="https://www.npmjs.com/package/vue3-select-component" target="__blank">
+    <img src="https://img.shields.io/npm/v/vue3-select-component.svg?style=flat" alt="npm package" />
+  </a>
+
+  <a href="https://www.npmjs.com/package/vue3-select-component" target="__blank">
+    <img src="https://img.shields.io/npm/dm/vue3-select-component?style=flat" alt="npm package" />
+  </a>
+
+  <a href="https://github.com/TotomInc/vue3-select-component" target="__blank">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/TotomInc/vue3-select-component?flat">
+  </a>
+</p>
+
+<p align="center">
+ <a href="https://vue3-select-component.vercel.app/" target="__blank">Documentation</a> | <a href="https://vue3-select-component.vercel.app/getting-started.html" target="__blank">Getting Started</a> | <a href="https://vue3-select-component.vercel.app/demo/single-select.html" target="__blank">Examples / Demos</a>
+</p>
+
+**Core features:**
 
 - ⚙️ Data manipulation with `v-model`
-- 🔑 Type-safe
+- 🔑 [Typesafe relationship](https://vue3-select-component.vercel.app/typescript.html) between `options` and `v-model`
 - 🎨 Great styling out-of-the-box, customization with CSS variables & Vue `:deep`
-- ✅ Single & multi-select
-- 🖌️ Customization with `<slot>`s
-- 🪄 Teleport/portal menu
-- 📦 Extremely light (3.1kb gzip)
+- ✅ Single & multi-select support
+- 🖌️ Infinite customization with `<slot>`s
+- 🪄 `<Teleport />` menu where you want
+- 📦 Extremely light, **0 dependencies** (4.4kb gzip)
 
 ## Installation
 
@@ -56,7 +66,7 @@ const option = ref("");
       v-model="option"
       :options="[
         { label: 'A Wizard of Earthsea', value: 'wizard_earthsea' },
-        { label: 'Harry Potter and the Philosopher\'s Stone', value: 'harry_potter' },
+        { label: 'Harry Potter and the Philosopher\'s Stone', value: 'harry_potter', disabled: true },
         { label: 'The Lord of the Rings', value: 'the_lord_of_the_rings' },
       ]"
     />
@@ -95,6 +105,12 @@ const userOptions: UserOption[] = [
   />
 </template>
 ```
+
+[There's an entire documentation page](https://vue3-select-component.vercel.app/typescript.html) dedicated to usage with TypeScript.
+
+## Releases
+
+For changelog, visit [releases](https://github.com/TotomInc/vue3-select-component/releases).
 
 ## License
 

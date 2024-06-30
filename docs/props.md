@@ -34,6 +34,7 @@ A list of all possible options to choose from. Each option should have a `label`
 type Option<T> = {
   label: string;
   value: T;
+  disabled?: boolean;
 };
 ```
 
@@ -44,6 +45,16 @@ This type is exported from the component and can be imported in your application
 ::: info
 If you are using TypeScript, you can leverage proper type-safety between `option.value` & `v-model`. Read more about [TypeScript usage](/typescript).
 :::
+
+### option.disabled
+
+**Type**: `boolean`
+
+**Required**: `false`
+
+**Default**: `undefined`
+
+Whether the option should be disabled. When an option is disabled, it cannot be selected nor focused/navigated to using the keyboard. It also benefits from extra aria attributes to improve accessibility.
 
 ## displayedOptions
 

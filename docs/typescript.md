@@ -14,10 +14,11 @@ Generics allow you to define a type that can be used in multiple places with dif
 
 A common type you'll see is the `Option` type, which is used to define the options of the select component.
 
-```typescript
+```ts
 type Option<T> = {
   label: string;
   value: T;
+  disabled?: boolean;
 };
 ```
 

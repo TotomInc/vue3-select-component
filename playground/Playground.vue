@@ -22,6 +22,9 @@ const userOptions: UserOption[] = [
   { label: "Bob", value: 2, username: "bob" },
   { label: "Charlie", value: 3, username: "charlie" },
   { label: "David", value: 4, username: "david" },
+  { label: "John", value: 5, username: "john" },
+  { label: "Admin", value: 6, username: "admin" },
+  { label: "Root", value: 6, username: "root" },
 ];
 </script>
 

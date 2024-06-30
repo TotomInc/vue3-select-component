@@ -160,7 +160,7 @@ const selectedOptions = computed(() => {
 
 const openMenu = (options?: { focusInput?: boolean }) => {
   menuOpen.value = true;
-  focusedOption.value = 0;
+  focusedOption.value = props.options.findIndex((option) => !option.disabled);
 
   if (options?.focusInput && input.value) {
     input.value.focus();
@@ -173,6 +173,10 @@ const closeMenu = () => {
 };
 
 const setOption = (option: GenericOption) => {
+  if (option.disabled) {
+    return;
+  }
+
   if (props.isMulti) {
     (selected.value as OptionValue[]).push(option.value);
   }
@@ -220,18 +224,35 @@ const clear = () => {
 
 const handleNavigation = (e: KeyboardEvent) => {
   if (menuOpen.value) {
+    const currentIndex = focusedOption.value;
+
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      focusedOption.value = Math.min(focusedOption.value + 1, availableOptions.value.length - 1);
+
+      const nextOptionIndex = availableOptions.value.findIndex((option, i) => !option.disabled && i > currentIndex);
+      const firstOptionIndex = availableOptions.value.findIndex((option) => !option.disabled);
+
+      focusedOption.value = nextOptionIndex === -1 ? firstOptionIndex : nextOptionIndex;
     }
 
     if (e.key === "ArrowUp") {
       e.preventDefault();
-      focusedOption.value = Math.max(focusedOption.value - 1, 0);
+
+      const prevOptionIndex = availableOptions.value.reduce(
+        (acc, option, i) => (!option.disabled && i < currentIndex ? i : acc),
+        -1,
+      );
+
+      const lastOptionIndex = availableOptions.value.reduce(
+        (acc, option, i) => (!option.disabled ? i : acc),
+        -1,
+      );
+
+      focusedOption.value = prevOptionIndex === -1 ? lastOptionIndex : prevOptionIndex;
     }
 
     if (e.key === "Enter") {
-      const selectedOption = availableOptions.value[focusedOption.value];
+      const selectedOption = availableOptions.value[currentIndex];
 
       e.preventDefault();
 
@@ -242,7 +263,7 @@ const handleNavigation = (e: KeyboardEvent) => {
 
     // When pressing space with menu open but no search, select the focused option.
     if (e.code === "Space" && search.value.length === 0) {
-      const selectedOption = availableOptions.value[focusedOption.value];
+      const selectedOption = availableOptions.value[currentIndex];
 
       e.preventDefault();
 
@@ -456,6 +477,7 @@ onBeforeUnmount(() => {
           :index="i"
           :is-focused="focusedOption === i"
           :is-selected="option.value === selected"
+          :is-disabled="option.disabled || false"
           @select="setOption(option)"
         >
           <slot name="option" :option="option">
@@ -504,6 +526,8 @@ onBeforeUnmount(() => {
   --vs-option-hover-color: #dbeafe;
   --vs-option-focused-color: var(--vs-option-hover-color);
   --vs-option-selected-color: #93c5fd;
+  --vs-option-disabled-color: #f4f4f5;
+  --vs-option-disabled-text-color: #52525b;
 
   --vs-multi-value-gap: 4px;
   --vs-multi-value-padding: 4px;
@@ -710,6 +734,11 @@ onBeforeUnmount(() => {
 
   &.selected {
     background-color: var(--vs-option-selected-color);
+  }
+
+  &.disabled {
+    background-color: var(--vs-option-disabled-color);
+    color: var(--vs-option-disabled-text-color);
   }
 }
 

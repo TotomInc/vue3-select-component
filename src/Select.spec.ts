@@ -10,6 +10,25 @@ const options = [
   { label: "Germany", value: "DE" },
 ];
 
+async function openMenu(wrapper: ReturnType<typeof mount>, method: "mousedown" | "focus-space" = "mousedown") {
+  if (method === "mousedown") {
+    await wrapper.get("input").trigger("mousedown");
+  }
+  else {
+    await wrapper.get("input").trigger("focus");
+    await wrapper.get("input").trigger("keydown", { key: "Space" });
+  }
+}
+
+async function dispatchEvent(wrapper: ReturnType<typeof mount>, event: Event) {
+  document.dispatchEvent(event);
+  await wrapper.vm.$nextTick();
+};
+
+async function inputSearch(wrapper: ReturnType<typeof mount>, search: string) {
+  await wrapper.get("input").setValue(search);
+}
+
 it("should render the component", () => {
   const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
@@ -23,7 +42,7 @@ describe("input + menu interactions behavior", () => {
     expect(wrapper.find("input").attributes("placeholder"));
   });
 
-  it ("should not open the menu when focusing the input", async () => {
+  it("should not open the menu when focusing the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await wrapper.get("input").trigger("focus");
@@ -34,7 +53,7 @@ describe("input + menu interactions behavior", () => {
   it("should open the menu when triggering mousedown on the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });
@@ -42,8 +61,7 @@ describe("input + menu interactions behavior", () => {
   it("should open the menu when focusing the input and pressing space", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown", { key: "Space" });
+    await openMenu(wrapper, "focus-space");
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });
@@ -51,7 +69,10 @@ describe("input + menu interactions behavior", () => {
   it("should close the menu after focusing and pressing tab", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
     await wrapper.get("input").trigger("keydown", { key: "Tab" });
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
@@ -60,12 +81,11 @@ describe("input + menu interactions behavior", () => {
   it("should close the menu when clicking outside the menu", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
 
-    document.dispatchEvent(new MouseEvent("click"));
-    await wrapper.vm.$nextTick();
+    await dispatchEvent(wrapper, new MouseEvent("click"));
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
   });
@@ -77,10 +97,32 @@ describe("input + menu interactions behavior", () => {
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
 
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
-    await wrapper.vm.$nextTick();
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Escape" }));
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
+  });
+});
+
+describe("menu on-open focus option", async () => {
+  it("should focus the first option when opening the menu", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
+  });
+
+  it("should focus the first available available option when a disabled option is at the first index", async () => {
+    const options = [
+      { label: "Spain", value: "ES", disabled: true },
+      { label: "France", value: "FR" },
+    ];
+
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe("France");
   });
 });
 
@@ -88,15 +130,31 @@ describe("menu keyboard navigation", () => {
   it("should navigate through the options with the arrow keys", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
-
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
-    await wrapper.vm.$nextTick();
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
 
     expect(wrapper.get(".focused[role='option']").text()).toBe(options[1].label);
 
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp" }));
-    await wrapper.vm.$nextTick();
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowUp" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
+  });
+
+  it("should navigate through the options with the arrow keys and skip disabled options", async () => {
+    const options = [
+      { label: "France", value: "FR" },
+      { label: "Spain", value: "ES", disabled: true },
+      { label: "United Kingdom", value: "GB" },
+    ];
+
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[2].label);
+
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowUp" }));
 
     expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
   });
@@ -106,12 +164,12 @@ describe("menu filtering", () => {
   it("should filter the options when typing in the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
-    await wrapper.get("input").setValue("United");
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "United");
 
     expect(wrapper.findAll("div[role='option']").length).toBe(2);
 
-    await wrapper.get("input").setValue("United States");
+    await inputSearch(wrapper, "United States");
 
     expect(wrapper.findAll("div[role='option']").length).toBe(1);
   });
@@ -121,7 +179,7 @@ describe("single-select option", () => {
   it("should select an option when clicking on it", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
@@ -131,11 +189,18 @@ describe("single-select option", () => {
   it("should select an option when focusing and pressing enter", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown", { key: "Space" });
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
 
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
+    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
+  });
+
+  it("should select an option when pressing space", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
@@ -144,16 +209,14 @@ describe("single-select option", () => {
   it("should remove the selected option when pressing backspace without typing", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
 
     await wrapper.get("input").trigger("mousedown");
-
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Backspace" }));
-    await wrapper.vm.$nextTick();
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Backspace" }));
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value], [undefined]]);
     expect(wrapper.find(".single-value").exists()).toBe(false);
@@ -162,13 +225,13 @@ describe("single-select option", () => {
   it("should not remove the selected option when pressing backspace after typing", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
 
-    await wrapper.get("input").setValue("F");
+    await inputSearch(wrapper, "F");
     await wrapper.get("input").trigger("keydown", { key: "Backspace" });
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
@@ -178,13 +241,22 @@ describe("single-select option", () => {
   it("cannot select an option when there are no matching options", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").trigger("mousedown");
-    await wrapper.get("input").setValue("Foo");
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "Foo");
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
 
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
-    await wrapper.vm.$nextTick();
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+
+    expect(wrapper.emitted("update:modelValue")).toBeUndefined();
+  });
+
+  it("cannot select a disabled option", async () => {
+    const options = [{ label: "Spain", value: "ES", disabled: true }];
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
 
     expect(wrapper.emitted("update:modelValue")).toBeUndefined();
   });
@@ -194,7 +266,7 @@ describe("clear button", () => {
   it("should display the clear button when an option is selected", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
     expect(wrapper.find(".clear-button").exists()).toBe(true);
@@ -203,7 +275,7 @@ describe("clear button", () => {
   it("should clear the selected option when clicking on the clear button", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });
 
-    await wrapper.get("input").trigger("mousedown");
+    await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
     await wrapper.get(".clear-button").trigger("click");
 
@@ -216,7 +288,7 @@ describe("search emit", () => {
   it("should emit the search event when typing in the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").setValue("United");
+    await inputSearch(wrapper, "United");
 
     expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
   });
@@ -224,9 +296,8 @@ describe("search emit", () => {
   it("should emit an empty string for the search when the menu is closed", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    await wrapper.get("input").setValue("United");
-    document.dispatchEvent(new MouseEvent("click"));
-    await wrapper.vm.$nextTick();
+    await inputSearch(wrapper, "United");
+    await dispatchEvent(wrapper, new MouseEvent("click"));
 
     expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
   });
@@ -248,8 +319,8 @@ describe("component props", () => {
   it("should not filter menu options when isSearchable prop is set to false", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, isSearchable: false } });
 
-    await wrapper.get("input").trigger("mousedown");
-    await wrapper.get("input").setValue("United");
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "United");
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });

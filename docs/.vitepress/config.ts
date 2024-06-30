@@ -42,12 +42,13 @@ export default defineConfig({
         ],
       },
       {
-        text: "Demo",
+        text: "Demo links",
         items: [
           { text: "Single Select", link: "/demo/single-select" },
           { text: "Multiple Select", link: "/demo/multiple-select" },
           { text: "Custom Option Slot", link: "/demo/custom-option-slot" },
           { text: "Pre-Selected Values (single & multi)", link: "/demo/pre-selected-values" },
+          { text: "Disabled Options", link: "/demo/disabled-options" },
           { text: "With Menu Header", link: "/demo/with-menu-header" },
           { text: "With Complex Menu Filter", link: "/demo/with-complex-menu-filter.md" },
         ],
@@ -60,5 +61,7 @@ export default defineConfig({
     ],
 
     search: { provider: "local" },
+
+    outline: "deep",
   },
 });

@@ -269,6 +269,44 @@ describe("single-select option", () => {
   });
 });
 
+describe("multi-select options", () => {
+  it("should select an option when clicking on it", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(wrapper.props("modelValue")).toStrictEqual([options[0].value]);
+    expect(wrapper.get(".multi-value").element.textContent).toBe(options[0].label);
+  });
+
+  it("should display non-selected remaining options on the list", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll(".menu-option").length).toBe(options.length - 1);
+  });
+
+  it("should remove a selected option and be able to select it again", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll(".menu-option").length).toBe(options.length - 1);
+
+    await wrapper.get(".multi-value").trigger("click");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll(".menu-option").length).toBe(options.length);
+    expect(wrapper.findAll(".multi-value").length).toBe(0);
+  });
+});
+
 describe("clear button", () => {
   it("should display the clear button when an option is selected", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });

@@ -200,7 +200,14 @@ describe("single-select option", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await openMenu(wrapper);
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+
+    // Triggering space event with KeyboardEvent constructor is a bit tricky. Must be done like this:
+    const event = new KeyboardEvent("keydown", {});
+    Object.defineProperty(event, "code", { value: "Space" });
+    Object.defineProperty(event, "key", { value: " " });
+    document.dispatchEvent(event);
+
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);

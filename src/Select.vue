@@ -399,8 +399,7 @@ onBeforeUnmount(() => {
             class="multi-value"
             @click="removeOption(option)"
           >
-            {{ getMultiValueLabel(option) }}
-            <XMarkIcon />
+            {{ getMultiValueLabel(option) }}<XMarkIcon />
           </button>
         </template>
 

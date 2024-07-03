@@ -66,6 +66,14 @@ describe("input + menu interactions behavior", () => {
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });
 
+  it("should open the menu when clicking on the dropdown button", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await wrapper.get(".dropdown-icon").trigger("click");
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
   it("should close the menu after focusing and pressing tab", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
@@ -325,6 +333,17 @@ describe("clear button", () => {
     await wrapper.get(".clear-button").trigger("click");
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value], [undefined]]);
+    expect(wrapper.find(".clear-button").exists()).toBe(false);
+  });
+
+  it("should clear all selected options when clicking on the clear button with isMulti prop", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, isClearable: true } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await wrapper.get(".clear-button").trigger("click");
+
+    expect(wrapper.props("modelValue")).toStrictEqual([options[0].value]);
     expect(wrapper.find(".clear-button").exists()).toBe(false);
   });
 });

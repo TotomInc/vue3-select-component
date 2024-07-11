@@ -384,7 +384,7 @@ onBeforeUnmount(() => {
         <div
           v-if="!props.isMulti && selectedOptions[0]"
           class="single-value"
-          @click="openMenu({ focusInput: true })"
+          @click="!props.isDisabled ? openMenu({ focusInput: true }) : null"
         >
           <slot name="value" :option="selectedOptions[0]">
             {{ getOptionLabel(selectedOptions[0]) }}

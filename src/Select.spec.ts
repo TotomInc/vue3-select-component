@@ -10,13 +10,16 @@ const options = [
   { label: "Germany", value: "DE" },
 ];
 
-async function openMenu(wrapper: ReturnType<typeof mount>, method: "mousedown" | "focus-space" = "mousedown") {
+async function openMenu(wrapper: ReturnType<typeof mount>, method: "mousedown" | "focus-space" | "single-value" = "mousedown") {
   if (method === "mousedown") {
     await wrapper.get("input").trigger("mousedown");
   }
-  else {
+  else if (method === "focus-space") {
     await wrapper.get("input").trigger("focus");
     await wrapper.get("input").trigger("keydown", { key: "Space" });
+  }
+  else if (method === "single-value") {
+    await wrapper.get(".single-value").trigger("click");
   }
 }
 
@@ -72,6 +75,14 @@ describe("input + menu interactions behavior", () => {
     await wrapper.get(".dropdown-icon").trigger("click");
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should not open the menu when is-disabled and an option is selected", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: options[0].value, options, isDisabled: true } });
+
+    await openMenu(wrapper, "single-value");
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
   });
 
   it("should close the menu after focusing and pressing tab", async () => {

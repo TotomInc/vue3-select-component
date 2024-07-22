@@ -146,11 +146,14 @@ const availableOptions = computed(() => {
 });
 
 const selectedOptions = computed(() => {
-  if (props.isMulti) {
-    // We can safely assume it's an array due to the `isMulti` prop validation done earlier.
+  if (props.isMulti && Array.isArray(selected.value)) {
     return (selected.value as OptionValue[]).map(
       (value) => props.options.find((option) => option.value === value)!,
     );
+  }
+
+  if (props.isMulti && !Array.isArray(selected.value)) {
+    console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
   }
 
   const found = props.options.find((option) => option.value === selected.value);

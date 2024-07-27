@@ -47,7 +47,7 @@
     "@antfu/eslint-config": "2.23.2",
     "@tsconfig/node20": "20.1.4",
     "@types/node": "20.14.12",
-    "@vitejs/plugin-vue": "5.1.0",
+    "@vitejs/plugin-vue": "5.1.1",
     "@vitest/coverage-v8": "2.0.4",
     "@vue/test-utils": "2.4.6",
     "@vue/tsconfig": "0.5.1",

@@ -128,6 +128,7 @@ const availableOptions = computed(() => {
   const options = props.displayedOptions || props.options;
 
   // Remove already selected values from the list of options, when in multi-select mode.
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const filterMultiSelectedValues = (options: GenericOption[]) => options.filter(
     (option) => !(selected.value as OptionValue[]).includes(option.value),
   );

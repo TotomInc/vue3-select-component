@@ -536,8 +536,9 @@ onBeforeUnmount(() => {
   --vs-option-disabled-color: #f4f4f5;
   --vs-option-disabled-text-color: #52525b;
 
-  --vs-multi-value-gap: 4px;
+  --vs-multi-value-gap: 0px;
   --vs-multi-value-padding: 4px;
+  --vs-multi-value-margin: 4px 0px 4px 6px;
   --vs-multi-value-font-size: 14px;
   --vs-multi-value-font-weight: 400;
   --vs-multi-value-line-height: 1;
@@ -602,7 +603,6 @@ onBeforeUnmount(() => {
   align-items: center;
   flex-basis: 100%;
   flex-grow: 1;
-  padding: var(--vs-padding);
 
   &.multi {
     gap: var(--vs-multi-value-gap);
@@ -612,6 +612,7 @@ onBeforeUnmount(() => {
 .single-value {
   display: flex;
   align-items: center;
+  padding: var(--vs-padding);
   font-size: var(--vs-font-size);
   font-weight: var(--vs-font-weight);
   font-family: var(--vs-font-family);
@@ -626,7 +627,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: var(--vs-multi-value-gap);
   padding: var(--vs-multi-value-padding);
-  margin: 0;
+  margin: var(--vs-multi-value-margin);
   border: 0;
   font-size: var(--vs-multi-value-font-size);
   font-weight: var(--vs-multi-value-font-weight);
@@ -653,6 +654,7 @@ onBeforeUnmount(() => {
   padding: 0;
   border: 0;
   background: none;
+  padding: var(--vs-padding);
   font-size: var(--vs-font-size);
   font-family: var(--vs-font-family);
   line-height: var(--vs-line-height);

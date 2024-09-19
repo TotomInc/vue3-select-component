@@ -52,8 +52,9 @@ List of available CSS variables (pulled from the demo):
   --vs-option-disabled-color: #f4f4f5;
   --vs-option-disabled-text-color: #52525b;
 
-  --vs-multi-value-gap: 4px;
+  --vs-multi-value-gap: 0px;
   --vs-multi-value-padding: 4px;
+  --vs-multi-value-margin: 4px 0px 4px 6px;
   --vs-multi-value-font-size: 14px;
   --vs-multi-value-font-weight: 400;
   --vs-multi-value-line-height: 1;

@@ -454,7 +454,11 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <Teleport :to="teleport" :disabled="!teleport">
+    <Teleport
+      :to="teleport"
+      :disabled="!teleport"
+      :defer="true"
+    >
       <div
         v-if="menuOpen"
         ref="menu"

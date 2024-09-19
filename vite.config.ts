@@ -1,11 +1,11 @@
 /// <reference types="vitest" />
-import { URL, fileURLToPath } from "node:url";
+import { fileURLToPath, URL } from "node:url";
 
-import { type UserConfig, defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import vueDevtools from "vite-plugin-vue-devtools";
-import dts from "vite-plugin-dts";
+import { defineConfig, type UserConfig } from "vite";
 import cssInject from "vite-plugin-css-injected-by-js";
+import dts from "vite-plugin-dts";
+import vueDevtools from "vite-plugin-vue-devtools";
 
 const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 

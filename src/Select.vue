@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-
 import type { Option } from "./types";
+
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
 import XMarkIcon from "./icons/XMarkIcon.vue";
 import MenuOption from "./MenuOption.vue";
@@ -128,7 +128,7 @@ const availableOptions = computed(() => {
   const options = props.displayedOptions || props.options;
 
   // Remove already selected values from the list of options, when in multi-select mode.
-  // eslint-disable-next-line unicorn/consistent-function-scoping
+
   const filterMultiSelectedValues = (options: GenericOption[]) => options.filter(
     (option) => !(selected.value as OptionValue[]).includes(option.value),
   );

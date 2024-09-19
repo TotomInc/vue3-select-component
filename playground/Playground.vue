@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
-import VueSelect from "../src/Select.vue";
 import type { Option } from "../src/types";
+
+import { ref } from "vue";
+import VueSelect from "../src/Select.vue";
 
 type BookOption = Option<string>;
 type UserOption = Option<number> & { username: string };

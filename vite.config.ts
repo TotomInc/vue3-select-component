@@ -40,7 +40,9 @@ export default defineConfig((configEnv) => {
       ],
 
       build: {
-        target: "es2015",
+        // Official @vue/tsconfig compiles down to ES2020, let's do the same.
+        // See: https://github.com/vuejs/tsconfig/blob/main/tsconfig.dom.json
+        target: "es2020",
         lib: {
           name: "vue3-select-component",
           entry: resolve("./src/index.ts"),
@@ -59,7 +61,7 @@ export default defineConfig((configEnv) => {
     config.plugins!.push(vueDevtools());
   }
 
-  if (configEnv.mode.includes("playground")) {
+  if (configEnv.mode === "development:playground") {
     config.root = resolve("./playground");
   }
 

@@ -67,6 +67,9 @@ List of available CSS variables (pulled from the demo):
   --vs-icon-size: 20px;
   --vs-icon-color: var(--vs-text-color);
 
+  --vs-spinner-color: var(--vs-text-color);
+  --vs-spinner-size: 20px;
+
   --vs-dropdown-transition: transform 0.25s ease-out;
 }
 ```

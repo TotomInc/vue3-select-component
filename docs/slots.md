@@ -107,3 +107,23 @@ Customize the rendered HTML for the clear icon. Please note that the slot is pla
   </VueSelect>
 </template>
 ```
+
+## loading
+
+**Type**: `slotProps: {}`
+
+Customize the rendered HTML when the select component is in a loading state. By default, it displays a `<Spinner />` component.
+
+```vue
+<template>
+  <VueSelect
+    v-model="option"
+    :options="options"
+    :is-loading="true"
+  >
+    <template #loading>
+      <MyCustomLoadingComponent />
+    </template>
+  </VueSelect>
+</template>
+```

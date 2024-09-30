@@ -114,6 +114,14 @@ Whether the select should have a search input to filter the options.
 
 Whether the select should allow multiple selections. If `true`, the `v-model` should be an array of string `string[]`.
 
+## isLoading
+
+**Type**: `boolean`
+
+**Default**: `false`
+
+Whether the select should display a loading state. When `true`, the select will show a loading spinner or custom loading content provided via the `loading` slot.
+
 ## closeOnSelect
 
 **Type**: `boolean`

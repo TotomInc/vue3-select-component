@@ -7,8 +7,9 @@ import VueSelect from "../src/Select.vue";
 type BookOption = Option<string>;
 type UserOption = Option<number> & { username: string };
 
-const activeBook = ref<string>();
+const activeBook = ref<string | null>(null);
 const activeUsers = ref<number[]>([1, 3]);
+const isLoading = ref(false);
 
 const bookOptions: BookOption[] = [
   { label: "Alice's Adventures in Wonderland", value: "alice" },
@@ -35,6 +36,7 @@ const userOptions: UserOption[] = [
         v-model="activeBook"
         :options="bookOptions"
         :is-multi="false"
+        :is-loading="isLoading"
         placeholder="Pick a book"
       />
 
@@ -46,6 +48,7 @@ const userOptions: UserOption[] = [
         v-model="activeUsers"
         :options="userOptions"
         :is-multi="true"
+        :is-loading="isLoading"
         placeholder="Pick users"
       />
 

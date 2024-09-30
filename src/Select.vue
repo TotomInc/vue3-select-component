@@ -5,6 +5,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
 import XMarkIcon from "./icons/XMarkIcon.vue";
 import MenuOption from "./MenuOption.vue";
+import Spinner from "./Spinner.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -36,6 +37,11 @@ const props = withDefaults(
      * `v-model` directive when using this prop.
      */
     isMulti?: boolean;
+    /**
+     * When set to true, show a loading spinner inside the select component. This is useful
+     * when fetching the options asynchronously.
+     */
+    isLoading?: boolean;
     /**
      * When set to true, clear the search input when an option is selected.
      */
@@ -91,6 +97,7 @@ const props = withDefaults(
     isDisabled: false,
     isSearchable: true,
     isMulti: false,
+    isLoading: false,
     closeOnSelect: true,
     teleport: undefined,
     inputId: undefined,
@@ -428,7 +435,7 @@ onBeforeUnmount(() => {
 
       <div class="indicators-container">
         <button
-          v-if="selectedOptions.length > 0 && isClearable"
+          v-if="selectedOptions.length > 0 && isClearable && !isLoading"
           type="button"
           class="clear-button"
           tabindex="-1"
@@ -441,6 +448,7 @@ onBeforeUnmount(() => {
         </button>
 
         <button
+          v-if="!isLoading"
           type="button"
           class="dropdown-icon"
           tabindex="-1"
@@ -451,6 +459,10 @@ onBeforeUnmount(() => {
             <ChevronDownIcon />
           </slot>
         </button>
+
+        <slot name="loading">
+          <Spinner v-if="isLoading" />
+        </slot>
       </div>
     </div>
 
@@ -550,6 +562,9 @@ onBeforeUnmount(() => {
   --vs-indicators-gap: 4px;
   --vs-icon-size: 20px;
   --vs-icon-color: var(--vs-text-color);
+
+  --vs-spinner-color: var(--vs-text-color);
+  --vs-spinner-size: 20px;
 
   --vs-dropdown-transition: transform 0.25s ease-out;
 }

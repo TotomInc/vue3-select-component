@@ -50,7 +50,14 @@ const userOptions: UserOption[] = [
         :is-multi="true"
         :is-loading="isLoading"
         placeholder="Pick users"
-      />
+      >
+        <template #tag="{ option }">
+          <span class="custom-tags">
+            {{ option.label }}
+            <span class="custom-x-mark" @click="removeOption">&times;</span>
+          </span>
+        </template>
+      </VueSelect>
 
       <p class="selected-value">
         Selected user value: {{ activeUsers || "none" }}
@@ -88,6 +95,21 @@ body {
       font-size: 14px;
       font-weight: 500;
       font-family: "IBM Plex Mono", monospace;
+    }
+
+    .custom-tags {
+      background-color: #e0f7fa;
+      padding: 5px 10px;
+      margin: 3px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .custom-x-mark {
+      cursor: pointer;
+      margin-left: 8px;
+      color: #00796b;
     }
   }
 }

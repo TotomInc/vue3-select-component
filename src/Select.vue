@@ -402,17 +402,25 @@ onBeforeUnmount(() => {
           </slot>
         </div>
 
-        <template v-if="props.isMulti && selectedOptions.length">
-          <button
+        <div
+          v-if="props.isMulti && selectedOptions.length"
+          class="multi-value-container"
+        >
+          <div
             v-for="(option, i) in selectedOptions"
             :key="i"
-            type="button"
-            class="multi-value"
             @click="removeOption(option)"
           >
-            {{ getMultiValueLabel(option) }}<XMarkIcon />
-          </button>
-        </template>
+            <slot
+              name="tag"
+              :option="option"
+              :remove-option="() => removeOption(option)"
+            >
+              <span class="multi-value">
+                {{ getMultiValueLabel(option) }}<XMarkIcon /></span>
+            </slot>
+          </div>
+        </div>
 
         <input
           :id="inputId"
@@ -634,6 +642,12 @@ onBeforeUnmount(() => {
   line-height: var(--vs-line-height);
   color: var(--vs-text-color);
   z-index: 0;
+}
+
+.multi-value-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--vs-multi-value-gap);
 }
 
 .multi-value {

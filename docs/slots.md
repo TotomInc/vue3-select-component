@@ -42,6 +42,23 @@ Customize the rendered HTML if a selected option (inside the select control). Yo
 </template>
 ```
 
+## tag
+
+**Type**: `slotProps: { option: Option, removeOption: () => void }`
+
+Customize the rendered HTML for a tag representing a selected option in multi-select mode (when `isMulti` is true). You can use the slot props to retrieve the current selected option and a function to remove the option from the selection.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #tag="{ option }">
+      My value is: {{ option.value }}
+      <span @click="removeOption">X</span>
+    </template>
+  </VueSelect>
+</template>
+```
+
 ## menu-header
 
 **Type**: `slotProps: {}`

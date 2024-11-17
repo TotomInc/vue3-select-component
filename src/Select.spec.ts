@@ -120,6 +120,18 @@ describe("input + menu interactions behavior", () => {
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
   });
+
+  it("should close the menu when clicking on the dropdown button", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
+    await wrapper.get(".dropdown-icon").trigger("click");
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+  });
 });
 
 describe("menu on-open focus option", async () => {

@@ -183,6 +183,15 @@ const closeMenu = () => {
   search.value = "";
 };
 
+const toggleMenu = () => {
+  if (menuOpen.value) {
+    closeMenu();
+  }
+  else {
+    openMenu();
+  }
+};
+
 const setOption = (option: GenericOption) => {
   if (option.disabled) {
     return;
@@ -453,7 +462,7 @@ onBeforeUnmount(() => {
           class="dropdown-icon"
           tabindex="-1"
           :disabled="isDisabled"
-          @click="openMenu({ focusInput: true })"
+          @click="toggleMenu"
         >
           <slot name="dropdown">
             <ChevronDownIcon />

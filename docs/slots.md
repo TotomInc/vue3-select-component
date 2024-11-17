@@ -14,7 +14,7 @@ If you are not familiar with Vue's slots, you can read more about them [here](ht
 
 **Type**: `slotProps: { option: Option }`
 
-Customize the rendered HTML of an option inside the menu. You can use the slot props to retrieve the current menu option that will be rendered.
+Customize the rendered template of an option inside the menu. You can use the slot props to retrieve the current menu option that will be rendered.
 
 ```vue
 <template>
@@ -30,7 +30,7 @@ Customize the rendered HTML of an option inside the menu. You can use the slot p
 
 **Type**: `slotProps: { option: Option }`
 
-Customize the rendered HTML if a selected option (inside the select control). You can use the slot props to retrieve the current selected option.
+Customize the rendered template if a selected option (inside the select control). You can use the slot props to retrieve the current selected option.
 
 ```vue
 <template>
@@ -42,11 +42,31 @@ Customize the rendered HTML if a selected option (inside the select control). Yo
 </template>
 ```
 
+## tag
+
+**Type**: `slotProps: { option: Option, removeOption: () => void }`
+
+When using `isMulti` prop, customize the rendered template of a selected option. You can use the slot props to retrieve the current selected option and a function to remove it.
+
+```vue
+<template>
+  <VueSelect
+    v-model="option"
+    :options="options"
+    :is-multi="true"
+  >
+    <template #tag="{ option, removeOption }">
+      <span>{{ option.label }} <button type="button" @click="removeOption">&times;</button></span>
+    </template>
+  </VueSelect>
+</template>
+```
+
 ## menu-header
 
 **Type**: `slotProps: {}`
 
-Customize the rendered HTML for the menu header. This slot is placed **before** the options.
+Customize the rendered template for the menu header. This slot is placed **before** the options.
 
 ```vue
 <template>
@@ -64,7 +84,7 @@ Customize the rendered HTML for the menu header. This slot is placed **before** 
 
 **Type**: `slotProps: {}`
 
-Customize the rendered HTML when there are no options matching the search, inside the menu.
+Customize the rendered template when there are no options matching the search, inside the menu.
 
 ```vue
 <template>
@@ -80,7 +100,7 @@ Customize the rendered HTML when there are no options matching the search, insid
 
 **Type**: `slotProps: {}`
 
-Customize the rendered HTML for the dropdown icon. Please note that the slot is placed **inside the button**, so you don't have to deal with attaching event-listeners.
+Customize the rendered template for the dropdown icon. Please note that the slot is placed **inside the button**, so you don't have to deal with attaching event-listeners.
 
 ```vue
 <template>
@@ -96,7 +116,7 @@ Customize the rendered HTML for the dropdown icon. Please note that the slot is 
 
 **Type**: `slotProps: {}`
 
-Customize the rendered HTML for the clear icon. Please note that the slot is placed **inside the button**, so you don't have to deal with attaching event-listeners.
+Customize the rendered template for the clear icon. Please note that the slot is placed **inside the button**, so you don't have to deal with attaching event-listeners.
 
 ```vue
 <template>
@@ -112,7 +132,7 @@ Customize the rendered HTML for the clear icon. Please note that the slot is pla
 
 **Type**: `slotProps: {}`
 
-Customize the rendered HTML when the select component is in a loading state. By default, it displays a `<Spinner />` component.
+Customize the rendered template when the select component is in a loading state. By default, it displays a `<Spinner />` component.
 
 ```vue
 <template>

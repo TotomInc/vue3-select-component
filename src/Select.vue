@@ -43,6 +43,11 @@ const props = withDefaults(
      */
     isLoading?: boolean;
     /**
+     * When set to true, focus the first option when the menu is opened.
+     * When set to false, no option will be focused.
+     */
+    shouldAutofocusOption?: boolean;
+    /**
      * When set to true, clear the search input when an option is selected.
      */
     closeOnSelect?: boolean;
@@ -98,6 +103,7 @@ const props = withDefaults(
     isSearchable: true,
     isMulti: false,
     isLoading: false,
+    shouldAutofocusOption: true,
     closeOnSelect: true,
     teleport: undefined,
     inputId: undefined,
@@ -171,7 +177,10 @@ const selectedOptions = computed(() => {
 
 const openMenu = (options?: { focusInput?: boolean }) => {
   menuOpen.value = true;
-  focusedOption.value = props.options.findIndex((option) => !option.disabled);
+
+  if (props.shouldAutofocusOption) {
+    focusedOption.value = props.options.findIndex((option) => !option.disabled);
+  }
 
   if (options?.focusInput && input.value) {
     input.value.focus();

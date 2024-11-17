@@ -122,6 +122,14 @@ Whether the select should allow multiple selections. If `true`, the `v-model` sh
 
 Whether the select should display a loading state. When `true`, the select will show a loading spinner or custom loading content provided via the `loading` slot.
 
+## shouldAutofocusOption
+
+**Type**: `boolean`
+
+**Default**: `true`
+
+Whether the first option should be focused when the dropdown is opened. If set to `false`, the first option will not be focused, and the user will have to navigate through the options using the keyboard.
+
 ## closeOnSelect
 
 **Type**: `boolean`

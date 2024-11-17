@@ -298,6 +298,14 @@ describe("single-select option", () => {
 
     expect(wrapper.emitted("update:modelValue")).toBeUndefined();
   });
+
+  it("should autofocus the first option when opening the menu, by default", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
+  });
 });
 
 describe("multi-select options", () => {
@@ -335,6 +343,14 @@ describe("multi-select options", () => {
 
     expect(wrapper.findAll(".menu-option").length).toBe(options.length);
     expect(wrapper.findAll(".multi-value").length).toBe(0);
+  });
+
+  it("should autofocus the first option when opening the menu, by default", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
   });
 });
 
@@ -410,5 +426,13 @@ describe("component props", () => {
     await inputSearch(wrapper, "United");
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should not autofocus an option when passing the autofocus prop", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, shouldAutofocusOption: false } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll(".focused[role='option']")).toHaveLength(0);
   });
 });

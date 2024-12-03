@@ -17,6 +17,6 @@
       ]
     }
   ],
-  "ignoreDeps": ["eslint"],
+  "ignoreDeps": ["eslint", "typescript"],
   "separateMajorMinor": false
 }

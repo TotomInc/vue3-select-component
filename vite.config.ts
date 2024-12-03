@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { fileURLToPath, URL } from "node:url";
 
 import vue from "@vitejs/plugin-vue";
@@ -9,24 +8,12 @@ import vueDevtools from "vite-plugin-vue-devtools";
 
 const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
-// https://vitejs.dev/config/
 export default defineConfig((configEnv) => {
   // Default config shared config by all modes.
   const config: UserConfig = {
     plugins: [vue()],
     resolve: { alias: { "@": resolve("./src") } },
   };
-
-  // When running vitest, add the test config.
-  if (configEnv.mode === "test") {
-    config.test = {
-      environment: "happy-dom",
-      coverage: {
-        provider: "v8",
-        include: ["src/**/*.vue", "src/**/*.ts"],
-      },
-    };
-  }
 
   // Build library when in production mode (npm run build).
   if (configEnv.mode === "production") {

@@ -52,7 +52,7 @@
     "@vue/test-utils": "2.4.6",
     "@vue/tsconfig": "0.7.0",
     "autoprefixer": "10.4.20",
-    "bumpp": "9.9.0",
+    "bumpp": "9.9.1",
     "eslint": "9.16.0",
     "happy-dom": "15.11.7",
     "npm-run-all2": "7.0.1",

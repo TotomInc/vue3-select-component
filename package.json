@@ -46,7 +46,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "3.12.1",
     "@tsconfig/node22": "22.0.0",
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.3",
     "@vitejs/plugin-vue": "5.2.1",
     "@vitest/coverage-v8": "2.1.8",
     "@vue/test-utils": "2.4.6",
@@ -54,7 +54,7 @@
     "autoprefixer": "10.4.20",
     "bumpp": "9.9.2",
     "eslint": "9.16.0",
-    "happy-dom": "16.2.6",
+    "happy-dom": "16.2.9",
     "npm-run-all2": "7.0.2",
     "postcss": "8.4.49",
     "sass": "1.83.0",

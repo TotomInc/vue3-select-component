@@ -54,7 +54,7 @@
     "autoprefixer": "10.4.20",
     "bumpp": "10.0.1",
     "eslint": "9.16.0",
-    "happy-dom": "16.7.2",
+    "happy-dom": "16.7.3",
     "npm-run-all2": "7.0.2",
     "postcss": "8.5.1",
     "sass": "1.83.4",

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "lib": ["ESNext", "DOM", "ES2024.Object"],
 
     "paths": {
       "@/*": ["./src/*"]

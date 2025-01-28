@@ -2,7 +2,7 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "ES2024.Object"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "paths": {

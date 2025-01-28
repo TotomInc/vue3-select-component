@@ -12,10 +12,10 @@ const activeUsers = ref<number[]>([1, 3]);
 const isLoading = ref(false);
 
 const bookOptions: BookOption[] = [
-  { label: "Alice's Adventures in Wonderland", value: "alice" },
-  { label: "A Wizard of Earthsea", value: "wizard" },
-  { label: "Harry Potter and the Philosopher's Stone", value: "harry_potter_1" },
-  { label: "Harry Potter and the Chamber of Secrets", value: "harry_potter_2" },
+  { label: "Alice's Adventures in Wonderland", value: "alice", groupName: "Group 1" },
+  { label: "A Wizard of Earthsea", value: "wizard", groupName: "Group 2" },
+  { label: "Harry Potter and the Philosopher's Stone", value: "harry_potter_1", groupName: "Group 1" },
+  { label: "Harry Potter and the Chamber of Secrets", value: "harry_potter_2", groupName: "Group 2" },
 ];
 
 const userOptions: UserOption[] = [
@@ -32,8 +32,22 @@ const userOptions: UserOption[] = [
 <template>
   <div class="container">
     <form class="form-container" @submit.prevent="null">
+      
+      <p>Non-grouped:</p>
+
       <VueSelect
         v-model="activeBook"
+        :options="bookOptions"
+        :is-multi="false"
+        :is-loading="isLoading"
+        placeholder="Pick a book"
+      />
+
+      <p>Grouped:</p>
+
+      <VueSelect
+        v-model="activeBook"
+        :isGrouped="true"
         :options="bookOptions"
         :is-multi="false"
         :is-loading="isLoading"

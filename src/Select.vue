@@ -28,6 +28,10 @@ const props = withDefaults(
      */
     isDisabled?: boolean;
     /**
+     * When set to true, the options will be grouped by the groupName field which will be displayed as a header above the group.
+     */
+    isGrouped?: boolean;
+    /**
      * When set to true, allow the user to filter the options by typing in the search input.
      */
     isSearchable?: boolean;
@@ -158,6 +162,23 @@ const availableOptions = computed(() => {
 
   return props.isMulti ? filterMultiSelectedValues(options) : options;
 });
+
+// To return true, grouping needs to be enabled at the Select.vue level AND at least one available option needs to have groupName set:
+const isGroupingInUse = computed(() => props.isGrouped && availableOptions.value.some(o => !!o.groupName))
+
+const availableOptionsGrouped = computed(() => {
+  if (!isGroupingInUse.value) {
+    return [{
+      groupName: 'default',
+      options: availableOptions.value
+    }]
+  }
+  const grouped = Object.groupBy(availableOptions.value, o => o.groupName || 'default')
+  return Object.keys(grouped).map(groupName => ({
+    groupName,
+    options: grouped[groupName]
+  }))
+})
 
 const selectedOptions = computed(() => {
   if (props.isMulti && Array.isArray(selected.value)) {
@@ -513,23 +534,26 @@ onBeforeUnmount(() => {
       >
         <slot name="menu-header" />
 
-        <MenuOption
-          v-for="(option, i) in availableOptions"
-          :key="i"
-          type="button"
-          class="menu-option"
-          :class="{ focused: focusedOption === i, selected: option.value === selected }"
-          :menu="menu"
-          :index="i"
-          :is-focused="focusedOption === i"
-          :is-selected="option.value === selected"
-          :is-disabled="option.disabled || false"
-          @select="setOption(option)"
-        >
-          <slot name="option" :option="option">
-            {{ getOptionLabel(option) }}
-          </slot>
-        </MenuOption>
+        <template v-for="grouped in availableOptionsGrouped" :key="grouped.groupName">
+          <div v-if="isGroupingInUse" class="groupName" v-html="grouped.groupName" />
+          <MenuOption
+            v-for="(option, i) in grouped.options"
+            :key="i"
+            type="button"
+            class="menu-option"
+            :class="{ focused: focusedOption === i, selected: option.value === selected }"
+            :menu="menu"
+            :index="i"
+            :is-focused="focusedOption === i"
+            :is-selected="option.value === selected"
+            :is-disabled="option.disabled || false"
+            @select="setOption(option)"
+          >
+            <slot name="option" :option="option">
+              {{ getOptionLabel(option) }}
+            </slot>
+          </MenuOption>
+        </template>
 
         <div v-if="availableOptions.length === 0" class="no-results">
           <slot name="no-options">
@@ -798,5 +822,10 @@ onBeforeUnmount(() => {
   font-size: var(--vs-font-size);
   font-family: var(--vs-font-family);
   color: var(--vs-text-color);
+}
+
+.groupName {
+  font-weight: bold;
+  padding: var(--vs-option-padding);
 }
 </style>

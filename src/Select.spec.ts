@@ -1,6 +1,7 @@
+import type { Option } from "./types";
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
 
+import { describe, expect, it } from "vitest";
 import VueSelect from "./Select.vue";
 
 const options = [
@@ -407,6 +408,51 @@ describe("search emit", () => {
 });
 
 describe("component props", () => {
+  it("should use getOptionValue prop to get custom option value", async () => {
+    const options = [
+      { id: "Admin", key: "admin" },
+      { id: "User", key: "user" },
+    ];
+
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options: options as unknown as Option<string>[],
+        getOptionValue: (option: any) => option.key,
+      },
+    });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([["admin"]]);
+  });
+
+  it("should use getOptionLabel prop to display custom option label", async () => {
+    const options = [
+      { id: "Admin", key: "admin" },
+      { id: "User", key: "user" },
+    ];
+
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options: options as unknown as Option<string>[],
+        getOptionLabel: (option: any) => option.id,
+      },
+    });
+
+    await openMenu(wrapper);
+
+    const optionElements = wrapper.findAll("div[role='option']");
+    expect(optionElements[0].text()).toBe("Admin");
+    expect(optionElements[1].text()).toBe("User");
+
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(wrapper.get(".single-value").text()).toBe("Admin");
+  });
+
   it("should display the placeholder in the input when no option is selected", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, placeholder: "Pick an option" } });
 

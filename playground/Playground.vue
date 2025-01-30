@@ -9,6 +9,7 @@ type UserOption = Option<number> & { username: string };
 
 const activeBook = ref<string | null>(null);
 const activeUsers = ref<number[]>([1, 3]);
+const activeRole = ref<string | null>(null);
 const isLoading = ref(false);
 
 const bookOptions: BookOption[] = [
@@ -26,6 +27,12 @@ const userOptions: UserOption[] = [
   { label: "John", value: 5, username: "john" },
   { label: "Admin", value: 6, username: "admin" },
   { label: "Root", value: 6, username: "root" },
+];
+
+const roleOptions = [
+  { id: "Admin", key: "admin" },
+  { id: "User", key: "user" },
+  { id: "Guest", key: "guest" },
 ];
 </script>
 
@@ -54,6 +61,19 @@ const userOptions: UserOption[] = [
 
       <p class="selected-value">
         Selected user value: {{ activeUsers || "none" }}
+      </p>
+
+      <VueSelect
+        v-model="activeRole"
+        :options="(roleOptions as unknown as Option<string>[])"
+        :is-multi="false"
+        :get-option-label="option => (option.id as string)"
+        :get-option-value="option => (option.key as string)"
+        placeholder="Pick a role"
+      />
+
+      <p class="selected-value">
+        Selected role value: {{ activeRole || "none" }}
       </p>
     </form>
   </div>

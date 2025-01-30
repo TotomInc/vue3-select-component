@@ -380,6 +380,7 @@ watch(
       menuOpen.value = newValue;
     }
   },
+  { immediate: true },
 );
 
 onMounted(() => {

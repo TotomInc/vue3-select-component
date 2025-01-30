@@ -328,26 +328,14 @@ const handleNavigation = (e: KeyboardEvent) => {
   }
 };
 
-/**
- * When pressing space inside the input, open the menu only if the search is
- * empty. Otherwise, the user is typing and we should skip this action.
- *
- * @param e KeyboardEvent
- */
-const handleInputSpace = (e: KeyboardEvent) => {
-  if (!menuOpen.value && search.value.length === 0) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    openMenu();
-  }
-};
-
 const handleInputKeydown = (e: KeyboardEvent) => {
   if (e.key === "Tab") {
     closeMenu();
   }
-  else if (e.key === "Space") {
-    handleInputSpace(e);
+  else if (e.code === "Space" && !menuOpen.value && search.value.length === 0) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openMenu();
   }
 };
 

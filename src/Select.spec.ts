@@ -17,7 +17,7 @@ async function openMenu(wrapper: ReturnType<typeof mount>, method: "mousedown" |
   }
   else if (method === "focus-space") {
     await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown", { key: "Space" });
+    await wrapper.get("input").trigger("keydown", { code: "Space" });
   }
   else if (method === "single-value") {
     await wrapper.get(".single-value").trigger("click");

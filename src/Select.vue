@@ -43,6 +43,10 @@ const props = withDefaults(
      */
     isLoading?: boolean;
     /**
+     * Control the menu open state programmatically.
+     */
+    isMenuOpen?: boolean;
+    /**
      * When set to true, focus the first option when the menu is opened.
      * When set to false, no option will be focused.
      */
@@ -98,6 +102,7 @@ const props = withDefaults(
     isSearchable: true,
     isMulti: false,
     isLoading: false,
+    isMenuOpen: undefined,
     shouldAutofocusOption: true,
     closeOnSelect: true,
     teleport: undefined,
@@ -112,6 +117,8 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: "optionSelected", option: GenericOption): void;
   (e: "optionDeselected", option: GenericOption | null): void;
+  (e: "menuOpened"): void;
+  (e: "menuClosed"): void;
   (e: "search", value: string): void;
 }>();
 
@@ -185,11 +192,14 @@ const openMenu = (options?: { focusInput?: boolean }) => {
   if (options?.focusInput && input.value) {
     input.value.focus();
   }
+
+  emit("menuOpened");
 };
 
 const closeMenu = () => {
   menuOpen.value = false;
   search.value = "";
+  emit("menuClosed");
 };
 
 const toggleMenu = () => {
@@ -218,7 +228,7 @@ const setOption = (option: GenericOption) => {
   search.value = "";
 
   if (props.closeOnSelect) {
-    menuOpen.value = false;
+    closeMenu();
   }
 
   if (input.value) {
@@ -243,8 +253,7 @@ const clear = () => {
     emit("optionDeselected", selectedOptions.value[0]);
   }
 
-  menuOpen.value = false;
-  search.value = "";
+  closeMenu();
 
   if (input.value) {
     input.value.blur();
@@ -303,8 +312,7 @@ const handleNavigation = (e: KeyboardEvent) => {
 
     if (e.key === "Escape") {
       e.preventDefault();
-      menuOpen.value = false;
-      search.value = "";
+      closeMenu();
     }
 
     const hasSelectedValue = props.isMulti ? (selected.value as OptionValue[]).length > 0 : !!selected.value;
@@ -323,33 +331,20 @@ const handleNavigation = (e: KeyboardEvent) => {
   }
 };
 
-/**
- * When pressing space inside the input, open the menu only if the search is
- * empty. Otherwise, the user is typing and we should skip this action.
- *
- * @param e KeyboardEvent
- */
-const handleInputSpace = (e: KeyboardEvent) => {
-  if (!menuOpen.value && search.value.length === 0) {
+const handleInputKeydown = (e: KeyboardEvent) => {
+  if (e.key === "Tab") {
+    closeMenu();
+  }
+  else if (e.code === "Space" && !menuOpen.value && search.value.length === 0) {
     e.preventDefault();
     e.stopImmediatePropagation();
     openMenu();
   }
 };
 
-const handleInputKeydown = (e: KeyboardEvent) => {
-  if (e.key === "Tab") {
-    closeMenu();
-  }
-  else if (e.key === "Space") {
-    handleInputSpace(e);
-  }
-};
-
 const handleClickOutside = (event: MouseEvent) => {
   if (container.value && !container.value.contains(event.target as Node)) {
-    menuOpen.value = false;
-    search.value = "";
+    closeMenu();
   }
 };
 
@@ -380,13 +375,26 @@ watch(
   },
 );
 
+watch(
+  () => props.isMenuOpen,
+  (newValue) => {
+    if (newValue) {
+      openMenu({ focusInput: true });
+    }
+    else {
+      closeMenu();
+    }
+  },
+  { immediate: true },
+);
+
 onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
+  document.addEventListener("mousedown", handleClickOutside);
   document.addEventListener("keydown", handleNavigation);
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener("click", handleClickOutside);
+  document.removeEventListener("mousedown", handleClickOutside);
   document.removeEventListener("keydown", handleNavigation);
 });
 </script>

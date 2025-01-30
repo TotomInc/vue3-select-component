@@ -53,6 +53,7 @@ export default defineConfig({
           { text: "Disabled options", link: "/demo/disabled-options" },
           { text: "With menu-header", link: "/demo/with-menu-header" },
           { text: "With complex menu filter", link: "/demo/with-complex-menu-filter.md" },
+          { text: "Controlled Menu", link: "/demo/controlled-menu" },
         ],
       },
     ],

@@ -65,3 +65,31 @@ Search value is cleared when the menu is closed. This will trigger an empty stri
   />
 </template>
 ```
+
+## `@menu-opened`
+
+Emitted when the menu is opened.
+
+```vue
+<template>
+  <VueSelect
+    v-model="selectedValue"
+    :options="options"
+    @menu-opened="() => console.log('menu opened')"
+  />
+</template>
+```
+
+## `@menu-closed`
+
+Emitted when the menu is closed.
+
+```vue
+<template>
+  <VueSelect
+    v-model="selectedValue"
+    :options="options"
+    @menu-closed="() => console.log('menu closed')"
+  />
+</template>
+```

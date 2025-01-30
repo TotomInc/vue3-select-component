@@ -105,7 +105,7 @@ describe("input + menu interactions behavior", () => {
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
 
-    await dispatchEvent(wrapper, new MouseEvent("click"));
+    await dispatchEvent(wrapper, new MouseEvent("mousedown"));
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
   });
@@ -417,7 +417,7 @@ describe("search emit", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await inputSearch(wrapper, "United");
-    await dispatchEvent(wrapper, new MouseEvent("click"));
+    await dispatchEvent(wrapper, new MouseEvent("mousedown"));
 
     expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
   });

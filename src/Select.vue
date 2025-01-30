@@ -117,6 +117,8 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: "optionSelected", option: GenericOption): void;
   (e: "optionDeselected", option: GenericOption | null): void;
+  (e: "menuOpened"): void;
+  (e: "menuClosed"): void;
   (e: "search", value: string): void;
 }>();
 
@@ -190,11 +192,14 @@ const openMenu = (options?: { focusInput?: boolean }) => {
   if (options?.focusInput && input.value) {
     input.value.focus();
   }
+
+  emit("menuOpened");
 };
 
 const closeMenu = () => {
   menuOpen.value = false;
   search.value = "";
+  emit("menuClosed");
 };
 
 const toggleMenu = () => {
@@ -223,7 +228,7 @@ const setOption = (option: GenericOption) => {
   search.value = "";
 
   if (props.closeOnSelect) {
-    menuOpen.value = false;
+    closeMenu();
   }
 
   if (input.value) {
@@ -248,8 +253,7 @@ const clear = () => {
     emit("optionDeselected", selectedOptions.value[0]);
   }
 
-  menuOpen.value = false;
-  search.value = "";
+  closeMenu();
 
   if (input.value) {
     input.value.blur();
@@ -308,8 +312,7 @@ const handleNavigation = (e: KeyboardEvent) => {
 
     if (e.key === "Escape") {
       e.preventDefault();
-      menuOpen.value = false;
-      search.value = "";
+      closeMenu();
     }
 
     const hasSelectedValue = props.isMulti ? (selected.value as OptionValue[]).length > 0 : !!selected.value;
@@ -341,8 +344,7 @@ const handleInputKeydown = (e: KeyboardEvent) => {
 
 const handleClickOutside = (event: MouseEvent) => {
   if (container.value && !container.value.contains(event.target as Node)) {
-    menuOpen.value = false;
-    search.value = "";
+    closeMenu();
   }
 };
 
@@ -376,20 +378,23 @@ watch(
 watch(
   () => props.isMenuOpen,
   (newValue) => {
-    if (newValue !== undefined) {
-      menuOpen.value = newValue;
+    if (newValue) {
+      openMenu({ focusInput: true });
+    }
+    else {
+      closeMenu();
     }
   },
   { immediate: true },
 );
 
 onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
+  document.addEventListener("mousedown", handleClickOutside);
   document.addEventListener("keydown", handleNavigation);
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener("click", handleClickOutside);
+  document.removeEventListener("mousedown", handleClickOutside);
   document.removeEventListener("keydown", handleNavigation);
 });
 </script>

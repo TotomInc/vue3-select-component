@@ -133,6 +133,22 @@ describe("input + menu interactions behavior", () => {
 
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
   });
+
+  it("should open the menu when isMenuOpen prop is set to true", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isMenuOpen: true } });
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should close the menu when isMenuOpen prop is set to false", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isMenuOpen: true } });
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
+    await wrapper.setProps({ isMenuOpen: false });
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+  });
 });
 
 describe("menu on-open focus option", async () => {

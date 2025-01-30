@@ -43,6 +43,10 @@ const props = withDefaults(
      */
     isLoading?: boolean;
     /**
+     * Control the menu open state programmatically.
+     */
+    isMenuOpen?: boolean;
+    /**
      * When set to true, focus the first option when the menu is opened.
      * When set to false, no option will be focused.
      */
@@ -98,6 +102,7 @@ const props = withDefaults(
     isSearchable: true,
     isMulti: false,
     isLoading: false,
+    isMenuOpen: undefined,
     shouldAutofocusOption: true,
     closeOnSelect: true,
     teleport: undefined,
@@ -376,6 +381,15 @@ watch(
     // When starting to type, open the menu automatically.
     if (search.value && !menuOpen.value) {
       openMenu();
+    }
+  },
+);
+
+watch(
+  () => props.isMenuOpen,
+  (newValue) => {
+    if (newValue !== undefined) {
+      menuOpen.value = newValue;
     }
   },
 );

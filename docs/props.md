@@ -226,6 +226,10 @@ Resolves option data to a string to compare options and specify value attributes
 
 This function can be used if you don't want to use the standard `option.value` as the value of the option.
 
-::: warning
-If you are using TypeScript, TODO.
-:::
+## isMenuOpen
+
+**Type**: `boolean`
+
+**Default**: `undefined`
+
+A prop to control the menu open state programmatically. When set to `true`, the menu will be open. When set to `false`, the menu will be closed.

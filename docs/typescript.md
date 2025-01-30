@@ -6,13 +6,13 @@ title: 'TypeScript'
 
 In order to provide flexibility with TypeScript, Vue 3 Select Component has been written in TypeScript. This means that you can take advantage of TypeScript's type checking and autocompletion features.
 
-## About generics in TypeScript & Vue
+## Generics with Vue & TypeScript
 
 Vue 3 Select Component uses a feature that has been released on Vue 3.3 called [**Generics**](https://vuejs.org/api/sfc-script-setup.html#generics).
 
 Generics allow you to define a type that can be used in multiple places with different types. This is useful when you want to create a component that can be used with different types of data.
 
-A common type you'll see is the `Option` type, which is used to define the options of the select component.
+A common type taking use of the Vue Generic is the `Option` type, which is used to define the `:options` prop of the select component:
 
 ```ts
 type Option<T> = {
@@ -22,18 +22,21 @@ type Option<T> = {
 };
 ```
 
-## Custom option value
+## Customizing `option.value` type
 
 ::: info
 Ensure you are familiar with the [`:options` prop](/props#options) before reading this section.
 :::
 
-By default, the `value` property of the option object is a `string`. However, it is possible to use a custom type, such as a `number` or a complex object.
+By default, the `value` property of the option object is a `string`. However, it is possible to use a different type, such as a `number`.
+
+To do this, import the `Option` type from the component and define a custom type that extends the `Option` type with a generic type:
 
 ```vue
 <script setup lang="ts">
+import type { Option } from "vue3-select-component";
 import { ref } from "vue";
-import VueSelect, { type Option } from "vue3-select-component";
+import VueSelect from "vue3-select-component";
 
 // Define a custom type for the option value.
 // It takes a generic type that defines the type of the `value` property.
@@ -60,19 +63,19 @@ const userOptions: UserOption[] = [
 </template>
 ```
 
-## Custom option properties
+## Adding properties to `option`
 
-It is possible to **add properties** to the options passed inside the `:options` prop, while still being type-safe.
+It is possible to **add properties** to the options, while still being type-safe across the `<slot />` and various props.
 
-Let's say you want to add a `username` property to the option object.
-
-This `username` property will be available on **all available props and slots** that receive the `option` object.
+New option properties will be available on **all available props and slots** that receive the `option` object.
 
 ```vue
 <script setup lang="ts">
+import type { Option } from "vue3-select-component";
 import { ref } from "vue";
-import VueSelect, { type Option } from "vue3-select-component";
+import VueSelect from "vue3-select-component";
 
+// Define a custom type for the option value with an additional `username` property.
 type UserOption = Option<number> & { username: string };
 
 const selectedUser = ref<number>();
@@ -101,7 +104,7 @@ const userOptions: UserOption[] = [
 </template>
 ```
 
-## Type-safe relationship between `option.value` & `v-model`
+## Type-safety between `option.value` & `v-model`
 
 Vue 3 Select Component creates a type-safe relationship between the `option.value` and the `v-model` prop.
 
@@ -109,8 +112,9 @@ This means that if you have a custom type for the `value` property of the option
 
 ```vue
 <script setup lang="ts">
+import type { Option } from "vue3-select-component";
 import { ref } from "vue";
-import VueSelect, { type Option } from "vue3-select-component";
+import VueSelect from "vue3-select-component";
 
 type UserOption = Option<number>;
 
@@ -134,6 +138,46 @@ const userOptions: UserOption[] = [
     v-model="selectedUser"
     :options="userOptions"
     placeholder="Pick a user"
+  />
+</template>
+```
+
+## Using custom label/value with options
+
+::: warning
+`getOptionValue` and `getOptionLabel` props are not compatible with the type-safety of the component. Therefore, you should use them with caution and only as a last resort.
+:::
+
+If you're using the `getOptionValue` or `getOptionLabel` props, there are a few gotchas to be aware of with the types:
+
+- Local array of options cannot be typed as `Option<T>[]`
+- When passing the array of options to the component, you need to cast it to `unknown` then `Option<T>[]`.
+
+Here's an example usage of the `getOptionValue` and `getOptionLabel` props with TypeScript:
+
+```vue
+<script setup lang="ts">
+import type { Option } from "vue3-select-component";
+
+const activeRole = ref<string>("");
+
+// You cannot type the `roleOptions` as `Option<string>[]`.
+const roleOptions = [
+  { id: "Admin", key: "admin" },
+  { id: "User", key: "user" },
+  { id: "Guest", key: "guest" },
+];
+</script>
+
+<template>
+  <!-- Casting of the `roleOptions` must be done at the `:options` prop-level. -->
+  <VueSelect
+    v-model="activeRole"
+    :options="(roleOptions as unknown as Option<string>[])"
+    :is-multi="false"
+    :get-option-label="option => (option.id as string)"
+    :get-option-value="option => (option.key as string)"
+    placeholder="Pick a role"
   />
 </template>
 ```

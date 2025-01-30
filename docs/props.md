@@ -182,7 +182,7 @@ Aria attributes to be passed to the select control to improve accessibility.
 
 Callback function to determine if the current option should match the search query. This function is called for each option and should return a boolean.
 
-The `label` is provided as a convenience, using `getOptionLabel` or `getMultiValueLabel` depending on the `isMulti` prop.
+The `label` is provided as a convenience, processed from `getOptionLabel` prop.
 
 ::: info
 By default, the following callback function is used `(option, label, search) => label.toLowerCase().includes(search.toLowerCase())`
@@ -202,11 +202,13 @@ By default, the following callback function is used `(option, label, search) => 
 (option) => option.label;
 ```
 
-A function to get the label of an option. This is useful when you want to use a property different from `label` as the label of the option.
+Resolves option data to a string to render the option label.
 
-This function is used to display the options in the dropdown, and to display the selected option (**single-value**) in the select.
+This function can be used if you don't want to use the standard `option.label` as the label of the option.
 
-## getMultiValueLabel
+The label of an option is displayed in the dropdown and as the selected option (**single-value**) in the select.
+
+## getOptionValue
 
 **Type**:
 
@@ -217,9 +219,13 @@ This function is used to display the options in the dropdown, and to display the
 **Default**:
 
 ```ts
-(option) => option.label;
+(option) => option.value;
 ```
 
-A function to get the label of an option. This is useful when you want to use a property different from `label` as the label of the option.
+Resolves option data to a string to compare options and specify value attributes.
 
-This function is used to display the selected options (**multi-value**) in the select.
+This function can be used if you don't want to use the standard `option.value` as the value of the option.
+
+::: warning
+If you are using TypeScript, TODO.
+:::

@@ -70,10 +70,8 @@ const props = withDefaults(
     };
     /**
      * Callback to filter the options based on the search input. By default, it filters
-     * the options based on the `label` property of the option. The label is retrieved using:
-     *
-     * - `getOptionLabel` when `isMulti` is `false`.
-     * - `getMultiValueLabel` when `isMulti` is `true`.
+     * the options based on the `label` property of the option. The label is retrieved
+     * using `getOptionLabel`.
      *
      * @param option The option to filter.
      * @param label The label of the option.
@@ -81,20 +79,17 @@ const props = withDefaults(
      */
     filterBy?: (option: GenericOption, label: string, search: string) => boolean;
     /**
-     * A function to get the label of an option. By default, it assumes the option is an
-     * object with a `label` property. Used to display the selected option in the input &
-     * inside the options menu.
+     * Resolves option data to a string to compare options and specify value attributes.
+     *
+     * @param option The option to render.
+     */
+    getOptionValue?: (option: GenericOption) => OptionValue;
+    /**
+     * Resolves option data to a string to render the option label.
      *
      * @param option The option to render.
      */
     getOptionLabel?: (option: GenericOption) => string;
-    /**
-     * A function to get the label of a multi-value option. By default, it assumes the
-     * option is an object with a `label` property. Used only in the multi-value tag.
-     *
-     * @param option The option to render.
-     */
-    getMultiValueLabel?: (option: GenericOption) => string;
   }>(),
   {
     placeholder: "Select an option",
@@ -109,8 +104,8 @@ const props = withDefaults(
     inputId: undefined,
     aria: undefined,
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
+    getOptionValue: (option: GenericOption) => option.value,
     getOptionLabel: (option: GenericOption) => option.label,
-    getMultiValueLabel: (option: GenericOption) => option.label,
   },
 );
 
@@ -137,40 +132,45 @@ const search = ref("");
 const menuOpen = ref(false);
 const focusedOption = ref(-1);
 
-const availableOptions = computed(() => {
-  const options = props.displayedOptions || props.options;
+const availableOptions = computed<GenericOption[]>(() => {
+  const rawOptions = (props.displayedOptions || props.options);
+
+  if (!rawOptions || !rawOptions.length) {
+    console.warn("[vue3-select-component warn]: No options or displayedOptions were provided to the component.");
+  }
+
+  const options = rawOptions.map((option) => ({
+    ...option,
+    label: props.getOptionLabel(option),
+    value: props.getOptionValue(option),
+  }));
 
   // Remove already selected values from the list of options, when in multi-select mode.
-
-  const filterMultiSelectedValues = (options: GenericOption[]) => options.filter(
+  const getNonSelectedOptions = (options: GenericOption[]) => options.filter(
     (option) => !(selected.value as OptionValue[]).includes(option.value),
   );
 
   if (props.isSearchable && search.value) {
-    const matchingOptions = options.filter((option) => {
-      const optionLabel = props.isMulti ? props.getMultiValueLabel(option) : props.getOptionLabel(option);
+    const matchingOptions = options.filter((option) => props.filterBy(option, props.getOptionLabel(option), search.value));
 
-      return props.filterBy(option, optionLabel, search.value);
-    });
-
-    return props.isMulti ? filterMultiSelectedValues(matchingOptions) : matchingOptions;
+    return props.isMulti ? getNonSelectedOptions(matchingOptions) : matchingOptions;
   }
 
-  return props.isMulti ? filterMultiSelectedValues(options) : options;
+  return props.isMulti ? getNonSelectedOptions(options) : options;
 });
 
 const selectedOptions = computed(() => {
-  if (props.isMulti && Array.isArray(selected.value)) {
+  if (props.isMulti) {
+    if (!Array.isArray(selected.value)) {
+      console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
+    }
+
     return (selected.value as OptionValue[]).map(
       (value) => props.options.find((option) => option.value === value)!,
     );
   }
 
-  if (props.isMulti && !Array.isArray(selected.value)) {
-    console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
-  }
-
-  const found = props.options.find((option) => option.value === selected.value);
+  const found = props.options.find((option) => props.getOptionValue(option) === selected.value);
 
   return found ? [found] : [];
 });
@@ -407,7 +407,7 @@ onBeforeUnmount(() => {
         :aria-describedby="placeholder"
         :aria-description="placeholder"
         :aria-labelledby="aria?.labelledby"
-        :aria-label="selectedOptions.length ? selectedOptions.map(isMulti ? getMultiValueLabel : getOptionLabel).join(', ') : ''"
+        :aria-label="selectedOptions.length ? selectedOptions.map(getOptionLabel).join(', ') : ''"
         :aria-required="aria?.required"
       >
         <div
@@ -435,7 +435,7 @@ onBeforeUnmount(() => {
                 class="multi-value"
                 @click="removeOption(selectedOption)"
               >
-                {{ getMultiValueLabel(selectedOption) }}<XMarkIcon />
+                {{ getOptionLabel(selectedOption) }}<XMarkIcon />
               </button>
             </slot>
           </template>

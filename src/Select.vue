@@ -177,6 +177,16 @@ const availableOptionsGrouped = computed(() => {
   return Object.keys(grouped).map((groupName) => ({ groupName, options: grouped[groupName] || [] }));
 });
 
+const availableOptionsGroupedFlat = computed(() => {
+  let flat: GenericOption[] = [];
+  availableOptionsGrouped.value.forEach((grouped) => {
+    flat = flat.concat(grouped.options);
+  });
+  return flat;
+});
+
+const getFlatIndex = (option: GenericOption) => availableOptionsGroupedFlat.value.findIndex((o) => o === option);
+
 const selectedOptions = computed(() => {
   if (props.isMulti && Array.isArray(selected.value)) {
     return (selected.value as OptionValue[]).map(
@@ -276,8 +286,8 @@ const handleNavigation = (e: KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
 
-      const nextOptionIndex = availableOptions.value.findIndex((option, i) => !option.disabled && i > currentIndex);
-      const firstOptionIndex = availableOptions.value.findIndex((option) => !option.disabled);
+      const nextOptionIndex = availableOptionsGroupedFlat.value.findIndex((option, i) => !option.disabled && i > currentIndex);
+      const firstOptionIndex = availableOptionsGroupedFlat.value.findIndex((option) => !option.disabled);
 
       focusedOption.value = nextOptionIndex === -1 ? firstOptionIndex : nextOptionIndex;
     }
@@ -285,12 +295,12 @@ const handleNavigation = (e: KeyboardEvent) => {
     if (e.key === "ArrowUp") {
       e.preventDefault();
 
-      const prevOptionIndex = availableOptions.value.reduce(
+      const prevOptionIndex = availableOptionsGroupedFlat.value.reduce(
         (acc, option, i) => (!option.disabled && i < currentIndex ? i : acc),
         -1,
       );
 
-      const lastOptionIndex = availableOptions.value.reduce(
+      const lastOptionIndex = availableOptionsGroupedFlat.value.reduce(
         (acc, option, i) => (!option.disabled ? i : acc),
         -1,
       );
@@ -299,7 +309,7 @@ const handleNavigation = (e: KeyboardEvent) => {
     }
 
     if (e.key === "Enter") {
-      const selectedOption = availableOptions.value[currentIndex];
+      const selectedOption = availableOptionsGroupedFlat.value[currentIndex];
 
       e.preventDefault();
 
@@ -310,7 +320,7 @@ const handleNavigation = (e: KeyboardEvent) => {
 
     // When pressing space with menu open but no search, select the focused option.
     if (e.code === "Space" && search.value.length === 0) {
-      const selectedOption = availableOptions.value[currentIndex];
+      const selectedOption = availableOptionsGroupedFlat.value[currentIndex];
 
       e.preventDefault();
 
@@ -539,14 +549,14 @@ onBeforeUnmount(() => {
           </slot>
 
           <MenuOption
-            v-for="(option, i) in group.options"
-            :key="i"
+            v-for="option in group.options"
+            :key="String(option.value)"
             type="button"
             class="menu-option"
-            :class="{ focused: focusedOption === i, selected: option.value === selected }"
+            :class="{ focused: focusedOption === getFlatIndex(option), selected: option.value === selected }"
             :menu="menu"
-            :index="i"
-            :is-focused="focusedOption === i"
+            :index="getFlatIndex(option)"
+            :is-focused="focusedOption === getFlatIndex(option)"
             :is-selected="option.value === selected"
             :is-disabled="option.disabled || false"
             @select="setOption(option)"

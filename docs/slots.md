@@ -154,6 +154,8 @@ Customize the rendered template when the select component is in a loading state.
 
 Customize the rendered template when there are no matching options and the `taggable` prop is set to `true`. You can use the slot props to retrieve the current search value.
 
+Make sure to use the exposed `createOption` function: this emits an `option-created` event with the current search value, close the menu and erase the search value.
+
 ```vue
 <template>
   <VueSelect
@@ -161,8 +163,8 @@ Customize the rendered template when there are no matching options and the `tagg
     :options="options"
     :taggable="true"
   >
-    <template #taggable-no-options="{ option }">
-      <button type="button" @click="createOption(option)">
+    <template #taggable-no-options="{ option, createOption }">
+      <button type="button" @click="createOption()">
         Press enter to add {{ option }} option
       </button>
     </template>

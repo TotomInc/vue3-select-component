@@ -564,6 +564,7 @@ onBeforeUnmount(() => {
           <slot
             name="taggable-no-options"
             :option="search"
+            :create-option="createOption"
           >
             <button type="button" @click="createOption">
               Press enter to add {{ search }} option

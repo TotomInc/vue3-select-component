@@ -17,6 +17,12 @@ const options: BookOption[] = [
   { value: "dune", label: "Dune", year: 1965, author: "Frank Herbert" },
   { value: "neuromancer", label: "Neuromancer", year: 1984, author: "William Gibson" },
 ];
+
+const customSearchFilter = (option: BookOption, label: string, search: string) => {
+  return option.year.toString().includes(search)
+    || option.author.toLowerCase().includes(search.toLowerCase())
+    || label.toLowerCase().includes(search.toLowerCase());
+};
 </script>
 
 <template>
@@ -24,6 +30,7 @@ const options: BookOption[] = [
     v-model="selected"
     :options="options"
     :is-multi="false"
+    :filter-by="customSearchFilter"
     placeholder="Pick a book"
   >
     <template #option="{ option }">

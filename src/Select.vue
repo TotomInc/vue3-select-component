@@ -806,6 +806,7 @@ onBeforeUnmount(() => {
   font-weight: var(--vs-option-font-weight);
   font-family: var(--vs-font-family);
   color: var(--vs-option-text-color);
+  white-space: break-spaces;
   background-color: var(--vs-option-bg);
   text-align: -webkit-auto;
   cursor: pointer;

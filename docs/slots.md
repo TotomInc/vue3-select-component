@@ -147,3 +147,25 @@ Customize the rendered template when the select component is in a loading state.
   </VueSelect>
 </template>
 ```
+
+## taggable-no-options
+
+**Type**: `slotProps: { option: string }`
+
+Customize the rendered template when there are no matching options and the `taggable` prop is set to `true`. You can use the slot props to retrieve the current search value.
+
+```vue
+<template>
+  <VueSelect
+    v-model="option"
+    :options="options"
+    :taggable="true"
+  >
+    <template #taggable-no-options="{ option }">
+      <button type="button" @click="createOption(option)">
+        Press enter to add {{ option }} option
+      </button>
+    </template>
+  </VueSelect>
+</template>
+```

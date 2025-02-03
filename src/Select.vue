@@ -94,6 +94,10 @@ const props = withDefaults(
      * @param option The option to render.
      */
     getOptionLabel?: (option: GenericOption) => string;
+    /**
+     * When set to true, allow the user to create a new option if it doesn't exist.
+     */
+    taggable?: boolean;
   }>(),
   {
     placeholder: "Select an option",
@@ -111,6 +115,7 @@ const props = withDefaults(
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionValue: (option: GenericOption) => option.value,
     getOptionLabel: (option: GenericOption) => option.label,
+    taggable: false,
   },
 );
 
@@ -120,6 +125,7 @@ const emit = defineEmits<{
   (e: "menuOpened"): void;
   (e: "menuClosed"): void;
   (e: "search", value: string): void;
+  (e: "optionCreated", value: string): void;
 }>();
 
 /**
@@ -181,6 +187,8 @@ const selectedOptions = computed(() => {
 
   return found ? [found] : [];
 });
+
+const isTaggable = computed(() => props.taggable);
 
 const openMenu = (options?: { focusInput?: boolean }) => {
   menuOpen.value = true;
@@ -260,6 +268,12 @@ const clear = () => {
   }
 };
 
+const createOption = () => {
+  emit("optionCreated", search.value);
+  search.value = "";
+  closeMenu();
+};
+
 const handleNavigation = (e: KeyboardEvent) => {
   if (menuOpen.value) {
     const currentIndex = focusedOption.value;
@@ -296,6 +310,8 @@ const handleNavigation = (e: KeyboardEvent) => {
 
       if (selectedOption) {
         setOption(selectedOption);
+      } else if (isTaggable.value && search.value) {
+        createOption();
       }
     }
 
@@ -542,6 +558,14 @@ onBeforeUnmount(() => {
         <div v-if="availableOptions.length === 0" class="no-results">
           <slot name="no-options">
             No results found
+          </slot>
+        </div>
+
+        <div v-if="isTaggable && search" class="taggable-no-options">
+          <slot name="taggable-no-options" :option="search">
+            <button type="button" @click="createOption">
+              Press enter to add {{ search }} option
+            </button>
           </slot>
         </div>
       </div>
@@ -802,6 +826,13 @@ onBeforeUnmount(() => {
 }
 
 .no-results {
+  padding: var(--vs-option-padding);
+  font-size: var(--vs-font-size);
+  font-family: var(--vs-font-family);
+  color: var(--vs-text-color);
+}
+
+.taggable-no-options {
   padding: var(--vs-option-padding);
   font-size: var(--vs-font-size);
   font-family: var(--vs-font-family);

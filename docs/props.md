@@ -233,3 +233,34 @@ This function can be used if you don't want to use the standard `option.value` a
 **Default**: `undefined`
 
 A prop to control the menu open state programmatically. When set to `true`, the menu will be open. When set to `false`, the menu will be closed.
+
+## taggable
+
+**Type**: `boolean`
+
+**Default**: `false`
+
+Whether the select should allow creating a new option if it doesn't exist. When `true`, if the user searches for an option that isn't part of the list, the menu will display a text to ask if the user wants to create this option.
+
+::: info
+It is up to the user to intercept the new option added and manipulate its array of options provided to the component with the `:options` prop. It is recommended to slugify the value received and ensure it is unique.
+:::
+
+## Events
+
+### option-created
+
+Emitted when a new option is created with the `:taggable="true"` prop.
+
+**Payload**: `string` - The search content value.
+
+```vue
+<template>
+  <VueSelect
+    v-model="selectedValue"
+    :options="options"
+    :taggable="true"
+    @option-created="(value) => console.log('New option created:', value)"
+  />
+</template>
+```

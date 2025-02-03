@@ -38,6 +38,10 @@ const props = withDefaults(
      */
     isMulti?: boolean;
     /**
+     * When set to true, allow the user to create a new option if it doesn't exist.
+     */
+    isTaggable?: boolean;
+    /**
      * When set to true, show a loading spinner inside the select component. This is useful
      * when fetching the options asynchronously.
      */
@@ -94,10 +98,6 @@ const props = withDefaults(
      * @param option The option to render.
      */
     getOptionLabel?: (option: GenericOption) => string;
-    /**
-     * When set to true, allow the user to create a new option if it doesn't exist.
-     */
-    taggable?: boolean;
   }>(),
   {
     placeholder: "Select an option",
@@ -105,6 +105,7 @@ const props = withDefaults(
     isDisabled: false,
     isSearchable: true,
     isMulti: false,
+    isTaggable: false,
     isLoading: false,
     isMenuOpen: undefined,
     shouldAutofocusOption: true,
@@ -115,17 +116,16 @@ const props = withDefaults(
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionValue: (option: GenericOption) => option.value,
     getOptionLabel: (option: GenericOption) => option.label,
-    taggable: false,
   },
 );
 
 const emit = defineEmits<{
   (e: "optionSelected", option: GenericOption): void;
   (e: "optionDeselected", option: GenericOption | null): void;
+  (e: "optionCreated", value: string): void;
   (e: "menuOpened"): void;
   (e: "menuClosed"): void;
   (e: "search", value: string): void;
-  (e: "optionCreated", value: string): void;
 }>();
 
 /**
@@ -187,8 +187,6 @@ const selectedOptions = computed(() => {
 
   return found ? [found] : [];
 });
-
-const isTaggable = computed(() => props.taggable);
 
 const openMenu = (options?: { focusInput?: boolean }) => {
   menuOpen.value = true;
@@ -310,7 +308,8 @@ const handleNavigation = (e: KeyboardEvent) => {
 
       if (selectedOption) {
         setOption(selectedOption);
-      } else if (isTaggable.value && search.value) {
+      }
+      else if (props.isTaggable && search.value) {
         createOption();
       }
     }
@@ -562,7 +561,10 @@ onBeforeUnmount(() => {
         </div>
 
         <div v-if="isTaggable && search" class="taggable-no-options">
-          <slot name="taggable-no-options" :option="search">
+          <slot
+            name="taggable-no-options"
+            :option="search"
+          >
             <button type="button" @click="createOption">
               Press enter to add {{ search }} option
             </button>

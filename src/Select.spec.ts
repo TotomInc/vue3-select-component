@@ -501,7 +501,7 @@ describe("component props", () => {
 
 describe("taggable prop", () => {
   it("should emit option-created event when pressing enter with search value", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, taggable: true } });
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isTaggable: true } });
 
     await openMenu(wrapper);
     await inputSearch(wrapper, "New Option");
@@ -511,7 +511,7 @@ describe("taggable prop", () => {
   });
 
   it("should emit option-created event when clicking on the create option button", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, taggable: true } });
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isTaggable: true } });
 
     await openMenu(wrapper);
     await inputSearch(wrapper, "New Option");
@@ -522,7 +522,7 @@ describe("taggable prop", () => {
 
   it("should display the taggable-no-options slot when there are no matching options", async () => {
     const wrapper = mount(VueSelect, {
-      props: { modelValue: null, options, taggable: true },
+      props: { modelValue: null, options, isTaggable: true },
       slots: {
         "taggable-no-options": `<template #taggable-no-options="{ option }">
           <div class="custom-taggable-no-options">Create option: {{ option }}</div>

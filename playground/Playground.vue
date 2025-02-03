@@ -9,6 +9,7 @@ type UserOption = Option<number> & { username: string };
 
 const activeBook = ref<string | null>(null);
 const activeUsers = ref<number[]>([1, 3]);
+const activeLanguages = ref<string[]>([]);
 const activeRole = ref<string | null>(null);
 const isLoading = ref(false);
 
@@ -29,11 +30,27 @@ const userOptions: UserOption[] = [
   { label: "Root", value: 6, username: "root" },
 ];
 
+const languageOptions = ref<Option<string>[]>([
+  { label: "JavaScript", value: "javascript" },
+  { label: "TypeScript", value: "typescript" },
+  { label: "Swift", value: "swift" },
+  { label: "Kotlin", value: "kotlin" },
+  { label: "Java", value: "java" },
+  { label: "Python", value: "python" },
+  { label: "Ruby", value: "ruby" },
+  { label: "Go", value: "go" },
+]);
+
 const roleOptions = [
   { id: "Admin", key: "admin" },
   { id: "User", key: "user" },
   { id: "Guest", key: "guest" },
 ];
+
+const handleCreateOption = (value: string) => {
+  languageOptions.value.push({ label: value, value });
+  activeLanguages.value.push(value);
+};
 </script>
 
 <template>
@@ -62,6 +79,15 @@ const roleOptions = [
       <p class="selected-value">
         Selected user value: {{ activeUsers || "none" }}
       </p>
+
+      <VueSelect
+        v-model="activeLanguages"
+        :options="languageOptions"
+        :is-multi="true"
+        :is-taggable="true"
+        placeholder="Pick a language"
+        @option-created="(value) => handleCreateOption(value)"
+      />
 
       <VueSelect
         v-model="activeRole"

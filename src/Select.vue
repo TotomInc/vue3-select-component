@@ -554,21 +554,22 @@ onBeforeUnmount(() => {
           </slot>
         </MenuOption>
 
-        <div v-if="availableOptions.length === 0" class="no-results">
+        <div v-if="!isTaggable && availableOptions.length === 0" class="no-results">
           <slot name="no-options">
             No results found
           </slot>
         </div>
 
-        <div v-if="isTaggable && search" class="taggable-no-options">
+        <div
+          v-if="isTaggable && search"
+          class="taggable-no-options"
+          @click="createOption"
+        >
           <slot
             name="taggable-no-options"
             :option="search"
-            :create-option="createOption"
           >
-            <button type="button" @click="createOption">
-              Press enter to add {{ search }} option
-            </button>
+            Press enter to add {{ search }} option
           </slot>
         </div>
       </div>
@@ -841,5 +842,6 @@ onBeforeUnmount(() => {
   font-size: var(--vs-font-size);
   font-family: var(--vs-font-family);
   color: var(--vs-text-color);
+  cursor: pointer;
 }
 </style>

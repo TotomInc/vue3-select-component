@@ -27,10 +27,8 @@ const handleCreateOption = (value: string) => {
     placeholder="Select programming languages"
     @option-created="(value) => handleCreateOption(value)"
   >
-    <template #taggable-no-options="{ option, createOption }">
-      <button type="button" @click="() => createOption()">
-        {{ option }} doesn't exist, add it?
-      </button>
+    <template #taggable-no-options="{ option }">
+      {{ option }} doesn't exist, add it?
     </template>
   </VueSelect>
 

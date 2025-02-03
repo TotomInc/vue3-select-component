@@ -515,7 +515,7 @@ describe("taggable prop", () => {
 
     await openMenu(wrapper);
     await inputSearch(wrapper, "New Option");
-    await wrapper.get(".taggable-no-options button").trigger("click");
+    await wrapper.get(".taggable-no-options").trigger("click");
 
     expect(wrapper.emitted("optionCreated")).toStrictEqual([["New Option"]]);
   });

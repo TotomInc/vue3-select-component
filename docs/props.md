@@ -123,7 +123,8 @@ Whether the select should allow multiple selections. If `true`, the `v-model` sh
 Whether the select should allow creating a new option if it doesn't exist. When `true`, if the user searches for an option that isn't part of the list, the menu will display a text to ask if the user wants to create this option.
 
 ::: info
-It is up to the user to intercept the new option added and manipulate its array of options provided to the component with the `:options` prop. It is recommended to slugify the value received and ensure it is unique.
+It is up to the user to intercept the new option (using `@option-created` event) and manipulate its array of options provided with the `:options` prop. It is also recommended to slugify the value received and ensure it is unique.
+For more details, see the [Multiple Select Taggable](/demo/multiple-select-taggable) demo.
 :::
 
 ## isLoading

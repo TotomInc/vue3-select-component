@@ -46,6 +46,7 @@ export default defineConfig({
         items: [
           { text: "Single select", link: "/demo/single-select" },
           { text: "Multiple Select", link: "/demo/multiple-select" },
+          { text: "Multiple Select Taggable", link: "/demo/multiple-select-taggable" },
           { text: "Custom option slot", link: "/demo/custom-option-slot" },
           { text: "Custom tag slot", link: "/demo/custom-tag-slot" },
           { text: "Custom value/label properties", link: "/demo/custom-option-label-value" },

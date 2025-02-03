@@ -498,3 +498,42 @@ describe("component props", () => {
     expect(wrapper.findAll(".focused[role='option']")).toHaveLength(0);
   });
 });
+
+describe("taggable prop", () => {
+  it("should emit option-created event when pressing enter with search value", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isTaggable: true } });
+
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "New Option");
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+
+    expect(wrapper.emitted("optionCreated")).toStrictEqual([["New Option"]]);
+  });
+
+  it("should emit option-created event when clicking on the create option button", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isTaggable: true } });
+
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "New Option");
+    await wrapper.get(".taggable-no-options").trigger("click");
+
+    expect(wrapper.emitted("optionCreated")).toStrictEqual([["New Option"]]);
+  });
+
+  it("should display the taggable-no-options slot when there are no matching options", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options, isTaggable: true },
+      slots: {
+        "taggable-no-options": `<template #taggable-no-options="{ option }">
+          <div class="custom-taggable-no-options">Create option: {{ option }}</div>
+        </template>`,
+      },
+    });
+
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "New Option");
+
+    expect(wrapper.find(".custom-taggable-no-options").exists()).toBe(true);
+    expect(wrapper.find(".custom-taggable-no-options").text()).toBe("Create option: New Option");
+  });
+});

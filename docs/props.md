@@ -114,6 +114,19 @@ Whether the select should have a search input to filter the options.
 
 Whether the select should allow multiple selections. If `true`, the `v-model` should be an array of string `string[]`.
 
+## isTaggable
+
+**Type**: `boolean`
+
+**Default**: `false`
+
+Whether the select should allow creating a new option if it doesn't exist. When `true`, if the user searches for an option that isn't part of the list, the menu will display a text to ask if the user wants to create this option.
+
+::: info
+It is up to the user to intercept the new option (using `@option-created` event) and manipulate its array of options provided with the `:options` prop. It is also recommended to slugify the value received and ensure it is unique.
+For more details, see the [Multiple Select Taggable](/demo/multiple-select-taggable) demo.
+:::
+
 ## isLoading
 
 **Type**: `boolean`
@@ -121,6 +134,14 @@ Whether the select should allow multiple selections. If `true`, the `v-model` sh
 **Default**: `false`
 
 Whether the select should display a loading state. When `true`, the select will show a loading spinner or custom loading content provided via the `loading` slot.
+
+## isMenuOpen
+
+**Type**: `boolean`
+
+**Default**: `undefined`
+
+A prop to control the menu open state programmatically. When set to `true`, the menu will be open. When set to `false`, the menu will be closed.
 
 ## shouldAutofocusOption
 
@@ -226,10 +247,21 @@ Resolves option data to a string to compare options and specify value attributes
 
 This function can be used if you don't want to use the standard `option.value` as the value of the option.
 
-## isMenuOpen
+## Events
 
-**Type**: `boolean`
+### option-created
 
-**Default**: `undefined`
+Emitted when a new option is created with the `:taggable="true"` prop.
 
-A prop to control the menu open state programmatically. When set to `true`, the menu will be open. When set to `false`, the menu will be closed.
+**Payload**: `string` - The search content value.
+
+```vue
+<template>
+  <VueSelect
+    v-model="selectedValue"
+    :options="options"
+    :taggable="true"
+    @option-created="(value) => console.log('New option created:', value)"
+  />
+</template>
+```

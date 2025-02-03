@@ -82,8 +82,9 @@ It also leverages the power of generics to provide types for additional properti
 
 ```vue
 <script setup lang="ts">
+import type { Option } from "vue3-select-component";
 import { ref } from "vue";
-import VueSelect, { type Option } from "vue3-select-component";
+import VueSelect from "vue3-select-component";
 
 type UserOption = Option<number> & { username: string };
 

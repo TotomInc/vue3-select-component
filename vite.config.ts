@@ -1,7 +1,8 @@
-import { fileURLToPath, URL } from "node:url";
+import type { UserConfig } from "vite";
 
+import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
-import { defineConfig, type UserConfig } from "vite";
+import { defineConfig } from "vite";
 import cssInject from "vite-plugin-css-injected-by-js";
 import dts from "vite-plugin-dts";
 import vueDevtools from "vite-plugin-vue-devtools";

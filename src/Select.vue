@@ -60,12 +60,6 @@ const props = withDefaults(
      */
     closeOnSelect?: boolean;
     /**
-     * Teleport the menu to another part of the DOM with higher priority such as `body`.
-     * This way, you can avoid z-index issues. Menu position will be calculated using
-     * JavaScript, instead of using CSS absolute & relative positioning.
-     */
-    teleport?: string;
-    /**
      * The ID of the input element. This is useful for accessibility or forms.
      */
     inputId?: string;
@@ -110,7 +104,6 @@ const props = withDefaults(
     isMenuOpen: undefined,
     shouldAutofocusOption: true,
     closeOnSelect: true,
-    teleport: undefined,
     inputId: undefined,
     aria: undefined,
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
@@ -363,21 +356,6 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
-const calculateMenuPosition = () => {
-  if (container.value) {
-    const rect = container.value.getBoundingClientRect();
-
-    return {
-      left: `${rect.x}px`,
-      top: `${rect.y + rect.height}px`,
-    };
-  }
-
-  console.warn("Unable to calculate dynamic menu position because of missing internal DOM reference.");
-
-  return { top: "0px", left: "0px" };
-};
-
 watch(
   () => search.value,
   () => {
@@ -516,64 +494,53 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <Teleport
-      :to="teleport"
-      :disabled="!teleport"
-      :defer="true"
+    <div
+      v-if="menuOpen"
+      ref="menu"
+      class="menu"
+      role="listbox"
+      :aria-label="aria?.labelledby"
+      :aria-multiselectable="isMulti"
     >
-      <div
-        v-if="menuOpen"
-        ref="menu"
-        class="menu"
-        role="listbox"
-        :aria-label="aria?.labelledby"
-        :aria-multiselectable="isMulti"
-        :style="{
-          width: props.teleport ? `${container?.getBoundingClientRect().width}px` : '100%',
-          top: props.teleport ? calculateMenuPosition().top : 'unset',
-          left: props.teleport ? calculateMenuPosition().left : 'unset',
-        }"
+      <slot name="menu-header" />
+
+      <MenuOption
+        v-for="(option, i) in availableOptions"
+        :key="i"
+        type="button"
+        class="menu-option"
+        :class="{ focused: focusedOption === i, selected: option.value === selected }"
+        :menu="menu"
+        :index="i"
+        :is-focused="focusedOption === i"
+        :is-selected="option.value === selected"
+        :is-disabled="option.disabled || false"
+        @select="setOption(option)"
       >
-        <slot name="menu-header" />
+        <slot name="option" :option="option">
+          {{ getOptionLabel(option) }}
+        </slot>
+      </MenuOption>
 
-        <MenuOption
-          v-for="(option, i) in availableOptions"
-          :key="i"
-          type="button"
-          class="menu-option"
-          :class="{ focused: focusedOption === i, selected: option.value === selected }"
-          :menu="menu"
-          :index="i"
-          :is-focused="focusedOption === i"
-          :is-selected="option.value === selected"
-          :is-disabled="option.disabled || false"
-          @select="setOption(option)"
-        >
-          <slot name="option" :option="option">
-            {{ getOptionLabel(option) }}
-          </slot>
-        </MenuOption>
-
-        <div v-if="!isTaggable && availableOptions.length === 0" class="no-results">
-          <slot name="no-options">
-            No results found
-          </slot>
-        </div>
-
-        <div
-          v-if="isTaggable && search"
-          class="taggable-no-options"
-          @click="createOption"
-        >
-          <slot
-            name="taggable-no-options"
-            :option="search"
-          >
-            Press enter to add {{ search }} option
-          </slot>
-        </div>
+      <div v-if="!isTaggable && availableOptions.length === 0" class="no-results">
+        <slot name="no-options">
+          No results found
+        </slot>
       </div>
-    </Teleport>
+
+      <div
+        v-if="isTaggable && search"
+        class="taggable-no-options"
+        @click="createOption"
+      >
+        <slot
+          name="taggable-no-options"
+          :option="search"
+        >
+          Press enter to add {{ search }} option
+        </slot>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -788,6 +755,7 @@ onBeforeUnmount(() => {
   right: 0;
   padding: var(--vs-menu-padding);
   margin-top: var(--vs-menu-offset-top);
+  width: 100%;
   max-height: var(--vs-menu-height);
   overflow-y: auto;
   border: var(--vs-menu-border);

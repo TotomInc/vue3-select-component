@@ -39,7 +39,6 @@
 - 🎨 Great styling out-of-the-box, customization with CSS variables & Vue `:deep`
 - ✅ Single & multi-select support
 - 🖌️ Infinite customization with `<slot>`s
-- 🪄 `<Teleport />` menu where you want
 - 📦 Extremely light, **0 dependencies** (4.4kb gzip)
 
 ## Installation

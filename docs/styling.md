@@ -74,6 +74,21 @@ List of available CSS variables (pulled from the demo):
 }
 ```
 
+Inside the SFC that is using the component, you must add a class to the component and apply the CSS variables to that class.
+
+```vue
+<template>
+  <VueSelect class="custom-select" />
+</template>
+
+<style lang scoped>
+.custom-select {
+  --vs-border-radius: 12px;
+  --vs-text-color: #334155;
+}
+</style>
+```
+
 ## Scoped styling inside SFC
 
 You can apply any custom styling using [the `:deep` selector](https://vuejs.org/api/sfc-css-features.html#deep-selectors) inside a `<style scoped>`.

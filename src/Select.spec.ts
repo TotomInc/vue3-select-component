@@ -423,6 +423,41 @@ describe("search emit", () => {
   });
 });
 
+describe("component slots", () => {
+  it("should render custom clear button content", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: options[0].value, options },
+      slots: { clear: "X" },
+    });
+
+    const clearButton = wrapper.get(".clear-button");
+    expect(clearButton.text()).toBe("X");
+  });
+
+  it("should render custom dropdown button content", () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options },
+      slots: { dropdown: "V" },
+    });
+
+    const dropdownButton = wrapper.get(".dropdown-icon");
+    expect(dropdownButton.text()).toBe("V");
+  });
+
+  it("should still emit events when using custom button content", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: options[0].value, options },
+      slots: { clear: "X", dropdown: "V" },
+    });
+
+    await wrapper.get(".clear-button").trigger("click");
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[undefined]]);
+
+    await wrapper.get(".dropdown-icon").trigger("click");
+    expect(wrapper.emitted("menuOpened")).toBeTruthy();
+  });
+});
+
 describe("component props", () => {
   it("should use getOptionValue prop to get custom option value", async () => {
     const options = [

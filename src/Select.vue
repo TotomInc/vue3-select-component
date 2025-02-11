@@ -2,6 +2,8 @@
 import type { Option } from "./types";
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import SelectClearButton from "./components/SelectClearButton.vue";
+import SelectDropdownButton from "./components/SelectDropdownButton.vue";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
 import XMarkIcon from "./icons/XMarkIcon.vue";
 import MenuOption from "./MenuOption.vue";
@@ -487,31 +489,25 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="indicators-container">
-        <button
+        <SelectClearButton
           v-if="selectedOptions.length > 0 && isClearable && !isLoading"
-          type="button"
-          class="clear-button"
-          tabindex="-1"
           :disabled="isDisabled"
-          @click="clear"
+          @clear="clear"
         >
           <slot name="clear">
             <XMarkIcon />
           </slot>
-        </button>
+        </SelectClearButton>
 
-        <button
+        <SelectDropdownButton
           v-if="!isLoading"
-          type="button"
-          class="dropdown-icon"
-          tabindex="-1"
           :disabled="isDisabled"
-          @click="toggleMenu"
+          @toggle="toggleMenu"
         >
           <slot name="dropdown">
             <ChevronDownIcon />
           </slot>
-        </button>
+        </SelectDropdownButton>
 
         <slot name="loading">
           <Spinner v-if="isLoading" />
@@ -750,35 +746,6 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   gap: var(--vs-indicators-gap);
   padding: var(--vs-padding);
-}
-
-.clear-button {
-  appearance: none;
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  width: var(--vs-icon-size);
-  height: var(--vs-icon-size);
-  color: var(--vs-icon-color);
-  background: none;
-  outline: none;
-  cursor: pointer;
-}
-
-.dropdown-icon {
-  appearance: none;
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  width: var(--vs-icon-size);
-  height: var(--vs-icon-size);
-  color: var(--vs-icon-color);
-  background: none;
-  outline: none;
-  cursor: pointer;
-  transition: var(--vs-dropdown-transition);
 }
 
 .menu {

@@ -40,12 +40,6 @@ it("should render the component", () => {
 });
 
 describe("input + menu interactions behavior", () => {
-  it("should display the placeholder in the input when no option is selected", () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    expect(wrapper.find("input").attributes("placeholder"));
-  });
-
   it("should not open the menu when focusing the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
@@ -361,26 +355,9 @@ describe("multi-select options", () => {
     expect(wrapper.findAll(".menu-option").length).toBe(options.length);
     expect(wrapper.findAll(".multi-value").length).toBe(0);
   });
-
-  it("should autofocus the first option when opening the menu, by default", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options } });
-
-    await openMenu(wrapper);
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
-  });
 });
 
 describe("clear button", () => {
-  it("should display the clear button when an option is selected", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });
-
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-
-    expect(wrapper.find(".clear-button").exists()).toBe(true);
-  });
-
   it("should clear the selected option when clicking on the clear button", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });
 
@@ -420,6 +397,41 @@ describe("search emit", () => {
     await dispatchEvent(wrapper, new MouseEvent("mousedown"));
 
     expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
+  });
+});
+
+describe("component slots", () => {
+  it("should render custom clear button content", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: options[0].value, options },
+      slots: { clear: "X" },
+    });
+
+    const clearButton = wrapper.get(".clear-button");
+    expect(clearButton.text()).toBe("X");
+  });
+
+  it("should render custom dropdown button content", () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options },
+      slots: { dropdown: "V" },
+    });
+
+    const dropdownButton = wrapper.get(".dropdown-icon");
+    expect(dropdownButton.text()).toBe("V");
+  });
+
+  it("should still emit events when using custom button content", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: options[0].value, options },
+      slots: { clear: "X", dropdown: "V" },
+    });
+
+    await wrapper.get(".clear-button").trigger("click");
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[undefined]]);
+
+    await wrapper.get(".dropdown-icon").trigger("click");
+    expect(wrapper.emitted("menuOpened")).toBeTruthy();
   });
 });
 

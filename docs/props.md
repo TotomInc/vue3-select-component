@@ -159,6 +159,18 @@ Whether the first option should be focused when the dropdown is opened. If set t
 
 Whether the dropdown should close after an option is selected.
 
+## teleport
+
+**Type**: `string`
+
+**Default**: `undefined`
+
+Teleport the menu outside of the component DOM tree. You can pass a valid string according to the official Vue 3 Teleport documentation (e.g. `teleport="body"` will teleport the menu into the `<body>` tree). This can be used in case you are having `z-index` issues within your DOM tree structure.
+
+::: info
+Top and left properties are calculated using a ref on the `.vue-select` with a `container.getBoundingClientRect()`.
+:::
+
 ## inputId
 
 **Type**: `string`

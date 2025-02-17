@@ -40,10 +40,10 @@ it("should render the component", () => {
 });
 
 describe("input + menu interactions behavior", () => {
-  it("should display the placeholder in the input when no option is selected", () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+  it("should display the placeholder when no option is selected", () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, placeholder: "Select an option" } });
 
-    expect(wrapper.find("input").attributes("placeholder"));
+    expect(wrapper.find(".placeholder").text()).toBe("Select an option");
   });
 
   it("should not open the menu when focusing the input", async () => {
@@ -355,7 +355,7 @@ describe("multi-select options", () => {
 
     expect(wrapper.findAll(".menu-option").length).toBe(options.length - 1);
 
-    await wrapper.get(".multi-value").trigger("click");
+    await wrapper.get(".multi-value-remove").trigger("click");
     await openMenu(wrapper);
 
     expect(wrapper.findAll(".menu-option").length).toBe(options.length);
@@ -467,12 +467,6 @@ describe("component props", () => {
     await wrapper.get("div[role='option']").trigger("click");
 
     expect(wrapper.get(".single-value").text()).toBe("Admin");
-  });
-
-  it("should display the placeholder in the input when no option is selected", () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, placeholder: "Pick an option" } });
-
-    expect(wrapper.find("input").attributes("placeholder")).toBe("Pick an option");
   });
 
   it("should disable the input when passing the isDisabled prop", () => {

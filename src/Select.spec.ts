@@ -423,6 +423,7 @@ describe("menu autofocus behavior", () => {
     ];
 
     for (const testCase of testCases) {
+      // @ts-expect-error -- ignore type error
       const wrapper = mount(VueSelect, { props: testCase.props });
       await openMenu(wrapper);
       expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);

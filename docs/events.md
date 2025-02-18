@@ -4,11 +4,11 @@ title: 'Events'
 
 # Events
 
-If you have the need for custom events, please open an issue on the [GitHub repository](https://github.com/TotomInc/vue3-select-component) with your use case and we will be happy to investigate it.
-
 ## `@option-selected`
 
 Emitted when an option is selected, in the same tick where the `v-model` is updated.
+
+**Payload**: `Option` - The selected option.
 
 ```vue
 <template>
@@ -23,18 +23,22 @@ Emitted when an option is selected, in the same tick where the `v-model` is upda
 **Note**: this is emitted on the same tick as the v-model is updated, before a DOM re-render.
 
 ::: info
-If you want to keep track of the selected option, it is recommended to use a `computed` combined with the `v-model`, instead of this event ([see this issue comment](https://github.com/TotomInc/vue3-select-component/issues/7#issuecomment-2083422621)).
+For keeping track of the selected option, it's recommended to use a `computed` property combined with the `v-model` instead of relying on the `@option-selected` event. This approach is more efficient and aligns better with Vue's reactivity system. Here's an example:
 
 ```ts
-const options = [{ label: "France", value: "FR" }, { label: "Spain", value: "ES" }];
-const activeValue = ref<string>();
-const selectedOption = computed(() => options.find((option) => option.value === activeValue.value));
+const options = [{ label: "France", value: "FR" }];
+const activeValue = ref("FR");
+const selectedOption = computed(
+  () => options.find((option) => option.value === activeValue.value),
+);
 ```
 :::
 
 ## `@option-deselected`
 
 Emitted when an option is deselected, in the same tick where the `v-model` is updated.
+
+**Payload**: `Option` - The deselected option.
 
 ```vue
 <template>
@@ -48,9 +52,28 @@ Emitted when an option is deselected, in the same tick where the `v-model` is up
 
 **Note**: this is emitted on the same tick as the v-model is updated, before a DOM re-render.
 
+## `@option-created`
+
+Emitted when a new option is created with the `:taggable="true"` prop.
+
+**Payload**: `string` - The search content value.
+
+```vue
+<template>
+  <VueSelect
+    v-model="selectedValue"
+    :options="options"
+    :taggable="true"
+    @option-created="(value) => console.log('New option created:', value)"
+  />
+</template>
+```
+
 ## `@search`
 
 Emitted when the search value is updated.
+
+**Payload**: `string` - The search content value.
 
 ::: warning
 Search value is cleared when the menu is closed. This will trigger an empty string emit event. See tests implementations for more details.

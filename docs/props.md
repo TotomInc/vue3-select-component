@@ -254,22 +254,3 @@ The label of an option is displayed in the dropdown and as the selected option (
 Resolves option data to a string to compare options and specify value attributes.
 
 This function can be used if you don't want to use the standard `option.value` as the value of the option.
-
-## Events
-
-### option-created
-
-Emitted when a new option is created with the `:taggable="true"` prop.
-
-**Payload**: `string` - The search content value.
-
-```vue
-<template>
-  <VueSelect
-    v-model="selectedValue"
-    :options="options"
-    :taggable="true"
-    @option-created="(value) => console.log('New option created:', value)"
-  />
-</template>
-```

@@ -1,8 +1,8 @@
 ---
-title: 'Controlled Menu'
+title: 'Controlled menu'
 ---
 
-# Controlled Menu
+# Controlled menu
 
 Control the menu open state programmatically with the `isMenuOpen` prop.
 
@@ -19,17 +19,19 @@ const isMenuOpen = ref(false);
   Toggle menu ({{ isMenuOpen ? "opened" : "closed" }})
 </button>
 
-<VueSelect
-  v-model="selected"
-  :options="[
-    { label: 'Option #1', value: 'option_1' },
-    { label: 'Option #2', value: 'option_2' },
-    { label: 'Option #3', value: 'option_3' },
-  ]"
-  :is-menu-open="isMenuOpen"
-  @menu-opened="isMenuOpen = true"
-  @menu-closed="isMenuOpen = false"
-/>
+<ClientOnly>
+  <VueSelect
+    v-model="selected"
+    :options="[
+      { label: 'Option #1', value: 'option_1' },
+      { label: 'Option #2', value: 'option_2' },
+      { label: 'Option #3', value: 'option_3' },
+    ]"
+    :is-menu-open="isMenuOpen"
+    @menu-opened="isMenuOpen = true"
+    @menu-closed="isMenuOpen = false"
+  />
+</ClientOnly>
 
 ## Demo source-code
 

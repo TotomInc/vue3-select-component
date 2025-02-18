@@ -72,7 +72,7 @@ However, **it is still used internally to keep track of selected value(s)**.
 You should pass a list of all possible options to the `options` prop, and a list of specific options to display inside the option menu to the `displayedOptions` prop.
 :::
 
-For more details, see the [With complex menu filter](/demo/with-complex-menu-filter) demo.
+For more details, see the [custom displayed options](/demo/custom-displayed-options) demo.
 
 ## placeholder
 

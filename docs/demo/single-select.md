@@ -19,7 +19,7 @@ const selected = ref("");
     v-model="selected"
     :options="[
       { label: 'Option #1', value: 'option_1' },
-      { label: 'Option #2', value: 'option_2' },
+      { label: 'Option #2', value: 'option_2', disabled: true },
       { label: 'Option #3', value: 'option_3' },
     ]"
   />

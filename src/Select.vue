@@ -340,6 +340,7 @@ onBeforeUnmount(() => {
     dir="auto"
     class="vue-select"
     :class="[{ open: menuOpen, typing: menuOpen && search.length > 0, disabled: isDisabled }, props.class]"
+    :data-state="menuOpen ? 'open' : 'closed'"
   >
     <div
       class="control"

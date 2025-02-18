@@ -1,48 +1,96 @@
 ---
-title: 'Dropdown Options'
+title: 'Options'
 ---
 
-# Dropdown Options
+# Options
 
-## Default format
+The `options` prop is the core configuration for populating the dropdown menu. Understanding how to structure your options is essential for effective component usage.
 
-When using the `options` prop, you can pass an array of objects to the component. Each object should have a `label` and a `value` property. The `label` property is used to display the option in the dropdown, and the `value` property is the value that will be set to the `v-model` when the option is selected.
+## Basic structure
 
-```vue
-<template>
-  <VueSelect :options="[{ label: 'Option #1', value: 'option_1' }]" />
-</template>
-```
-
-::: info
-If you are using TypeScript, make sure to read the [TypeScript usage](/typescript) section to leverage proper type-safety.
-:::
-
-## Disabled option(s)
-
-You can disable an option by adding a `disabled` property to the object. The `disabled` property should be a boolean.
-
-When an option is disabled, it cannot be selected nor focused/navigated to using the keyboard.
+Each option requires two key properties:
 
 ```vue
 <template>
-  <VueSelect :options="[{ label: 'Option #1', value: 'option_1', disabled: true }]" />
-</template>
-```
-
-## Passing extra properties
-
-You can pass extra properties to the options object. The component will ignore them but you will be able to manipulate those extra properties using some props and slots.
-
-```vue
-<template>
-  <VueSelect
-    :options="[{ label: 'Option #1', value: 'option_1', extra: 'Extra data' }]"
-    :get-option-label="(option) => `${option.label} - ${option.extra}`"
+  <VueSelect 
+    :options="[
+      { label: 'JavaScript', value: 'js' },
+      { label: 'TypeScript', value: 'ts' }
+    ]"
   />
 </template>
 ```
 
+**Properties:**
+
+- `label`: Text displayed in the dropdown menu
+- `value`: Data bound to `v-model` when the option is selected
+
 ::: info
-If you are using TypeScript, make sure to read the [TypeScript usage](/typescript) section to leverage proper type-safety.
+For TypeScript users, import the `Option` type to ensure proper type checking:
+
+```ts
+import type { Option } from "vue3-select-component";
+
+const options: Option<string>[] = [{ label: 'JavaScript', value: 'js' }];
+```
+:::
+
+## Disabling options
+
+Individual options can be disabled by adding the `disabled` property:
+
+```vue
+<template>
+  <VueSelect 
+    :options="[
+      { label: 'Available', value: 'a1' },
+      { label: 'Unavailable', value: 'a2', disabled: true }
+    ]"
+  />
+</template>
+```
+
+Disabled options:
+
+- Cannot be selected
+- Cannot be focused with keyboard navigation
+- Have distinct visual styling
+- Include proper ARIA attributes for accessibility
+
+## Extended Properties
+
+Options can include additional properties beyond the standard `label`/`value` pair:
+
+```vue
+<template>
+  <VueSelect
+    :options="[
+      { 
+        label: 'JavaScript',
+        value: 'js',
+        version: 'ES2022',
+        creator: 'Brendan Eich'
+      }
+    ]"
+    :get-option-label="option => `${option.label} (${option.version})`"
+  >
+    <template #option="{ option }">
+      {{ option.label }} - Created by {{ option.creator }}
+    </template>
+  </VueSelect>
+</template>
+```
+
+::: info
+When using extended properties with TypeScript, extend the `Option` type:
+
+```ts
+type LanguageOption = Option<string> & {
+  version: string;
+  creator: string;
+};
+```
+
+For more details, see the [Extending option properties guide](./typescript.md#extending-option-properties).
 :::

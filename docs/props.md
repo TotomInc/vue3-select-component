@@ -179,6 +179,14 @@ Top and left properties are calculated using a ref on the `.vue-select` with a `
 
 The `id` attribute to be passed to the `<input />` element. This is useful for accessibility or forms.
 
+## class
+
+**Type**: `string`
+
+**Default**: `undefined`
+
+A custom class to be passed to the select control.
+
 ## aria
 
 **Type**: `{ labelledby?: string; required?: boolean; }`

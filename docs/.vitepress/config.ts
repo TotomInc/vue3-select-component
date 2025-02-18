@@ -21,6 +21,7 @@ export default defineConfig({
       { text: "Home", link: "/" },
       { text: "Docs", link: "/getting-started" },
       { text: "Demo", link: "/demo/single-select" },
+      { text: "Playground", link: "https://play.vuejs.org/#eNqNU01v2zAM/SuCLtmA2MaQ7ZK5Qbehh/WwDU2xyzwMqs04TmVJ0IedIfF/HyU7qZOmxS6GRT3yPT5SO/pJqbhxQOc0NbmulCUGrFOEM1FeZdSajC4yUdVKakt2RMOKdGSlZU0yinkZ/Xi8/elgCRxyO7qfRSaEolwiSICwISMTuRTGkoZxB+TKl02N1ZUoyZ4Ix/nijf++RWia9LpQBR4s1IozC3giJH1i9EdCmqiWBXDUHQpntA/PpbIV8mH8Vx8h2ApnD8DnZHLLGrYMFJNpLwiDGzMh3fQ5+P6vgmdg+wL4zpkxTPvjReCyrVZjpAnnI/T3oRFsPYe15AVo7GVonRGlZalZXXv7/NwcK4fek+AaOqUWPRoK0ptx4NrthiHs9zgxgSPKKOm6NFGYmiYjv+mU9oOOaqbijZECl2bnq2fDBe4KFuylDtsxx5+1tcrMkyQvBKbhfKpGxwJsIlSdXCMs0U7YqoaokPW1ZzM2KSr8jOIxmDp60LI1oLFKRgdvAk+CwQZ0pEGgNaD/l/cs7YT77O5V/ktbPlbQtm3shHosYwQkFxNOuCvk3CJjIPI8XSY69N8afDarqjxz3xepOOjv/ZqfTIFxLtvbELPawVF1vob88UJ8Y7a99h8aggWjTi3TJQyt3Sy/wRb/j5f48hwfJv7C5R0YyZ3X2MM+O1Gg7BEuqP0algmX+d7cbC0Ic2jKCw1uBHxw/ssrrT/JncXvRy7+wbn6mmjgLP4Qv5vR7h/FnLCQ" },
       { text: "Changelog", link: "https://github.com/TotomInc/vue3-select-component/releases" },
     ],
 

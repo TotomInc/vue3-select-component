@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineExpose, useTemplateRef } from "vue";
+import { useTemplateRef } from "vue";
 
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
 import XMarkIcon from "./icons/XMarkIcon.vue";

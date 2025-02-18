@@ -33,7 +33,7 @@ export default defineConfig({
         text: "Documentation",
         items: [
           { text: "Getting Started", link: "/getting-started" },
-          { text: "Dropdown Options", link: "/dropdown-options" },
+          { text: "Options", link: "/options" },
           { text: "Props", link: "/props" },
           { text: "Slots", link: "/slots" },
           { text: "Events", link: "/events" },

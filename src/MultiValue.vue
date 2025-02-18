@@ -33,19 +33,22 @@ const emit = defineEmits<{
 .multi-value {
   display: flex;
   min-width: 0px;
-  margin: 2px;
+  margin: var(--vs-multi-value-margin);
   border-radius: var(--vs-multi-value-border-radius);
-  background: var(--vs-multi-value-bg);
+  background: var(--vs-multi-value-background-color);
 }
 
 .multi-value-label {
+  padding: var(--vs-multi-value-label-padding);
+  border: var(--vs-multi-value-border);
   border-radius: var(--vs-multi-value-border-radius);
-  padding: 3px 3px 3px 6px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 85%;
-  color: var(--vs-multi-value-text-color);
+  font-size: var(--vs-multi-value-label-font-size);
+  font-weight: var(--vs-multi-value-label-font-weight);
+  line-height: var(--vs-multi-value-label-line-height);
+  color: var(--vs-multi-value-label-text-color);
 }
 
 .multi-value-remove {
@@ -53,16 +56,24 @@ const emit = defineEmits<{
   appearance: none;
   display: flex;
   align-items: center;
-  padding: 0 4px;
+  padding: var(--vs-multi-value-delete-padding);
   border: none;
   outline: none;
-  cursor: pointer;
-  background-color: var(--vs-multi-value-bg);
+  cursor: var(--vs-multi-value-xmark-cursor);
+  background-color: var(--vs-multi-value-background-color);
+}
+
+.multi-value-remove:hover {
+  background-color: var(--vs-multi-value-delete-hover-background-color);
 }
 
 .multi-value-remove svg {
   width: var(--vs-multi-value-xmark-size);
   height: var(--vs-multi-value-xmark-size);
   fill: var(--vs-multi-value-xmark-color);
+}
+
+.multi-value-remove:hover svg {
+  fill: var(--vs-multi-value-xmark-hover-color);
 }
 </style>

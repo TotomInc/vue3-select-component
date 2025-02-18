@@ -44,9 +44,10 @@ watch(
 <template>
   <div
     ref="option"
+    class="menu-option"
+    :class="{ focused: isFocused, selected: isSelected, disabled: isDisabled }"
     tabindex="-1"
     role="option"
-    :class="{ focused: isFocused, selected: isSelected, disabled: isDisabled }"
     :aria-disabled="isDisabled"
     :aria-selected="isSelected"
     @click="emit('select')"
@@ -55,3 +56,41 @@ watch(
     <slot />
   </div>
 </template>
+
+<style lang="css" scoped>
+.menu-option {
+  display: flex;
+  width: var(--vs-option-width);
+  border: 0;
+  margin: 0;
+  padding: var(--vs-option-padding);
+  font-size: var(--vs-option-font-size);
+  font-weight: var(--vs-option-font-weight);
+  font-family: var(--vs-font-family);
+  color: var(--vs-option-text-color);
+  white-space: break-spaces;
+  background-color: var(--vs-option-background-color);
+  text-align: var(--vs-option-text-align);
+  cursor: var(--vs-option-cursor);
+}
+
+.menu-option:hover {
+  background-color: var(--vs-option-hover-background-color);
+  color: var(--vs-option-hover-text-color);
+}
+
+.menu-option.focused {
+  background-color: var(--vs-option-focused-background-color);
+  color: var(--vs-option-focused-text-color);
+}
+
+.menu-option.selected {
+  background-color: var(--vs-option-selected-background-color);
+  color: var(--vs-option-selected-text-color);
+}
+
+.menu-option.disabled {
+  background-color: var(--vs-option-disabled-background-color);
+  color: var(--vs-option-disabled-text-color);
+}
+</style>

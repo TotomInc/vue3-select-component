@@ -465,8 +465,6 @@ onBeforeUnmount(() => {
           v-for="(option, i) in availableOptions"
           :key="i"
           type="button"
-          class="menu-option"
-          :class="{ focused: focusedOption === i, selected: option.value === selected }"
           :menu="menu"
           :index="i"
           :is-focused="focusedOption === i"
@@ -504,8 +502,9 @@ onBeforeUnmount(() => {
 
 <style>
 :root {
+  --vs-width: 100%;
   --vs-min-height: 38px;
-  --vs-padding: 2px 8px;
+  --vs-padding: 4px 8px;
   --vs-border: 1px solid #e4e4e7;
   --vs-border-radius: 4px;
   --vs-font-size: 16px;
@@ -516,48 +515,59 @@ onBeforeUnmount(() => {
   --vs-placeholder-color: #52525b;
   --vs-background-color: #fff;
   --vs-disabled-background-color: #f4f4f5;
-  --vs-outline: #3b82f6;
+  --vs-outline-width: 1px;
+  --vs-outline-color: #3b82f6;
 
   --vs-menu-offset-top: 8px;
   --vs-menu-height: 200px;
-  --vs-menu-padding: 0;
-  --vs-menu-border: 1px solid #e4e4e7;
-  --vs-menu-bg: #fff;
-  --vs-menu-box-shadow: none;
+  --vs-menu-border: var(--vs-border);
+  --vs-menu-background-color: var(--vs-background-color);
+  --vs-menu-box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --vs-menu-z-index: 2;
 
+  --vs-option-width: 100%;
   --vs-option-padding: 8px 12px;
+  --vs-option-cursor: pointer;
   --vs-option-font-size: var(--vs-font-size);
   --vs-option-font-weight: var(--vs-font-weight);
+  --vs-option-text-align: -webkit-auto;
   --vs-option-text-color: var(--vs-text-color);
-  --vs-option-bg: var(--vs-menu-bg);
-  --vs-option-hover-color: #dbeafe;
-  --vs-option-focused-color: var(--vs-option-hover-color);
-  --vs-option-selected-color: #93c5fd;
-  --vs-option-disabled-color: #f4f4f5;
+  --vs-option-hover-text-color: var(--vs-text-color);
+  --vs-option-focused-text-color: var(--vs-text-color);
+  --vs-option-selected-text-color: var(--vs-text-color);
   --vs-option-disabled-text-color: #52525b;
+  --vs-option-background-color: var(--vs-menu-background);
+  --vs-option-hover-background-color: #dbeafe;
+  --vs-option-focused-background-color: var(--vs-option-hover-background-color);
+  --vs-option-selected-background-color: #93c5fd;
+  --vs-option-disabled-background-color: #f4f4f5;
+  --vs-option-opacity-menu-open: 0.4;
 
-  --vs-multi-value-gap: 0px;
-  --vs-multi-value-padding: 4px;
   --vs-multi-value-margin: 2px;
   --vs-multi-value-border: 0px;
   --vs-multi-value-border-radius: 2px;
-  --vs-multi-value-font-size: 14px;
-  --vs-multi-value-font-weight: 400;
-  --vs-multi-value-line-height: 1;
-  --vs-multi-value-text-color: #3f3f46;
-  --vs-multi-value-bg: #f4f4f5;
-  --vs-multi-value-xmark-size: 16px;
-  --vs-multi-value-xmark-color: var(--vs-multi-value-text-color);
+  --vs-multi-value-background-color: #f4f4f5;
 
-  --vs-indicators-gap: 4px;
-  --vs-icon-size: 20px;
-  --vs-icon-color: var(--vs-text-color);
+  --vs-multi-value-label-padding: 4px 4px 4px 8px;
+  --vs-multi-value-label-font-size: 12px;
+  --vs-multi-value-label-font-weight: 400;
+  --vs-multi-value-label-line-height: 1;
+  --vs-multi-value-label-text-color: #3f3f46;
+
+  --vs-multi-value-delete-padding: 0 3px;
+  --vs-multi-value-delete-hover-background-color: #FF6467;
+  --vs-multi-value-xmark-size: 16px;
+  --vs-multi-value-xmark-cursor: pointer;
+  --vs-multi-value-xmark-color: var(--vs-multi-value-label-text-color);
+  --vs-multi-value-xmark-hover-color: #fff;
+
+  --vs-indicators-gap: 0px;
+  --vs-indicator-icon-size: 20px;
+  --vs-indicator-icon-color: var(--vs-text-color);
+  --vs-indicator-icon-cursor: pointer;
 
   --vs-spinner-color: var(--vs-text-color);
-  --vs-spinner-size: 20px;
-
-  --vs-dropdown-transition: transform 0.25s ease-out;
+  --vs-spinner-size: 16px;
 }
 </style>
 
@@ -565,7 +575,7 @@ onBeforeUnmount(() => {
 .vue-select {
   position: relative;
   box-sizing: border-box;
-  width: 100%;
+  width: var(--vs-width);
 
   * {
     box-sizing: border-box;
@@ -573,12 +583,7 @@ onBeforeUnmount(() => {
 
   &.open {
     .single-value {
-      position: absolute;
-      opacity: 0.4;
-    }
-
-    .dropdown-icon {
-      transform: rotate(180deg);
+      opacity: var(--vs-option-opacity-menu-open);
     }
   }
 
@@ -600,8 +605,8 @@ onBeforeUnmount(() => {
   background-color: var(--vs-background-color);
 
   &.focused {
-    box-shadow: 0 0 0 1px var(--vs-outline);
-    border-color: var(--vs-outline);
+    box-shadow: 0 0 0 var(--vs-outline-width) var(--vs-outline-color);
+    border-color: var(--vs-outline-color);
   }
 
   &.disabled {
@@ -673,58 +678,18 @@ onBeforeUnmount(() => {
   color: var(--vs-text-color);
   opacity: 1;
   outline: none;
-
-  &::placeholder {
-    color: var(--vs-placeholder-color);
-  }
 }
 
 .menu {
   position: absolute;
-  left: 0;
-  right: 0;
-  padding: var(--vs-menu-padding);
   margin-top: var(--vs-menu-offset-top);
   max-height: var(--vs-menu-height);
   overflow-y: auto;
   border: var(--vs-menu-border);
   border-radius: var(--vs-border-radius);
   box-shadow: var(--vs-menu-box-shadow);
-  background-color: var(--vs-menu-bg);
+  background-color: var(--vs-menu-background-color);
   z-index: var(--vs-menu-z-index);
-}
-
-.menu-option {
-  display: flex;
-  width: 100%;
-  border: 0;
-  margin: 0;
-  padding: var(--vs-option-padding);
-  font-size: var(--vs-option-font-size);
-  font-weight: var(--vs-option-font-weight);
-  font-family: var(--vs-font-family);
-  color: var(--vs-option-text-color);
-  white-space: break-spaces;
-  background-color: var(--vs-option-bg);
-  text-align: -webkit-auto;
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--vs-option-hover-color);
-  }
-
-  &.focused {
-    background-color: var(--vs-option-focused-color);
-  }
-
-  &.selected {
-    background-color: var(--vs-option-selected-color);
-  }
-
-  &.disabled {
-    background-color: var(--vs-option-disabled-color);
-    color: var(--vs-option-disabled-text-color);
-  }
 }
 
 .no-results {

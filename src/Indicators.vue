@@ -76,12 +76,12 @@ defineExpose({ container, clearButton, dropdownButton });
   padding: 0;
   margin: 0;
   border: 0;
-  width: var(--vs-icon-size);
-  height: var(--vs-icon-size);
-  color: var(--vs-icon-color);
+  width: var(--vs-indicator-icon-size);
+  height: var(--vs-indicator-icon-size);
+  color: var(--vs-indicator-icon-colo);
   background: none;
   outline: none;
-  cursor: pointer;
+  cursor: var(--vs-indicator-icon-cursor);
 }
 
 .dropdown-icon {
@@ -90,12 +90,11 @@ defineExpose({ container, clearButton, dropdownButton });
   padding: 0;
   margin: 0;
   border: 0;
-  width: var(--vs-icon-size);
-  height: var(--vs-icon-size);
-  color: var(--vs-icon-color);
+  width: var(--vs-indicator-icon-size);
+  height: var(--vs-indicator-icon-size);
+  color: var(vs-indicator-icon-colo);
   background: none;
   outline: none;
-  cursor: pointer;
-  transition: var(--vs-dropdown-transition);
+  cursor: var(--vs-indicator-icon-cursor);
 }
 </style>

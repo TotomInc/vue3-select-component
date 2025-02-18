@@ -30,13 +30,15 @@ const handleCreateOption = (value) => {
 };
 </script>
 
-<VueSelect
-  v-model="selected"
-  :is-multi="true"
-  :is-taggable="true"
-  :options="options"
-  @option-created="(value) => handleCreateOption(value)"
-/>
+<ClientOnly>
+  <VueSelect
+    v-model="selected"
+    :is-multi="true"
+    :is-taggable="true"
+    :options="options"
+    @option-created="(value) => handleCreateOption(value)"
+  />
+</ClientOnly>
 
 Selected value(s): **{{ selected.length ? selected.join(", ") : "none" }}**
 

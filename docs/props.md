@@ -72,7 +72,7 @@ However, **it is still used internally to keep track of selected value(s)**.
 You should pass a list of all possible options to the `options` prop, and a list of specific options to display inside the option menu to the `displayedOptions` prop.
 :::
 
-For more details, see the [With complex menu filter](/demo/with-complex-menu-filter) demo.
+For more details, see the [custom displayed options](/demo/custom-displayed-options) demo.
 
 ## placeholder
 
@@ -179,6 +179,14 @@ Top and left properties are calculated using a ref on the `.vue-select` with a `
 
 The `id` attribute to be passed to the `<input />` element. This is useful for accessibility or forms.
 
+## class
+
+**Type**: `string`
+
+**Default**: `undefined`
+
+A custom class to be passed to the select control.
+
 ## aria
 
 **Type**: `{ labelledby?: string; required?: boolean; }`
@@ -246,22 +254,3 @@ The label of an option is displayed in the dropdown and as the selected option (
 Resolves option data to a string to compare options and specify value attributes.
 
 This function can be used if you don't want to use the standard `option.value` as the value of the option.
-
-## Events
-
-### option-created
-
-Emitted when a new option is created with the `:taggable="true"` prop.
-
-**Payload**: `string` - The search content value.
-
-```vue
-<template>
-  <VueSelect
-    v-model="selectedValue"
-    :options="options"
-    :taggable="true"
-    @option-created="(value) => console.log('New option created:', value)"
-  />
-</template>
-```

@@ -14,14 +14,16 @@ import VueSelect from "../../src";
 const selected = ref("");
 </script>
 
-<VueSelect
-  v-model="selected"
-  :options="[
-    { label: 'Option #1', value: 'option_1' },
-    { label: 'Option #2', value: 'option_2' },
-    { label: 'Option #3', value: 'option_3' },
-  ]"
-/>
+<ClientOnly>
+  <VueSelect
+    v-model="selected"
+    :options="[
+      { label: 'Option #1', value: 'option_1' },
+      { label: 'Option #2', value: 'option_2', disabled: true },
+      { label: 'Option #3', value: 'option_3' },
+    ]"
+  />
+</ClientOnly>
 
 Selected value: **{{ selected || "none" }}**
 

@@ -1,8 +1,8 @@
 ---
-title: 'Custom Option Slot'
+title: 'Custom option slot'
 ---
 
-# Custom Option Slot
+# Custom option slot
 
 The following example demonstrates how to use the `VueSelect` component with custom slots for `#value` & `#option` slots.
 
@@ -18,31 +18,33 @@ import VueSelect from "../../src";
 const selected = ref("");
 </script>
 
-<VueSelect
-  v-model="selected"
-  :options="[
-    { label: 'France', value: 'fr' },
-    { label: 'USA', value: 'us' },
-    { label: 'Germany', value: 'de' },
-    { label: 'Italy', value: 'it' },
-    { label: 'Spain', value: 'es' },
-    { label: 'Colombia', value: 'co' },
-    { label: 'Ecuador', value: 'ec' },
-  ]"
->
-  <template #value="{ option }">
-    <div :class="$style['custom-value']">
-      <img :src="`https://flagsapi.com/${option.value.toUpperCase()}/flat/24.png`" class="block w-6 h-auto">
-      <span>{{ option.label }}</span>
-    </div>
-  </template>
+<ClientOnly>
+  <VueSelect
+    v-model="selected"
+    :options="[
+      { label: 'France', value: 'fr' },
+      { label: 'USA', value: 'us' },
+      { label: 'Germany', value: 'de' },
+      { label: 'Italy', value: 'it' },
+      { label: 'Spain', value: 'es' },
+      { label: 'Colombia', value: 'co' },
+      { label: 'Ecuador', value: 'ec' },
+    ]"
+  >
+    <template #value="{ option }">
+      <div :class="$style['custom-value']">
+        <img :src="`https://flagsapi.com/${option.value.toUpperCase()}/flat/24.png`" class="block w-6 h-auto">
+        <span>{{ option.label }}</span>
+      </div>
+    </template>
 
-  <template #option="{ option }">
-    <p :class="$style['custom-option']">
-      {{ option.label }} <small>{{ option.value }}</small>
-    </p>
-  </template>
-</VueSelect>
+    <template #option="{ option }">
+      <p :class="$style['custom-option']">
+        {{ option.label }} <small>{{ option.value }}</small>
+      </p>
+    </template>
+  </VueSelect>
+</ClientOnly>
 
 <style module>
 .custom-value {

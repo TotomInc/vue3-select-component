@@ -10,24 +10,24 @@ Vue 3 Select Component can be installed using your favorite package manager:
 
 ::: code-group
 ```sh [npm]
-$ npm add -D vue3-select-component
+$ npm add vue3-select-component
 ```
 
 ```sh [pnpm]
-$ pnpm add -D vue3-select-component
+$ pnpm add vue3-select-component
 ```
 
 ```sh [yarn]
-$ yarn add -D vue3-select-component
+$ yarn add vue3-select-component
 ```
 
 ```sh [bun]
-$ bun add -D vue3-select-component
+$ bun add vue3-select-component
 ```
 :::
 
 ::: tip
-[Vue.js](https://vuejs.org) 3.4+ is required to use this component.
+[Vue.js](https://vuejs.org) 3.5+ is required to use this component.
 :::
 
 ## Single select usage

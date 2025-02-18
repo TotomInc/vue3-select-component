@@ -1,8 +1,8 @@
 ---
-title: 'Custom Tag Slot'
+title: 'Custom tag slot'
 ---
 
-# Custom Tag Slot
+# Custom tag slot
 
 The following example demonstrates how to use the `VueSelect` component with a custom slot `#tag` when using the `isMulti` prop.
 
@@ -18,21 +18,23 @@ import VueSelect from "../../src";
 const selected = ref([]);
 </script>
 
-<VueSelect
-  v-model="selected"
-  :is-multi="true"
-  :options="[
-    { label: 'Alice', value: 'alice', username: '@alice_user' },
-    { label: 'John', value: 'john', username: '@john_user' },
-    { label: 'Greg', value: 'greg', username: '@greg_user' },
-  ]"
->
-  <template #tag="{ option, removeOption }">
-    <div :class="$style['custom-tag']">
-      {{ option.username }} <button type="button" @click="removeOption">&times;</button>
-    </div>
-  </template>
-</VueSelect>
+<ClientOnly>
+  <VueSelect
+    v-model="selected"
+    :is-multi="true"
+    :options="[
+      { label: 'Alice', value: 'alice', username: '@alice_user' },
+      { label: 'John', value: 'john', username: '@john_user' },
+      { label: 'Greg', value: 'greg', username: '@greg_user' },
+    ]"
+  >
+    <template #tag="{ option, removeOption }">
+      <div :class="$style['custom-tag']">
+        {{ option.username }} <button type="button" @click="removeOption">&times;</button>
+      </div>
+    </template>
+  </VueSelect>
+</ClientOnly>
 
 <style module>
 .custom-tag {

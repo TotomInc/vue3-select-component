@@ -1,104 +1,17 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
-import type { Option } from "./types";
+import type { Option, Props } from "./types";
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from "vue";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
 import XMarkIcon from "./icons/XMarkIcon.vue";
+import Indicators from "./Indicators.vue";
 import MenuOption from "./MenuOption.vue";
+import MultiValue from "./MultiValue.vue";
+import Placeholder from "./Placeholder.vue";
 import Spinner from "./Spinner.vue";
 
 const props = withDefaults(
-  defineProps<{
-    options: GenericOption[];
-    /**
-     * When passed to the component, only these specific options will be rendered
-     * on the list of options.
-     */
-    displayedOptions?: GenericOption[];
-    /**
-     * The placeholder text to display when no option is selected.
-     */
-    placeholder?: string;
-    /**
-     * When set to true, the input can be cleared by clicking the clear button.
-     */
-    isClearable?: boolean;
-    /**
-     * When set to true, disable the select component.
-     */
-    isDisabled?: boolean;
-    /**
-     * When set to true, allow the user to filter the options by typing in the search input.
-     */
-    isSearchable?: boolean;
-    /**
-     * When set to true, allow the user to select multiple options. This will change the
-     * `selected` model to an array of strings. You should pass an array of strings to the
-     * `v-model` directive when using this prop.
-     */
-    isMulti?: boolean;
-    /**
-     * When set to true, allow the user to create a new option if it doesn't exist.
-     */
-    isTaggable?: boolean;
-    /**
-     * When set to true, show a loading spinner inside the select component. This is useful
-     * when fetching the options asynchronously.
-     */
-    isLoading?: boolean;
-    /**
-     * Control the menu open state programmatically.
-     */
-    isMenuOpen?: boolean;
-    /**
-     * When set to true, focus the first option when the menu is opened.
-     * When set to false, no option will be focused.
-     */
-    shouldAutofocusOption?: boolean;
-    /**
-     * When set to true, clear the search input when an option is selected.
-     */
-    closeOnSelect?: boolean;
-    /**
-     * Teleport the menu to another part of the DOM with higher priority such as `body`.
-     * This way, you can avoid z-index issues. Menu position will be calculated using
-     * JavaScript, instead of using CSS absolute & relative positioning.
-     */
-    teleport?: string;
-    /**
-     * The ID of the input element. This is useful for accessibility or forms.
-     */
-    inputId?: string;
-    /**
-     * ARIA attributes to describe the select component. This is useful for accessibility.
-     */
-    aria?: {
-      labelledby?: string;
-      required?: boolean;
-    };
-    /**
-     * Callback to filter the options based on the search input. By default, it filters
-     * the options based on the `label` property of the option. The label is retrieved
-     * using `getOptionLabel`.
-     *
-     * @param option The option to filter.
-     * @param label The label of the option.
-     * @param search The search input value.
-     */
-    filterBy?: (option: GenericOption, label: string, search: string) => boolean;
-    /**
-     * Resolves option data to a string to compare options and specify value attributes.
-     *
-     * @param option The option to render.
-     */
-    getOptionValue?: (option: GenericOption) => OptionValue;
-    /**
-     * Resolves option data to a string to render the option label.
-     *
-     * @param option The option to render.
-     */
-    getOptionLabel?: (option: GenericOption) => string;
-  }>(),
+  defineProps<Props<GenericOption, OptionValue>>(),
   {
     placeholder: "Select an option",
     isClearable: true,
@@ -128,18 +41,15 @@ const emit = defineEmits<{
   (e: "search", value: string): void;
 }>();
 
-/**
- * The value of the selected option. When `isMulti` prop is set to `true`, this
- * should be an array of `OptionValue`.
- */
 const selected = defineModel<OptionValue | OptionValue[]>({
   required: true,
   validator: (value, _props) => _props.isMulti ? Array.isArray(value) : !Array.isArray(value),
 });
 
-const container = ref<HTMLDivElement | null>(null);
-const input = ref<HTMLInputElement | null>(null);
-const menu = ref<HTMLDivElement | null>(null);
+const container = useTemplateRef("container");
+const input = useTemplateRef("input");
+const menu = useTemplateRef("menu");
+const indicators = useTemplateRef("indicators");
 
 const search = ref("");
 const menuOpen = ref(false);
@@ -148,7 +58,7 @@ const focusedOption = ref(-1);
 const availableOptions = computed<GenericOption[]>(() => {
   const rawOptions = (props.displayedOptions || props.options);
 
-  if (!rawOptions || !rawOptions.length) {
+  if (!rawOptions?.length) {
     console.warn("[vue3-select-component warn]: No options or displayedOptions were provided to the component.");
   }
 
@@ -188,31 +98,41 @@ const selectedOptions = computed(() => {
   return found ? [found] : [];
 });
 
-const openMenu = (options?: { focusInput?: boolean }) => {
+function openMenu() {
+  if (props.isDisabled) {
+    return;
+  }
+
   menuOpen.value = true;
 
   if (props.shouldAutofocusOption) {
     focusedOption.value = props.options.findIndex((option) => !option.disabled);
   }
 
-  if (options?.focusInput && input.value) {
+  if (input.value) {
     input.value.focus();
   }
 
   emit("menuOpened");
 };
 
-const closeMenu = () => {
+function closeMenu() {
   menuOpen.value = false;
   search.value = "";
   emit("menuClosed");
 };
 
-const toggleMenu = () => {
+function toggleMenu() {
   if (menuOpen.value) {
     closeMenu();
   }
   else {
+    openMenu();
+  }
+};
+
+function handleControlClick(event: MouseEvent) {
+  if (indicators.value?.container && !indicators.value.container.contains(event.target as Node)) {
     openMenu();
   }
 };
@@ -394,7 +314,7 @@ watch(
   () => props.isMenuOpen,
   (newValue) => {
     if (newValue) {
-      openMenu({ focusInput: true });
+      openMenu();
     }
     else {
       closeMenu();
@@ -419,12 +339,17 @@ onBeforeUnmount(() => {
     ref="container"
     dir="auto"
     class="vue-select"
-    :class="{ open: menuOpen, typing: menuOpen && search.length > 0, disabled: isDisabled }"
+    :class="[{ open: menuOpen, typing: menuOpen && search.length > 0, disabled: isDisabled }, props.class]"
+    :data-state="menuOpen ? 'open' : 'closed'"
   >
-    <div class="control" :class="{ focused: menuOpen }">
+    <div
+      class="control"
+      :class="{ focused: menuOpen, disabled: props.isDisabled }"
+      @click="handleControlClick($event)"
+    >
       <div
         class="value-container"
-        :class="{ multi: isMulti }"
+        :class="{ 'multi': isMulti, 'has-value': selectedOptions.length > 0 }"
         role="combobox"
         :aria-expanded="menuOpen"
         :aria-describedby="placeholder"
@@ -432,88 +357,89 @@ onBeforeUnmount(() => {
         :aria-labelledby="aria?.labelledby"
         :aria-label="selectedOptions.length ? selectedOptions.map(getOptionLabel).join(', ') : ''"
         :aria-required="aria?.required"
+        aria-haspopup="true"
       >
+        <Placeholder
+          v-if="!selectedOptions[0] && !search.length"
+          :text="placeholder"
+        />
+
         <div
-          v-if="!props.isMulti && selectedOptions[0]"
+          v-else-if="!props.isMulti && selectedOptions[0]"
           class="single-value"
-          @click="!props.isDisabled ? openMenu({ focusInput: true }) : null"
+          @click="openMenu()"
         >
           <slot name="value" :option="selectedOptions[0]">
             {{ getOptionLabel(selectedOptions[0]) }}
           </slot>
         </div>
 
-        <template v-if="props.isMulti && selectedOptions.length">
-          <template
-            v-for="selectedOption in selectedOptions"
-            :key="selectedOption.value"
+        <template
+          v-for="selectedOption in selectedOptions"
+          v-else-if="props.isMulti && selectedOptions.length"
+          :key="selectedOption.value"
+        >
+          <slot
+            name="tag"
+            :option="selectedOption"
+            :remove-option="() => removeOption(selectedOption)"
           >
-            <slot
-              name="tag"
-              :option="selectedOption"
-              :remove-option="() => removeOption(selectedOption)"
-            >
-              <button
-                type="button"
-                class="multi-value"
-                @click="removeOption(selectedOption)"
-              >
-                {{ getOptionLabel(selectedOption) }}<XMarkIcon />
-              </button>
-            </slot>
-          </template>
+            <MultiValue :label="getOptionLabel(selectedOption)" @remove="removeOption(selectedOption)" />
+          </slot>
         </template>
 
-        <input
-          :id="inputId"
-          ref="input"
-          v-model="search"
-          class="search-input"
-          type="text"
-          aria-autocomplete="list"
-          autocapitalize="none"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
-          tabindex="0"
-          :disabled="isDisabled"
-          :placeholder="selectedOptions.length === 0 ? placeholder : ''"
-          @mousedown="openMenu()"
-          @keydown="handleInputKeydown"
+        <div
+          class="input-container"
+          :class="{ typing: menuOpen && search.length > 0 }"
+          :data-value="search"
         >
+          <input
+            :id="inputId"
+            ref="input"
+            v-model="search"
+            class="search-input"
+            autocapitalize="none"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            tabindex="0"
+            type="text"
+            aria-autocomplete="list"
+            :disabled="isDisabled"
+            placeholder=""
+            @mousedown="openMenu()"
+            @keydown="handleInputKeydown"
+          >
+        </div>
       </div>
 
-      <div class="indicators-container">
-        <button
-          v-if="selectedOptions.length > 0 && isClearable && !isLoading"
-          type="button"
-          class="clear-button"
-          tabindex="-1"
-          :disabled="isDisabled"
-          @click="clear"
-        >
+      <Indicators
+        ref="indicators"
+        :has-selected-option="selectedOptions.length > 0"
+        :is-clearable="isClearable"
+        :is-loading="isLoading"
+        :is-disabled="isDisabled"
+        @clear="clear"
+        @toggle="toggleMenu"
+      >
+        <template #clear>
           <slot name="clear">
             <XMarkIcon />
           </slot>
-        </button>
+        </template>
 
-        <button
-          v-if="!isLoading"
-          type="button"
-          class="dropdown-icon"
-          tabindex="-1"
-          :disabled="isDisabled"
-          @click="toggleMenu"
-        >
+        <template #dropdown>
           <slot name="dropdown">
             <ChevronDownIcon />
           </slot>
-        </button>
+        </template>
 
-        <slot name="loading">
-          <Spinner v-if="isLoading" />
-        </slot>
-      </div>
+        <template #loading>
+          <slot name="loading">
+            <Spinner v-if="isLoading" />
+          </slot>
+        </template>
+      </Indicators>
     </div>
 
     <Teleport
@@ -540,8 +466,6 @@ onBeforeUnmount(() => {
           v-for="(option, i) in availableOptions"
           :key="i"
           type="button"
-          class="menu-option"
-          :class="{ focused: focusedOption === i, selected: option.value === selected }"
           :menu="menu"
           :index="i"
           :is-focused="focusedOption === i"
@@ -579,11 +503,9 @@ onBeforeUnmount(() => {
 
 <style>
 :root {
-  --vs-input-bg: #fff;
-  --vs-input-outline: #3b82f6;
-  --vs-input-placeholder-color: #52525b;
-
-  --vs-padding: 0.25rem 0.5rem;
+  --vs-width: 100%;
+  --vs-min-height: 38px;
+  --vs-padding: 4px 8px;
   --vs-border: 1px solid #e4e4e7;
   --vs-border-radius: 4px;
   --vs-font-size: 16px;
@@ -591,45 +513,62 @@ onBeforeUnmount(() => {
   --vs-font-family: inherit;
   --vs-text-color: #18181b;
   --vs-line-height: 1.5;
+  --vs-placeholder-color: #52525b;
+  --vs-background-color: #fff;
+  --vs-disabled-background-color: #f4f4f5;
+  --vs-outline-width: 1px;
+  --vs-outline-color: #3b82f6;
 
   --vs-menu-offset-top: 8px;
   --vs-menu-height: 200px;
-  --vs-menu-padding: 0;
-  --vs-menu-border: 1px solid #e4e4e7;
-  --vs-menu-bg: #fff;
-  --vs-menu-box-shadow: none;
+  --vs-menu-border: var(--vs-border);
+  --vs-menu-background-color: var(--vs-background-color);
+  --vs-menu-box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --vs-menu-z-index: 2;
 
+  --vs-option-width: 100%;
   --vs-option-padding: 8px 12px;
+  --vs-option-cursor: pointer;
   --vs-option-font-size: var(--vs-font-size);
   --vs-option-font-weight: var(--vs-font-weight);
+  --vs-option-text-align: -webkit-auto;
   --vs-option-text-color: var(--vs-text-color);
-  --vs-option-bg: var(--vs-menu-bg);
-  --vs-option-hover-color: #dbeafe;
-  --vs-option-focused-color: var(--vs-option-hover-color);
-  --vs-option-selected-color: #93c5fd;
-  --vs-option-disabled-color: #f4f4f5;
+  --vs-option-hover-text-color: var(--vs-text-color);
+  --vs-option-focused-text-color: var(--vs-text-color);
+  --vs-option-selected-text-color: var(--vs-text-color);
   --vs-option-disabled-text-color: #52525b;
+  --vs-option-background-color: var(--vs-menu-background);
+  --vs-option-hover-background-color: #dbeafe;
+  --vs-option-focused-background-color: var(--vs-option-hover-background-color);
+  --vs-option-selected-background-color: #93c5fd;
+  --vs-option-disabled-background-color: #f4f4f5;
+  --vs-option-opacity-menu-open: 0.4;
 
-  --vs-multi-value-gap: 0px;
-  --vs-multi-value-padding: 4px;
-  --vs-multi-value-margin: 4px 0px 4px 6px;
-  --vs-multi-value-font-size: 14px;
-  --vs-multi-value-font-weight: 400;
-  --vs-multi-value-line-height: 1;
-  --vs-multi-value-text-color: #3f3f46;
-  --vs-multi-value-bg: #f4f4f5;
+  --vs-multi-value-margin: 2px;
+  --vs-multi-value-border: 0px;
+  --vs-multi-value-border-radius: 2px;
+  --vs-multi-value-background-color: #f4f4f5;
+
+  --vs-multi-value-label-padding: 4px 4px 4px 8px;
+  --vs-multi-value-label-font-size: 12px;
+  --vs-multi-value-label-font-weight: 400;
+  --vs-multi-value-label-line-height: 1;
+  --vs-multi-value-label-text-color: #3f3f46;
+
+  --vs-multi-value-delete-padding: 0 3px;
+  --vs-multi-value-delete-hover-background-color: #FF6467;
   --vs-multi-value-xmark-size: 16px;
-  --vs-multi-value-xmark-color: var(--vs-multi-value-text-color);
+  --vs-multi-value-xmark-cursor: pointer;
+  --vs-multi-value-xmark-color: var(--vs-multi-value-label-text-color);
+  --vs-multi-value-xmark-hover-color: #fff;
 
-  --vs-indicators-gap: 4px;
-  --vs-icon-size: 20px;
-  --vs-icon-color: var(--vs-text-color);
+  --vs-indicators-gap: 0px;
+  --vs-indicator-icon-size: 20px;
+  --vs-indicator-icon-color: var(--vs-text-color);
+  --vs-indicator-icon-cursor: pointer;
 
   --vs-spinner-color: var(--vs-text-color);
-  --vs-spinner-size: 20px;
-
-  --vs-dropdown-transition: transform 0.25s ease-out;
+  --vs-spinner-size: 16px;
 }
 </style>
 
@@ -637,7 +576,7 @@ onBeforeUnmount(() => {
 .vue-select {
   position: relative;
   box-sizing: border-box;
-  width: 100%;
+  width: var(--vs-width);
 
   * {
     box-sizing: border-box;
@@ -645,12 +584,7 @@ onBeforeUnmount(() => {
 
   &.open {
     .single-value {
-      position: absolute;
-      opacity: 0.4;
-    }
-
-    .dropdown-icon {
-      transform: rotate(180deg);
+      opacity: var(--vs-option-opacity-menu-open);
     }
   }
 
@@ -663,171 +597,100 @@ onBeforeUnmount(() => {
 
 .control {
   display: flex;
-  min-height: 32px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--vs-min-height);
   border: var(--vs-border);
   border-radius: var(--vs-border-radius);
-  background-color: var(--vs-input-bg);
+  background-color: var(--vs-background-color);
 
   &.focused {
-    box-shadow: 0 0 0 1px var(--vs-input-outline);
-    border-color: var(--vs-input-outline);
+    box-shadow: 0 0 0 var(--vs-outline-width) var(--vs-outline-color);
+    border-color: var(--vs-outline-color);
+  }
+
+  &.disabled {
+    background-color: var(--vs-disabled-background-color);
   }
 }
 
 .value-container {
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
+  overflow: hidden;
+  display: grid;
   align-items: center;
-  flex-basis: 100%;
-  flex-grow: 1;
+  flex: 1 1 0%;
+  padding: var(--vs-padding);
 
-  &.multi {
-    gap: var(--vs-multi-value-gap);
+  &.multi.has-value {
+    display: flex;
+    flex-wrap: wrap;
   }
 }
 
 .single-value {
-  display: flex;
-  align-items: center;
-  padding: var(--vs-padding);
+  display: block;
+  grid-area: 1 / 1 / 2 / 3;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--vs-font-size);
   font-weight: var(--vs-font-weight);
   font-family: var(--vs-font-family);
   line-height: var(--vs-line-height);
   color: var(--vs-text-color);
-  z-index: 0;
 }
 
-.multi-value {
-  appearance: none;
-  display: flex;
-  align-items: center;
-  gap: var(--vs-multi-value-gap);
-  padding: var(--vs-multi-value-padding);
-  margin: var(--vs-multi-value-margin);
-  border: 0;
-  font-size: var(--vs-multi-value-font-size);
-  font-weight: var(--vs-multi-value-font-weight);
-  color: var(--vs-multi-value-text-color);
-  line-height: var(--vs-multi-value-line-height);
-  background: var(--vs-multi-value-bg);
-  outline: none;
-  cursor: pointer;
+.input-container {
+  visibility: visible;
+  display: inline-grid;
+  grid-area: 1 / 1 / 2 / 3;
+  grid-template-columns: 0px min-content;
 
-  svg {
-    width: var(--vs-multi-value-xmark-size);
-    height: var(--vs-multi-value-xmark-size);
-    fill: var(--vs-multi-value-xmark-color);
+  &.typing {
+    transform: translateZ(0px);
+  }
+
+  &.typing::after {
+    content: attr(data-value) " ";
+    visibility: hidden;
+    white-space: pre;
+    grid-area: 1 / 2;
+    min-width: 2px;
+    padding: 0;
+    margin: 0;
+    border: 0;
   }
 }
 
 .search-input {
-  appearance: none;
-  display: inline-block;
-  max-width: 100%;
-  flex-grow: 1;
-  width: 0;
   margin: 0;
   padding: 0;
   border: 0;
-  background: none;
-  padding: var(--vs-padding);
+  min-width: 2px;
+  width: 100%;
+  grid-area: 1 / 2;
+  background: 0px center;
   font-size: var(--vs-font-size);
   font-family: var(--vs-font-family);
   line-height: var(--vs-line-height);
   color: var(--vs-text-color);
+  opacity: 1;
   outline: none;
-  z-index: 1;
-
-  &::placeholder {
-    color: var(--vs-input-placeholder-color);
-  }
-}
-
-.indicators-container {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  gap: var(--vs-indicators-gap);
-  padding: var(--vs-padding);
-}
-
-.clear-button {
-  appearance: none;
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  width: var(--vs-icon-size);
-  height: var(--vs-icon-size);
-  color: var(--vs-icon-color);
-  background: none;
-  outline: none;
-  cursor: pointer;
-}
-
-.dropdown-icon {
-  appearance: none;
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  width: var(--vs-icon-size);
-  height: var(--vs-icon-size);
-  color: var(--vs-icon-color);
-  background: none;
-  outline: none;
-  cursor: pointer;
-  transition: var(--vs-dropdown-transition);
 }
 
 .menu {
   position: absolute;
-  left: 0;
-  right: 0;
-  padding: var(--vs-menu-padding);
   margin-top: var(--vs-menu-offset-top);
   max-height: var(--vs-menu-height);
   overflow-y: auto;
   border: var(--vs-menu-border);
   border-radius: var(--vs-border-radius);
   box-shadow: var(--vs-menu-box-shadow);
-  background-color: var(--vs-menu-bg);
+  background-color: var(--vs-menu-background-color);
   z-index: var(--vs-menu-z-index);
-}
-
-.menu-option {
-  display: flex;
-  width: 100%;
-  border: 0;
-  margin: 0;
-  padding: var(--vs-option-padding);
-  font-size: var(--vs-option-font-size);
-  font-weight: var(--vs-option-font-weight);
-  font-family: var(--vs-font-family);
-  color: var(--vs-option-text-color);
-  white-space: break-spaces;
-  background-color: var(--vs-option-bg);
-  text-align: -webkit-auto;
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--vs-option-hover-color);
-  }
-
-  &.focused {
-    background-color: var(--vs-option-focused-color);
-  }
-
-  &.selected {
-    background-color: var(--vs-option-selected-color);
-  }
-
-  &.disabled {
-    background-color: var(--vs-option-disabled-color);
-    color: var(--vs-option-disabled-text-color);
-  }
 }
 
 .no-results {

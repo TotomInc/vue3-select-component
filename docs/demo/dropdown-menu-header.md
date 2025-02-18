@@ -1,8 +1,8 @@
 ---
-title: 'With menu header'
+title: 'Dropdown menu header'
 ---
 
-# With menu header
+# Dropdown menu header
 
 The following example demonstrates how to use the `VueSelect` component with a custom menu header before the options.
 
@@ -16,22 +16,24 @@ import VueSelect from "../../src";
 const selected = ref("");
 </script>
 
-<VueSelect
-  v-model="selected"
-  :options="[
-    { label: 'Option #1', value: 'option_1' },
-    { label: 'Option #2', value: 'option_2' },
-    { label: 'Option #3', value: 'option_3' },
-    { label: 'Option #4', value: 'option_4' },
-    { label: 'Option #5', value: 'option_5' },
-  ]"
->
-  <template #menu-header>
-    <div class="menu-header">
-      <h3>Books</h3>
-    </div>
-  </template>
-</VueSelect>
+<ClientOnly>
+  <VueSelect
+    v-model="selected"
+    :options="[
+      { label: 'Option #1', value: 'option_1' },
+      { label: 'Option #2', value: 'option_2' },
+      { label: 'Option #3', value: 'option_3' },
+      { label: 'Option #4', value: 'option_4' },
+      { label: 'Option #5', value: 'option_5' },
+    ]"
+  >
+    <template #menu-header>
+      <div class="menu-header">
+        <h3>Books</h3>
+      </div>
+    </template>
+  </VueSelect>
+</ClientOnly>
 
 <style scoped>
 .menu-header {

@@ -1,8 +1,8 @@
 ---
-title: 'With complex menu filter'
+title: 'Custom displayed options'
 ---
 
-# With complex menu filter
+# Custom displayed options
 
 The following example demonstrate how you can create a complex filter inside the options menu, using:
 
@@ -41,19 +41,21 @@ function switchFilter() {
 };
 </script>
 
-<VueSelect
-  v-model="selectedUsers"
-  :options="options"
-  :displayed-options="displayedOptions"
-  :is-multi="true"
-  placeholder="Select users"
->
-  <template #menu-header>
-    <button type="button" @click="switchFilter" >
-      Switch filter type (current: {{ filter }})
-    </button>
-  </template>
-</VueSelect>
+<ClientOnly>
+  <VueSelect
+    v-model="selectedUsers"
+    :options="options"
+    :displayed-options="displayedOptions"
+    :is-multi="true"
+    placeholder="Select users"
+  >
+    <template #menu-header>
+      <button type="button" @click="switchFilter" >
+        Switch filter type (current: {{ filter }})
+      </button>
+    </template>
+  </VueSelect>
+</ClientOnly>
 
 <style scoped>
 :deep(.menu button) {

@@ -78,7 +78,7 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
   border: 0;
   width: var(--vs-indicator-icon-size);
   height: var(--vs-indicator-icon-size);
-  color: var(--vs-indicator-icon-colo);
+  color: var(--vs-indicator-icon-color);
   background: none;
   outline: none;
   cursor: var(--vs-indicator-icon-cursor);

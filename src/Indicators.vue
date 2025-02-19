@@ -7,6 +7,7 @@ import Spinner from "./Spinner.vue";
 
 defineProps<{
   hasSelectedOption: boolean;
+  isMenuOpen: boolean;
   isClearable: boolean;
   isLoading: boolean;
   isDisabled: boolean;
@@ -45,6 +46,7 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
       ref="dropdownButton"
       type="button"
       class="dropdown-icon"
+      :class="{ active: isMenuOpen }"
       tabindex="-1"
       :disabled="isDisabled"
       @click.stop="emit('toggle')"
@@ -60,7 +62,7 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .indicators-container {
   display: flex;
   align-items: center;
@@ -92,9 +94,14 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
   border: 0;
   width: var(--vs-indicator-icon-size);
   height: var(--vs-indicator-icon-size);
-  color: var(vs-indicator-icon-colo);
+  color: var(--vs-indicator-icon-color);
   background: none;
   outline: none;
   cursor: var(--vs-indicator-icon-cursor);
+  transition: var(--vs-indicator-dropdown-icon-transition);
+}
+
+.dropdown-icon.active {
+  transform: rotate(180deg);
 }
 </style>

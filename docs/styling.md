@@ -84,6 +84,7 @@ For a complete list of CSS variables, we recommend to take a look at the source-
   --vs-indicator-icon-size: 20px;
   --vs-indicator-icon-color: var(--vs-text-color);
   --vs-indicator-icon-cursor: pointer;
+  --vs-indicator-dropdown-icon-transition: transform 0.2s ease-out;
 
   --vs-spinner-color: var(--vs-text-color);
   --vs-spinner-size: 16px;

@@ -416,6 +416,7 @@ onBeforeUnmount(() => {
       <Indicators
         ref="indicators"
         :has-selected-option="selectedOptions.length > 0"
+        :is-menu-open="menuOpen"
         :is-clearable="isClearable"
         :is-loading="isLoading"
         :is-disabled="isDisabled"
@@ -566,6 +567,7 @@ onBeforeUnmount(() => {
   --vs-indicator-icon-size: 20px;
   --vs-indicator-icon-color: var(--vs-text-color);
   --vs-indicator-icon-cursor: pointer;
+  --vs-indicator-dropdown-icon-transition: transform 0.2s ease-out;
 
   --vs-spinner-color: var(--vs-text-color);
   --vs-spinner-size: 16px;

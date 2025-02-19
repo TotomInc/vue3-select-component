@@ -17,11 +17,11 @@ const emit = defineEmits<{
   (e: "toggle"): void;
 }>();
 
-const container = useTemplateRef("container");
-const clearButton = useTemplateRef("clearButton");
-const dropdownButton = useTemplateRef("dropdownButton");
+const containerRef = useTemplateRef("container");
+const clearButtonRef = useTemplateRef("clearButton");
+const dropdownButtonRef = useTemplateRef("dropdownButton");
 
-defineExpose({ container, clearButton, dropdownButton });
+defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
 </script>
 
 <template>

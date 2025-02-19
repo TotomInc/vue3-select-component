@@ -46,10 +46,10 @@ const selected = defineModel<OptionValue | OptionValue[]>({
   validator: (value, _props) => _props.isMulti ? Array.isArray(value) : !Array.isArray(value),
 });
 
-const container = useTemplateRef("container");
-const input = useTemplateRef("input");
-const menu = useTemplateRef("menu");
-const indicators = useTemplateRef("indicators");
+const containerRef = useTemplateRef("container");
+const inputRef = useTemplateRef("input");
+const menuRef = useTemplateRef("menu");
+const indicatorsRef = useTemplateRef("indicators");
 
 const search = ref("");
 const menuOpen = ref(false);
@@ -109,8 +109,8 @@ function openMenu() {
     focusedOption.value = props.options.findIndex((option) => !option.disabled);
   }
 
-  if (input.value) {
-    input.value.focus();
+  if (inputRef.value) {
+    inputRef.value.focus();
   }
 
   emit("menuOpened");
@@ -132,7 +132,7 @@ function toggleMenu() {
 };
 
 function handleControlClick(event: MouseEvent) {
-  if (indicators.value?.container && !indicators.value.container.contains(event.target as Node)) {
+  if (indicatorsRef.value?.containerRef && !indicatorsRef.value.containerRef.contains(event.target as Node)) {
     openMenu();
   }
 };
@@ -157,8 +157,8 @@ const setOption = (option: GenericOption) => {
     closeMenu();
   }
 
-  if (input.value) {
-    input.value.blur();
+  if (inputRef.value) {
+    inputRef.value.blur();
   }
 };
 
@@ -181,8 +181,8 @@ const clear = () => {
 
   closeMenu();
 
-  if (input.value) {
-    input.value.blur();
+  if (inputRef.value) {
+    inputRef.value.blur();
   }
 };
 
@@ -278,14 +278,14 @@ const handleInputKeydown = (e: KeyboardEvent) => {
 };
 
 const handleClickOutside = (event: MouseEvent) => {
-  if (container.value && !container.value.contains(event.target as Node)) {
+  if (containerRef.value && !containerRef.value.contains(event.target as Node)) {
     closeMenu();
   }
 };
 
 const calculateMenuPosition = () => {
-  if (container.value) {
-    const rect = container.value.getBoundingClientRect();
+  if (containerRef.value) {
+    const rect = containerRef.value.getBoundingClientRect();
 
     return {
       left: `${rect.x}px`,
@@ -455,7 +455,7 @@ onBeforeUnmount(() => {
         :aria-label="aria?.labelledby"
         :aria-multiselectable="isMulti"
         :style="{
-          width: props.teleport ? `${container?.getBoundingClientRect().width}px` : '100%',
+          width: props.teleport ? `${containerRef?.getBoundingClientRect().width}px` : '100%',
           top: props.teleport ? calculateMenuPosition().top : 'unset',
           left: props.teleport ? calculateMenuPosition().left : 'unset',
         }"
@@ -466,7 +466,7 @@ onBeforeUnmount(() => {
           v-for="(option, i) in availableOptions"
           :key="i"
           type="button"
-          :menu="menu"
+          :menu="menuRef"
           :index="i"
           :is-focused="focusedOption === i"
           :is-selected="option.value === selected"

@@ -63,7 +63,14 @@ export default defineConfig({
       { icon: "npm", link: "https://www.npmjs.com/package/vue3-select-component" },
     ],
 
-    search: { provider: "local" },
+    search: {
+      provider: "algolia",
+      options: {
+        appId: "ZOB728VULQ",
+        apiKey: "0ef0bfc5f328b473061642ab4c730a3b",
+        indexName: "vue3-select-component",
+      },
+    },
 
     outline: "deep",
   },

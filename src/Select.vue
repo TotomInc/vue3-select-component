@@ -574,27 +574,15 @@ onBeforeUnmount(() => {
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
+* {
+  box-sizing: border-box;
+}
+
 .vue-select {
   position: relative;
   box-sizing: border-box;
   width: var(--vs-width);
-
-  * {
-    box-sizing: border-box;
-  }
-
-  &.open {
-    .single-value {
-      opacity: var(--vs-option-opacity-menu-open);
-    }
-  }
-
-  &.typing {
-    .single-value {
-      opacity: 0;
-    }
-  }
 }
 
 .control {
@@ -606,15 +594,15 @@ onBeforeUnmount(() => {
   border: var(--vs-border);
   border-radius: var(--vs-border-radius);
   background-color: var(--vs-background-color);
+}
 
-  &.focused {
-    box-shadow: 0 0 0 var(--vs-outline-width) var(--vs-outline-color);
-    border-color: var(--vs-outline-color);
-  }
+.control.focused {
+  box-shadow: 0 0 0 var(--vs-outline-width) var(--vs-outline-color);
+  border-color: var(--vs-outline-color);
+}
 
-  &.disabled {
-    background-color: var(--vs-disabled-background-color);
-  }
+.control.disabled {
+  background-color: var(--vs-disabled-background-color);
 }
 
 .value-container {
@@ -624,11 +612,11 @@ onBeforeUnmount(() => {
   align-items: center;
   flex: 1 1 0%;
   padding: var(--vs-padding);
+}
 
-  &.multi.has-value {
-    display: flex;
-    flex-wrap: wrap;
-  }
+.value-container.multi.has-value {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .single-value {
@@ -645,26 +633,34 @@ onBeforeUnmount(() => {
   color: var(--vs-text-color);
 }
 
+.vue-select[data-state="open"] .single-value {
+  opacity: var(--vs-option-opacity-menu-open);
+}
+
+.vue-select.typing .single-value {
+  opacity: 0;
+}
+
 .input-container {
   visibility: visible;
   display: inline-grid;
   grid-area: 1 / 1 / 2 / 3;
   grid-template-columns: 0px min-content;
+}
 
-  &.typing {
-    transform: translateZ(0px);
-  }
+.input-container.typing {
+  transform: translateZ(0px);
+}
 
-  &.typing::after {
-    content: attr(data-value) " ";
-    visibility: hidden;
-    white-space: pre;
-    grid-area: 1 / 2;
-    min-width: 2px;
-    padding: 0;
-    margin: 0;
-    border: 0;
-  }
+.input-container.typing::after {
+  content: attr(data-value) " ";
+  visibility: hidden;
+  white-space: pre;
+  grid-area: 1 / 2;
+  min-width: 2px;
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
 .search-input {

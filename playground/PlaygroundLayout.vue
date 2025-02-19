@@ -54,7 +54,7 @@ body {
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .navigation-container {
   display: flex;
   align-items: center;
@@ -65,21 +65,21 @@ body {
 
 .container {
   padding: 2rem;
+}
 
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-    padding: 2rem;
-    margin: 0 auto;
-    border-radius: 6px;
-    background-color: #fff;
+.form-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  padding: 2rem;
+  margin: 0 auto;
+  border-radius: 6px;
+  background-color: #fff;
+}
 
-    .selected-value {
-      font-size: 14px;
-      font-weight: 500;
-      font-family: "IBM Plex Mono", monospace;
-    }
-  }
+.selected-value {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "IBM Plex Mono", monospace;
 }
 </style>

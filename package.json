@@ -57,7 +57,6 @@
     "happy-dom": "17.1.1",
     "npm-run-all2": "7.0.2",
     "postcss": "8.5.2",
-    "sass": "1.85.0",
     "typescript": "5.7.3",
     "vite": "6.1.0",
     "vite-plugin-css-injected-by-js": "3.5.2",

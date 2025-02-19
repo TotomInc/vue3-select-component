@@ -12,10 +12,10 @@ Each option requires two key properties:
 
 ```vue
 <template>
-  <VueSelect 
+  <VueSelect
     :options="[
       { label: 'JavaScript', value: 'js' },
-      { label: 'TypeScript', value: 'ts' }
+      { label: 'TypeScript', value: 'ts' },
     ]"
   />
 </template>
@@ -32,7 +32,7 @@ For TypeScript users, import the `Option` type to ensure proper type checking:
 ```ts
 import type { Option } from "vue3-select-component";
 
-const options: Option<string>[] = [{ label: 'JavaScript', value: 'js' }];
+const options: Option<string>[] = [{ label: "JavaScript", value: "js" }];
 ```
 :::
 
@@ -42,10 +42,10 @@ Individual options can be disabled by adding the `disabled` property:
 
 ```vue
 <template>
-  <VueSelect 
+  <VueSelect
     :options="[
       { label: 'Available', value: 'a1' },
-      { label: 'Unavailable', value: 'a2', disabled: true }
+      { label: 'Unavailable', value: 'a2', disabled: true },
     ]"
   />
 </template>
@@ -66,12 +66,12 @@ Options can include additional properties beyond the standard `label`/`value` pa
 <template>
   <VueSelect
     :options="[
-      { 
+      {
         label: 'JavaScript',
         value: 'js',
         version: 'ES2022',
-        creator: 'Brendan Eich'
-      }
+        creator: 'Brendan Eich',
+      },
     ]"
     :get-option-label="option => `${option.label} (${option.version})`"
   >

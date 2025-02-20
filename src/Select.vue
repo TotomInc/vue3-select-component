@@ -9,6 +9,7 @@ import MenuOption from "./MenuOption.vue";
 import MultiValue from "./MultiValue.vue";
 import Placeholder from "./Placeholder.vue";
 import Spinner from "./Spinner.vue";
+import { uniqueId } from "./utils";
 
 const props = withDefaults(
   defineProps<Props<GenericOption, OptionValue>>(),
@@ -25,6 +26,7 @@ const props = withDefaults(
     closeOnSelect: true,
     teleport: undefined,
     inputId: undefined,
+    uid: uniqueId(),
     aria: undefined,
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionValue: (option: GenericOption) => option.value,
@@ -348,6 +350,7 @@ onBeforeUnmount(() => {
       @click="handleControlClick($event)"
     >
       <div
+        :id="`vue-select-${uid}-combobox`"
         class="value-container"
         :class="{ 'multi': isMulti, 'has-value': selectedOptions.length > 0 }"
         role="combobox"
@@ -357,6 +360,8 @@ onBeforeUnmount(() => {
         :aria-labelledby="aria?.labelledby"
         :aria-label="selectedOptions.length ? selectedOptions.map(getOptionLabel).join(', ') : ''"
         :aria-required="aria?.required"
+        :aria-owns="`vue-select-${uid}-listbox`"
+        :aria-controls="`vue-select-${uid}-listbox`"
         aria-haspopup="true"
       >
         <Placeholder
@@ -405,6 +410,7 @@ onBeforeUnmount(() => {
             tabindex="0"
             type="text"
             aria-autocomplete="list"
+            :aria-labelledby="`vue-select-${uid}-combobox`"
             :disabled="isDisabled"
             placeholder=""
             @mousedown="openMenu()"
@@ -450,6 +456,7 @@ onBeforeUnmount(() => {
     >
       <div
         v-if="menuOpen"
+        :id="`vue-select-${uid}-listbox`"
         ref="menu"
         class="menu"
         role="listbox"

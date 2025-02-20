@@ -89,6 +89,12 @@ export type Props<GenericOption, OptionValue> = {
   class?: string;
 
   /**
+   * Unique identifier to identify the select component, using `id` attribute.
+   * This is useful for accessibility.
+   */
+  uid?: string | number;
+
+  /**
    * ARIA attributes to describe the select component. This is useful for accessibility.
    */
   aria?: {

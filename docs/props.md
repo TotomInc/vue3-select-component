@@ -187,6 +187,14 @@ The `id` attribute to be passed to the `<input />` element. This is useful for a
 
 A custom class to be passed to the select control.
 
+## uid
+
+**Type**: `string | number`
+
+**Default**: `number`
+
+A unique identifier to be passed to the select control. Will be used on multiple `id` attributes for accessibility purposes such as `aria-owns`, `aria-controls`, etc.
+
 ## aria
 
 **Type**: `{ labelledby?: string; required?: boolean; }`

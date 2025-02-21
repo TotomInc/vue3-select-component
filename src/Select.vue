@@ -280,7 +280,11 @@ const handleInputKeydown = (e: KeyboardEvent) => {
 };
 
 const handleClickOutside = (event: MouseEvent) => {
-  if (containerRef.value && !containerRef.value.contains(event.target as Node)) {
+  const target = event.target as Node;
+  const isInsideContainer = containerRef.value && containerRef.value.contains(target);
+  const isInsideMenu = menuRef.value && menuRef.value.contains(target);
+
+  if (!isInsideContainer && !isInsideMenu) {
     closeMenu();
   }
 };

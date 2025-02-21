@@ -22,7 +22,7 @@ const emit = defineEmits<{
       type="button"
       class="multi-value-remove"
       :aria-label="`Remove ${label}`"
-      @click="emit('remove')"
+      @click.stop="emit('remove')"
     >
       <XMarkIcon />
     </button>

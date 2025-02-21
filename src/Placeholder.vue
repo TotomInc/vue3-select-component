@@ -5,13 +5,13 @@ defineProps<{
 </script>
 
 <template>
-  <div class="placeholder">
+  <div class="input-placeholder">
     {{ text }}
   </div>
 </template>
 
 <style lang="css" scoped>
-.placeholder {
+.input-placeholder {
   grid-area: 1 / 1 / 2 / 3;
   color: var(--vs-placeholder-color);
 }

@@ -37,7 +37,7 @@ describe("input + menu interactions behavior", () => {
   it("should display the placeholder when no option is selected", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, placeholder: "Select an option" } });
 
-    expect(wrapper.find(".placeholder").text()).toBe("Select an option");
+    expect(wrapper.find(".input-placeholder").text()).toBe("Select an option");
   });
 
   it("should not open the menu when focusing the input", async () => {

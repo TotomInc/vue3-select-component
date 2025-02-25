@@ -203,6 +203,14 @@ A unique identifier to be passed to the select control. Will be used on multiple
 
 Aria attributes to be passed to the select control to improve accessibility.
 
+## disableInvalidVModelWarn
+
+**Type**: `boolean`
+
+**Default**: `false`
+
+When set to true, the component will not emit a `console.warn` because of an invalid `v-model` type when using `isMulti`. This is useful when using the component with dynamic `v-model` references.
+
 ## filterBy
 
 **Type**:

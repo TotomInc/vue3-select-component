@@ -73,7 +73,7 @@ const availableOptions = computed<GenericOption[]>(() => {
 
   // Remove already selected values from the list of options, when in multi-select mode.
   const getNonSelectedOptions = (options: GenericOption[]) => options.filter(
-    (option) => !(selected.value as OptionValue[]).includes(option.value),
+    (option) => Array.isArray(selected.value) && !selected.value.includes(option.value),
   );
 
   if (props.isSearchable && search.value) {
@@ -150,7 +150,12 @@ const setOption = (option: GenericOption) => {
   }
 
   if (props.isMulti) {
-    (selected.value as OptionValue[]).push(option.value);
+    if (Array.isArray(selected.value)) {
+      selected.value.push(option.value);
+    }
+    else if (!props.disableInvalidVModelWarn) {
+      console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
+    }
   }
   else {
     selected.value = option.value;
@@ -171,8 +176,13 @@ const setOption = (option: GenericOption) => {
 
 const removeOption = (option: GenericOption) => {
   if (props.isMulti && !props.isDisabled) {
-    selected.value = (selected.value as OptionValue[]).filter((value) => value !== option.value);
-    emit("optionDeselected", option);
+    if (Array.isArray(selected.value)) {
+      selected.value = selected.value.filter((value) => value !== option.value);
+      emit("optionDeselected", option);
+    }
+    else if (!props.disableInvalidVModelWarn) {
+      console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
+    }
   }
 };
 
@@ -257,14 +267,14 @@ const handleNavigation = (e: KeyboardEvent) => {
       closeMenu();
     }
 
-    const hasSelectedValue = props.isMulti ? (selected.value as OptionValue[]).length > 0 : !!selected.value;
+    const hasSelectedValue = props.isMulti && Array.isArray(selected.value) ? selected.value.length > 0 : !!selected.value;
 
     // When pressing backspace with no search, remove the last selected option.
     if (e.key === "Backspace" && search.value.length === 0 && hasSelectedValue) {
       e.preventDefault();
 
-      if (props.isMulti) {
-        selected.value = (selected.value as OptionValue[]).slice(0, -1);
+      if (props.isMulti && Array.isArray(selected.value)) {
+        selected.value = selected.value.slice(0, -1);
       }
       else {
         selected.value = undefined as OptionValue;

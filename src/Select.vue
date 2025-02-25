@@ -28,6 +28,7 @@ const props = withDefaults(
     inputId: undefined,
     uid: uniqueId(),
     aria: undefined,
+    disableInvalidVModelWarn: false,
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionValue: (option: GenericOption) => option.value,
     getOptionLabel: (option: GenericOption) => option.label,
@@ -87,10 +88,14 @@ const availableOptions = computed<GenericOption[]>(() => {
 const selectedOptions = computed(() => {
   if (props.isMulti) {
     if (!Array.isArray(selected.value)) {
-      console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
+      if (!props.disableInvalidVModelWarn) {
+        console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
+      }
+
+      return [];
     }
 
-    return (selected.value as OptionValue[]).map(
+    return selected.value.map(
       (value) => props.options.find((option) => option.value === value)!,
     );
   }

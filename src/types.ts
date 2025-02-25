@@ -103,6 +103,13 @@ export type Props<GenericOption, OptionValue> = {
   };
 
   /**
+   * When set to true, the component will not emit a `console.warn` because of an invalid
+   * `v-model` type when using `isMulti`. This is useful when using the component with
+   * dynamic `v-model` references.
+   */
+  disableInvalidVModelWarn?: boolean;
+
+  /**
    * Callback to filter the options based on the search input. By default, it filters
    * the options based on the `label` property of the option. The label is retrieved
    * using `getOptionLabel`.

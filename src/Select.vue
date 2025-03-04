@@ -72,8 +72,9 @@ const availableOptions = computed<GenericOption[]>(() => {
   }));
 
   // Remove already selected values from the list of options, when in multi-select mode.
+  // In case an invalid v-model is provided, we return all options since we can't know what options are valid.
   const getNonSelectedOptions = (options: GenericOption[]) => options.filter(
-    (option) => Array.isArray(selected.value) && !selected.value.includes(option.value),
+    (option) => Array.isArray(selected.value) ? !selected.value.includes(option.value) : true,
   );
 
   if (props.isSearchable && search.value) {

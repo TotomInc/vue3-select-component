@@ -44,10 +44,7 @@ const emit = defineEmits<{
   (e: "search", value: string): void;
 }>();
 
-const selected = defineModel<OptionValue | OptionValue[]>({
-  required: true,
-  validator: (value, _props) => _props.isMulti ? Array.isArray(value) : !Array.isArray(value),
-});
+const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
 
 const containerRef = useTemplateRef("container");
 const inputRef = useTemplateRef("input");
@@ -154,8 +151,12 @@ const setOption = (option: GenericOption) => {
     if (Array.isArray(selected.value)) {
       selected.value.push(option.value);
     }
-    else if (!props.disableInvalidVModelWarn) {
-      console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
+    else {
+      selected.value = [option.value];
+
+      if (!props.disableInvalidVModelWarn) {
+        console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}. Since an option has been selected, the component automatically converted the v-model to an array.`);
+      }
     }
   }
   else {

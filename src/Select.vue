@@ -44,10 +44,7 @@ const emit = defineEmits<{
   (e: "search", value: string): void;
 }>();
 
-const selected = defineModel<OptionValue | OptionValue[]>({
-  required: true,
-  validator: (value, _props) => _props.isMulti ? Array.isArray(value) : !Array.isArray(value),
-});
+const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
 
 const containerRef = useTemplateRef("container");
 const inputRef = useTemplateRef("input");
@@ -72,8 +69,9 @@ const availableOptions = computed<GenericOption[]>(() => {
   }));
 
   // Remove already selected values from the list of options, when in multi-select mode.
+  // In case an invalid v-model is provided, we return all options since we can't know what options are valid.
   const getNonSelectedOptions = (options: GenericOption[]) => options.filter(
-    (option) => Array.isArray(selected.value) && !selected.value.includes(option.value),
+    (option) => Array.isArray(selected.value) ? !selected.value.includes(option.value) : true,
   );
 
   if (props.isSearchable && search.value) {
@@ -85,7 +83,7 @@ const availableOptions = computed<GenericOption[]>(() => {
   return props.isMulti ? getNonSelectedOptions(options) : options;
 });
 
-const selectedOptions = computed(() => {
+const selectedOptions = computed<GenericOption[]>(() => {
   if (props.isMulti) {
     if (!Array.isArray(selected.value)) {
       if (!props.disableInvalidVModelWarn) {
@@ -95,9 +93,9 @@ const selectedOptions = computed(() => {
       return [];
     }
 
-    return selected.value.map(
-      (value) => props.options.find((option) => option.value === value)!,
-    );
+    return selected.value
+      .map((selectedValue) => props.options.find((option) => props.getOptionValue(option) === selectedValue))
+      .filter((option) => option !== undefined);
   }
 
   const found = props.options.find((option) => props.getOptionValue(option) === selected.value);
@@ -153,8 +151,12 @@ const setOption = (option: GenericOption) => {
     if (Array.isArray(selected.value)) {
       selected.value.push(option.value);
     }
-    else if (!props.disableInvalidVModelWarn) {
-      console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
+    else {
+      selected.value = [option.value];
+
+      if (!props.disableInvalidVModelWarn) {
+        console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}. Since an option has been selected, the component automatically converted the v-model to an array.`);
+      }
     }
   }
   else {

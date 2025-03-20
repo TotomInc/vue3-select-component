@@ -83,7 +83,7 @@ const availableOptions = computed<GenericOption[]>(() => {
   return props.isMulti ? getNonSelectedOptions(options) : options;
 });
 
-const selectedOptions = computed(() => {
+const selectedOptions = computed<GenericOption[]>(() => {
   if (props.isMulti) {
     if (!Array.isArray(selected.value)) {
       if (!props.disableInvalidVModelWarn) {
@@ -93,9 +93,9 @@ const selectedOptions = computed(() => {
       return [];
     }
 
-    return selected.value.map(
-      (value) => props.options.find((option) => option.value === value)!,
-    );
+    return selected.value
+      .map((selectedValue) => props.options.find((option) => props.getOptionValue(option) === selectedValue))
+      .filter((option) => option !== undefined);
   }
 
   const found = props.options.find((option) => props.getOptionValue(option) === selected.value);

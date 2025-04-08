@@ -54,6 +54,7 @@ export default defineConfig({
           { text: "Dropdown menu header", link: "/demo/dropdown-menu-header" },
           { text: "Custom displayed options", link: "/demo/custom-displayed-options" },
           { text: "Controlled menu", link: "/demo/controlled-menu" },
+          { text: "Pre-selected values", link: "/demo/pre-selected-values" },
         ],
       },
     ],

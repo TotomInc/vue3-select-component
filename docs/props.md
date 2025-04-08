@@ -143,6 +143,14 @@ Whether the select should display a loading state. When `true`, the select will 
 
 A prop to control the menu open state programmatically. When set to `true`, the menu will be open. When set to `false`, the menu will be closed.
 
+## hideSelectedOptions
+
+**Type**: `boolean`
+
+**Default**: `true`
+
+When set to `true` with `isMulti`, selected options won't appear in the options menu. Set it to `false` to show selected options in the menu.
+
 ## shouldAutofocusOption
 
 **Type**: `boolean`

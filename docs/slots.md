@@ -12,15 +12,25 @@ If you are not familiar with Vue's slots, you can read more about them [here](ht
 
 ## option
 
-**Type**: `slotProps: { option: Option }`
+**Type**:
 
-Customize the rendered template of an option inside the menu. You can use the slot props to retrieve the current menu option that will be rendered.
+```ts
+slotProps: {
+  option: Option;
+  index: number;
+  isFocused: boolean;
+  isSelected: boolean;
+  isDisabled: boolean;
+}
+```
+
+Customize the rendered template of an option inside the menu. You can use the slot props to retrieve the current menu option that will be rendered in order to have more context and flexbility.
 
 ```vue
 <template>
   <VueSelect v-model="option" :options="options">
-    <template #option="{ option }">
-      {{ option.label }} - {{ option.value }}
+    <template #option="{ option, index }">
+      {{ option.label }} - {{ option.value }} (#{{ index }})
     </template>
   </VueSelect>
 </template>

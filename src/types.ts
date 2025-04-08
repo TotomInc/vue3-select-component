@@ -61,6 +61,12 @@ export type Props<GenericOption, OptionValue> = {
   isMenuOpen?: boolean;
 
   /**
+   * When set to true with `isMulti`, selected options won't be displayed in
+   * the menu.
+   */
+  hideSelectedOptions?: boolean;
+
+  /**
    * When set to true, focus the first option when the menu is opened.
    * When set to false, no option will be focused.
    */

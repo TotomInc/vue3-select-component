@@ -22,6 +22,7 @@ const props = withDefaults(
     isTaggable: false,
     isLoading: false,
     isMenuOpen: undefined,
+    hideSelectedOptions: true,
     shouldAutofocusOption: true,
     closeOnSelect: true,
     teleport: undefined,
@@ -71,7 +72,7 @@ const availableOptions = computed<GenericOption[]>(() => {
   // Remove already selected values from the list of options, when in multi-select mode.
   // In case an invalid v-model is provided, we return all options since we can't know what options are valid.
   const getNonSelectedOptions = (options: GenericOption[]) => options.filter(
-    (option) => Array.isArray(selected.value) ? !selected.value.includes(option.value) : true,
+    (option) => props.hideSelectedOptions && Array.isArray(selected.value) ? !selected.value.includes(option.value) : true,
   );
 
   if (props.isSearchable && search.value) {
@@ -149,7 +150,14 @@ const setOption = (option: GenericOption) => {
 
   if (props.isMulti) {
     if (Array.isArray(selected.value)) {
-      selected.value.push(option.value);
+      const isAlreadyPresent = selected.value.find((v) => v === option.value);
+
+      if (!isAlreadyPresent) {
+        selected.value.push(option.value);
+      }
+      else {
+        selected.value = selected.value.filter((v) => v !== option.value);
+      }
     }
     else {
       selected.value = [option.value];
@@ -498,11 +506,18 @@ onBeforeUnmount(() => {
           :menu="menuRef"
           :index="i"
           :is-focused="focusedOption === i"
-          :is-selected="option.value === selected"
+          :is-selected="Array.isArray(selected) ? selected.includes(option.value) : option.value === selected"
           :is-disabled="option.disabled || false"
           @select="setOption(option)"
         >
-          <slot name="option" :option="option">
+          <slot
+            name="option"
+            :option="option"
+            :index="i"
+            :is-focused="focusedOption === i"
+            :is-selected="Array.isArray(selected) ? selected.includes(option.value) : option.value === selected"
+            :is-disabled="option.disabled || false"
+          >
             {{ getOptionLabel(option) }}
           </slot>
         </MenuOption>

@@ -5,6 +5,23 @@ export type Option<T> = {
   [key: string]: unknown;
 };
 
+export type SelectClasses = {
+  container?: string;
+  control?: string;
+  valueContainer?: string;
+  placeholder?: string;
+  singleValue?: string;
+  multiValue?: string;
+  multiValueLabel?: string;
+  multiValueRemove?: string;
+  inputContainer?: string;
+  searchInput?: string;
+  menuContainer?: string;
+  menuOption?: string;
+  noResults?: string;
+  taggableNoOptions?: string;
+};
+
 export type Props<GenericOption, OptionValue> = {
   /**
    * A list of options to render on the select component.
@@ -84,9 +101,9 @@ export type Props<GenericOption, OptionValue> = {
   inputId?: string;
 
   /**
-   * CSS class to append to the select component at the root level.
+   * CSS classes to apply to the select component.
    */
-  class?: string;
+  classes?: SelectClasses;
 
   /**
    * Unique identifier to identify the select component, using `id` attribute.

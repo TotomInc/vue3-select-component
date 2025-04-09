@@ -26,6 +26,7 @@ const props = withDefaults(
     closeOnSelect: true,
     teleport: undefined,
     inputId: undefined,
+    classes: undefined,
     uid: uniqueId(),
     aria: undefined,
     disableInvalidVModelWarn: false,
@@ -362,18 +363,18 @@ onBeforeUnmount(() => {
     ref="container"
     dir="auto"
     class="vue-select"
-    :class="[{ open: menuOpen, typing: menuOpen && search.length > 0, disabled: isDisabled }, props.class]"
+    :class="[{ open: menuOpen, typing: menuOpen && search.length > 0, disabled: isDisabled }, props.classes?.container]"
     :data-state="menuOpen ? 'open' : 'closed'"
   >
     <div
       class="control"
-      :class="{ focused: menuOpen, disabled: props.isDisabled }"
+      :class="[{ focused: menuOpen, disabled: props.isDisabled }, props.classes?.control]"
       @click="handleControlClick($event)"
     >
       <div
         :id="`vue-select-${uid}-combobox`"
         class="value-container"
-        :class="{ 'multi': isMulti, 'has-value': selectedOptions.length > 0 }"
+        :class="[{ 'multi': isMulti, 'has-value': selectedOptions.length > 0 }, props.classes?.valueContainer]"
         role="combobox"
         :aria-expanded="menuOpen"
         :aria-describedby="placeholder"
@@ -388,11 +389,13 @@ onBeforeUnmount(() => {
         <Placeholder
           v-if="!selectedOptions[0] && !search.length"
           :text="placeholder"
+          :class="props.classes?.placeholder"
         />
 
         <div
           v-else-if="!props.isMulti && selectedOptions[0]"
           class="single-value"
+          :class="[props.classes?.singleValue]"
           @click="openMenu()"
         >
           <slot name="value" :option="selectedOptions[0]">
@@ -410,13 +413,21 @@ onBeforeUnmount(() => {
             :option="selectedOption"
             :remove-option="() => removeOption(selectedOption)"
           >
-            <MultiValue :label="getOptionLabel(selectedOption)" @remove="removeOption(selectedOption)" />
+            <MultiValue
+              :label="getOptionLabel(selectedOption)"
+              :classes="{
+                multiValue: props.classes?.multiValue,
+                multiValueLabel: props.classes?.multiValueLabel,
+                multiValueRemove: props.classes?.multiValueRemove,
+              }"
+              @remove="removeOption(selectedOption)"
+            />
           </slot>
         </template>
 
         <div
           class="input-container"
-          :class="{ typing: menuOpen && search.length > 0 }"
+          :class="[{ typing: menuOpen && search.length > 0 }, props.classes?.inputContainer]"
           :data-value="search"
         >
           <input
@@ -424,6 +435,7 @@ onBeforeUnmount(() => {
             ref="input"
             v-model="search"
             class="search-input"
+            :class="props.classes?.searchInput"
             autocapitalize="none"
             autocomplete="off"
             autocorrect="off"
@@ -480,6 +492,7 @@ onBeforeUnmount(() => {
         :id="`vue-select-${uid}-listbox`"
         ref="menu"
         class="menu"
+        :class="props.classes?.menuContainer"
         role="listbox"
         :aria-label="aria?.labelledby"
         :aria-multiselectable="isMulti"
@@ -500,6 +513,7 @@ onBeforeUnmount(() => {
           :is-focused="focusedOption === i"
           :is-selected="option.value === selected"
           :is-disabled="option.disabled || false"
+          :class="props.classes?.menuOption"
           @select="setOption(option)"
         >
           <slot name="option" :option="option">
@@ -507,7 +521,11 @@ onBeforeUnmount(() => {
           </slot>
         </MenuOption>
 
-        <div v-if="!isTaggable && availableOptions.length === 0" class="no-results">
+        <div
+          v-if="!isTaggable && availableOptions.length === 0"
+          class="no-results"
+          :class="props.classes?.noResults"
+        >
           <slot name="no-options">
             No results found
           </slot>
@@ -516,6 +534,7 @@ onBeforeUnmount(() => {
         <div
           v-if="isTaggable && search"
           class="taggable-no-options"
+          :class="props.classes?.taggableNoOptions"
           @click="createOption"
         >
           <slot

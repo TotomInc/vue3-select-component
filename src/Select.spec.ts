@@ -479,3 +479,76 @@ describe("menu closing behavior", () => {
     }
   });
 });
+
+describe("hideSelectedOptions prop", () => {
+  it("should hide selected options from menu when hideSelectedOptions is true", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: true } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length - 1);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0].label);
+  });
+
+  it("should show selected options in menu when hideSelectedOptions is false", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: false } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0].label);
+  });
+
+  it("should show all options when in single-select mode regardless of hideSelectedOptions", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, hideSelectedOptions: true } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0].label);
+  });
+
+  it("should correctly restore hidden options when they are deselected", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: true } });
+
+    // Select first option
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await openMenu(wrapper);
+
+    // Verify it's hidden from dropdown
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length - 1);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0].label);
+
+    // Remove the option
+    await wrapper.get(".multi-value-remove").trigger("click");
+    await openMenu(wrapper);
+
+    // Verify it's back in the dropdown
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0].label);
+  });
+
+  it("should correctly filter options when searching with hideSelectedOptions enabled", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: true } });
+
+    // Select first option (France)
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    // Open menu and search for "United"
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "United");
+
+    // Should only show United Kingdom and United States (not France)
+    expect(wrapper.findAll("div[role='option']").length).toBe(2);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain("United Kingdom");
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain("United States");
+  });
+});

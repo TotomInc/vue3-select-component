@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import XMarkIcon from "./icons/XMarkIcon.vue";
 
-defineProps<{
+const props = defineProps<{
   label: string;
+  classes?: {
+    multiValue?: string;
+    multiValueLabel?: string;
+    multiValueRemove?: string;
+  };
 }>();
 
 const emit = defineEmits<{
@@ -13,15 +18,17 @@ const emit = defineEmits<{
 <template>
   <div
     class="multi-value"
+    :class="props.classes?.multiValue"
   >
-    <div class="multi-value-label">
-      {{ label }}
+    <div class="multi-value-label" :class="props.classes?.multiValueLabel">
+      {{ props.label }}
     </div>
 
     <button
       type="button"
       class="multi-value-remove"
-      :aria-label="`Remove ${label}`"
+      :class="props.classes?.multiValueRemove"
+      :aria-label="`Remove ${props.label}`"
       @click.stop="emit('remove')"
     >
       <XMarkIcon />

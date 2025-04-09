@@ -187,13 +187,32 @@ Top and left properties are calculated using a ref on the `.vue-select` with a `
 
 The `id` attribute to be passed to the `<input />` element. This is useful for accessibility or forms.
 
-## class
+## classes
 
-**Type**: `string`
+**Type**:
+
+```ts
+type SelectClasses = {
+  container?: string;
+  control?: string;
+  valueContainer?: string;
+  placeholder?: string;
+  singleValue?: string;
+  multiValue?: string;
+  multiValueLabel?: string;
+  multiValueRemove?: string;
+  inputContainer?: string;
+  searchInput?: string;
+  menuContainer?: string;
+  menuOption?: string;
+  noResults?: string;
+  taggableNoOptions?: string;
+};
+```
 
 **Default**: `undefined`
 
-A custom class to be passed to the select control.
+CSS classes to be applied at multiple places in the select component. Useful when using TailwindCSS to customize the component.
 
 ## uid
 

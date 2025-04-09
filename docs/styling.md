@@ -123,6 +123,41 @@ You can also use the `:deep` selector to apply the CSS variables to the componen
 </style>
 ```
 
+## Custom classes with TailwindCSS
+
+The component provides a `classes` prop that allows you to apply custom TailwindCSS classes to different parts of the select component. This is particularly useful when you want to customize the appearance without overriding the default CSS variables.
+
+Here's an example of how to use TailwindCSS classes with the component:
+
+```vue
+<template>
+  <VueSelect
+    v-model="selected"
+    :options="options"
+    :classes="{
+      container: 'w-full max-w-md',
+      control: 'border-2 border-gray-200 hover:border-gray-300',
+      valueContainer: 'p-2',
+      placeholder: 'text-gray-400',
+      singleValue: 'text-gray-800 font-medium',
+      multiValue: 'bg-blue-100 rounded-md',
+      multiValueLabel: 'text-blue-800 px-2 py-1',
+      multiValueRemove: 'hover:bg-blue-200 px-2',
+      inputContainer: 'p-1',
+      searchInput: 'text-gray-700',
+      menuContainer: 'mt-1 border border-gray-200 rounded-md shadow-lg',
+      menuOption: 'px-3 py-2 hover:bg-gray-100',
+      noResults: 'text-gray-500 p-3',
+      taggableNoOptions: 'text-blue-600 p-3 hover:bg-blue-50',
+    }"
+  />
+</template>
+```
+
+::: warning
+When using TailwindCSS classes, be careful not to break the component's functionality by overriding essential styles like `display`, `position`, or `z-index` properties that are crucial for the component's layout and behavior.
+:::
+
 ## Scoped styling inside SFC
 
 You can apply any custom styling using [the `:deep` selector](https://vuejs.org/api/sfc-css-features.html#deep-selectors) inside a `<style scoped>`.

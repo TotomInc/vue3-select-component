@@ -154,7 +154,7 @@ const setOption = (option: GenericOption) => {
       const isAlreadyPresent = selected.value.find((v) => v === option.value);
 
       if (!isAlreadyPresent) {
-        selected.value.push(option.value);
+        selected.value = [...selected.value, option.value]
       }
       else {
         selected.value = selected.value.filter((v) => v !== option.value);

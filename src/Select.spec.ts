@@ -223,7 +223,7 @@ describe("multi-select options", () => {
     await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
-    expect(wrapper.props("modelValue")).toStrictEqual([options[0].value]);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0].value]]]);
     expect(wrapper.get(".multi-value").element.textContent).toBe(options[0].label);
   });
 
@@ -282,7 +282,7 @@ describe("clear button", () => {
     await wrapper.get("div[role='option']").trigger("click");
     await wrapper.get(".clear-button").trigger("click");
 
-    expect(wrapper.props("modelValue")).toStrictEqual([options[0].value]);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0].value]], [ [ ] ]]);
     expect(wrapper.find(".clear-button").exists()).toBe(false);
   });
 });

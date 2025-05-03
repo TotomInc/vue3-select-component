@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Option } from "../src/types";
+import type { Option } from "../src";
 import { ref } from "vue";
 import { RouterView, useRouter } from "vue-router";
-import Select from "../src/Select.vue";
+import Select from "../src";
 
 const links = [
   { value: "/single-select", label: "Single Select" },

@@ -1,16 +1,17 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
-import type { Option, Props } from "./types";
+import type { Option } from "@/types/option";
+import type { Props } from "@/types/props";
+import ChevronDownIcon from "@/icons/ChevronDownIcon.vue";
+import XMarkIcon from "@/icons/XMarkIcon.vue";
+import Indicators from "@/Indicators.vue";
+import { DATA_KEY, PROPS_KEY } from "@/lib/provide-inject";
+import { uniqueId } from "@/lib/uid";
+import Menu from "@/Menu.vue";
+import MultiValue from "@/MultiValue.vue";
+import Placeholder from "@/Placeholder.vue";
+import Spinner from "@/Spinner.vue";
 
 import { computed, provide, ref, useTemplateRef, watch } from "vue";
-import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
-import XMarkIcon from "./icons/XMarkIcon.vue";
-import Indicators from "./Indicators.vue";
-import Menu from "./Menu.vue";
-import MultiValue from "./MultiValue.vue";
-import Placeholder from "./Placeholder.vue";
-import { DATA_KEY, PROPS_KEY } from "./provide-inject";
-import Spinner from "./Spinner.vue";
-import { uniqueId } from "./utils";
 
 const props = withDefaults(
   defineProps<Props<GenericOption, OptionValue>>(),

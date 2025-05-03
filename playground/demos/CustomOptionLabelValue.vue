@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Option } from "../../src/types";
+import type { Option } from "../../src";
 import { ref } from "vue";
-import VueSelect from "../../src/Select.vue";
+import VueSelect from "../../src";
 
 const selected = ref<string | null>(null);
 

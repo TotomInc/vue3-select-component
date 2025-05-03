@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Option } from "../../src/types";
+import type { Option } from "../../src";
 import { ref } from "vue";
-import VueSelect from "../../src/Select.vue";
+import VueSelect from "../../src";
 
 const selected = ref<string | null>(null);
 
@@ -18,8 +18,15 @@ const options: Option<string>[] = [
     v-model="selected"
     :options="options"
     :is-multi="false"
+    :is-taggable="true"
     placeholder="Pick a book"
-  />
+  >
+    <template #taggable-no-options="{ option }">
+      <div class="custom-taggable-no-options">
+        Create option: {{ option }}
+      </div>
+    </template>
+  </VueSelect>
 
   <p class="selected-value">
     Selected book value: {{ selected || "none" }}

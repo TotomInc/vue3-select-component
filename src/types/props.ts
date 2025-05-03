@@ -1,10 +1,3 @@
-export type Option<T> = {
-  label: string;
-  value: T;
-  disabled?: boolean;
-  [key: string]: unknown;
-};
-
 export type SelectClasses = {
   container?: string;
   control?: string;

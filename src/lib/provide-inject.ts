@@ -1,4 +1,6 @@
-import type { Option, Props } from "@/types";
+import type { Option } from "@/types/option";
+import type { Props } from "@/types/props";
+
 import type { InjectionKey, Ref, ShallowRef } from "vue";
 
 /**

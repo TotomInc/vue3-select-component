@@ -1,13 +1,14 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
 import type { Option, Props } from "./types";
 
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from "vue";
+import { computed, provide, ref, useTemplateRef, watch } from "vue";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
 import XMarkIcon from "./icons/XMarkIcon.vue";
 import Indicators from "./Indicators.vue";
-import MenuOption from "./MenuOption.vue";
+import Menu from "./Menu.vue";
 import MultiValue from "./MultiValue.vue";
 import Placeholder from "./Placeholder.vue";
+import { DATA_KEY, PROPS_KEY } from "./provide-inject";
 import Spinner from "./Spinner.vue";
 import { uniqueId } from "./utils";
 
@@ -50,7 +51,6 @@ const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
 
 const containerRef = useTemplateRef("container");
 const inputRef = useTemplateRef("input");
-const menuRef = useTemplateRef("menu");
 const indicatorsRef = useTemplateRef("indicators");
 
 const search = ref("");
@@ -154,7 +154,7 @@ const setOption = (option: GenericOption) => {
       const isAlreadyPresent = selected.value.find((v) => v === option.value);
 
       if (!isAlreadyPresent) {
-        selected.value = [...selected.value, option.value]
+        selected.value = [...selected.value, option.value];
       }
       else {
         selected.value = selected.value.filter((v) => v !== option.value);
@@ -220,80 +220,6 @@ const createOption = () => {
   closeMenu();
 };
 
-const handleNavigation = (e: KeyboardEvent) => {
-  if (menuOpen.value) {
-    const currentIndex = focusedOption.value;
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-
-      const nextOptionIndex = availableOptions.value.findIndex((option, i) => !option.disabled && i > currentIndex);
-      const firstOptionIndex = availableOptions.value.findIndex((option) => !option.disabled);
-
-      focusedOption.value = nextOptionIndex === -1 ? firstOptionIndex : nextOptionIndex;
-    }
-
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-
-      const prevOptionIndex = availableOptions.value.reduce(
-        (acc, option, i) => (!option.disabled && i < currentIndex ? i : acc),
-        -1,
-      );
-
-      const lastOptionIndex = availableOptions.value.reduce(
-        (acc, option, i) => (!option.disabled ? i : acc),
-        -1,
-      );
-
-      focusedOption.value = prevOptionIndex === -1 ? lastOptionIndex : prevOptionIndex;
-    }
-
-    if (e.key === "Enter") {
-      const selectedOption = availableOptions.value[currentIndex];
-
-      e.preventDefault();
-
-      if (selectedOption) {
-        setOption(selectedOption);
-      }
-      else if (props.isTaggable && search.value) {
-        createOption();
-      }
-    }
-
-    // When pressing space with menu open but no search, select the focused option.
-    if (e.code === "Space" && search.value.length === 0) {
-      const selectedOption = availableOptions.value[currentIndex];
-
-      e.preventDefault();
-
-      if (selectedOption) {
-        setOption(selectedOption);
-      }
-    }
-
-    if (e.key === "Escape") {
-      e.preventDefault();
-      closeMenu();
-    }
-
-    const hasSelectedValue = props.isMulti && Array.isArray(selected.value) ? selected.value.length > 0 : !!selected.value;
-
-    // When pressing backspace with no search, remove the last selected option.
-    if (e.key === "Backspace" && search.value.length === 0 && hasSelectedValue) {
-      e.preventDefault();
-
-      if (props.isMulti && Array.isArray(selected.value)) {
-        selected.value = selected.value.slice(0, -1);
-      }
-      else {
-        selected.value = undefined as OptionValue;
-      }
-    }
-  }
-};
-
 const handleInputKeydown = (e: KeyboardEvent) => {
   if (e.key === "Tab") {
     closeMenu();
@@ -305,30 +231,23 @@ const handleInputKeydown = (e: KeyboardEvent) => {
   }
 };
 
-const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as Node;
-  const isInsideContainer = containerRef.value && containerRef.value.contains(target);
-  const isInsideMenu = menuRef.value && menuRef.value.contains(target);
-
-  if (!isInsideContainer && !isInsideMenu) {
-    closeMenu();
-  }
-};
-
-const calculateMenuPosition = () => {
-  if (containerRef.value) {
-    const rect = containerRef.value.getBoundingClientRect();
-
-    return {
-      left: `${rect.x}px`,
-      top: `${rect.y + rect.height}px`,
-    };
-  }
-
-  console.warn("Unable to calculate dynamic menu position because of missing internal DOM reference.");
-
-  return { top: "0px", left: "0px" };
-};
+provide(PROPS_KEY, props);
+provide(DATA_KEY, {
+  vmodel: selected,
+  availableOptions,
+  selectedOptions,
+  menuOpen,
+  focusedOption,
+  containerRef,
+  search,
+  openMenu,
+  closeMenu,
+  toggleMenu,
+  handleControlClick,
+  setOption,
+  removeOption,
+  createOption,
+});
 
 watch(
   () => search.value,
@@ -354,16 +273,6 @@ watch(
   },
   { immediate: true },
 );
-
-onMounted(() => {
-  document.addEventListener("mousedown", handleClickOutside);
-  document.addEventListener("keydown", handleNavigation);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener("mousedown", handleClickOutside);
-  document.removeEventListener("keydown", handleNavigation);
-});
 </script>
 
 <template>
@@ -495,71 +404,7 @@ onBeforeUnmount(() => {
       :disabled="!teleport"
       :defer="true"
     >
-      <div
-        v-if="menuOpen"
-        :id="`vue-select-${uid}-listbox`"
-        ref="menu"
-        class="menu"
-        :class="props.classes?.menuContainer"
-        role="listbox"
-        :aria-label="aria?.labelledby"
-        :aria-multiselectable="isMulti"
-        :style="{
-          width: props.teleport ? `${containerRef?.getBoundingClientRect().width}px` : '100%',
-          top: props.teleport ? calculateMenuPosition().top : 'unset',
-          left: props.teleport ? calculateMenuPosition().left : 'unset',
-        }"
-      >
-        <slot name="menu-header" />
-
-        <MenuOption
-          v-for="(option, i) in availableOptions"
-          :key="i"
-          type="button"
-          :menu="menuRef"
-          :index="i"
-          :is-focused="focusedOption === i"
-          :is-selected="Array.isArray(selected) ? selected.includes(option.value) : option.value === selected"
-          :is-disabled="option.disabled || false"
-          :class="props.classes?.menuOption"
-          @select="setOption(option)"
-        >
-          <slot
-            name="option"
-            :option="option"
-            :index="i"
-            :is-focused="focusedOption === i"
-            :is-selected="Array.isArray(selected) ? selected.includes(option.value) : option.value === selected"
-            :is-disabled="option.disabled || false"
-          >
-            {{ getOptionLabel(option) }}
-          </slot>
-        </MenuOption>
-
-        <div
-          v-if="!isTaggable && availableOptions.length === 0"
-          class="no-results"
-          :class="props.classes?.noResults"
-        >
-          <slot name="no-options">
-            No results found
-          </slot>
-        </div>
-
-        <div
-          v-if="isTaggable && search"
-          class="taggable-no-options"
-          :class="props.classes?.taggableNoOptions"
-          @click="createOption"
-        >
-          <slot
-            name="taggable-no-options"
-            :option="search"
-          >
-            Press enter to add {{ search }} option
-          </slot>
-        </div>
-      </div>
+      <Menu v-if="menuOpen" />
     </Teleport>
   </div>
 </template>
@@ -739,32 +584,5 @@ onBeforeUnmount(() => {
   color: var(--vs-text-color);
   opacity: 1;
   outline: none;
-}
-
-.menu {
-  position: absolute;
-  margin-top: var(--vs-menu-offset-top);
-  max-height: var(--vs-menu-height);
-  overflow-y: auto;
-  border: var(--vs-menu-border);
-  border-radius: var(--vs-border-radius);
-  box-shadow: var(--vs-menu-box-shadow);
-  background-color: var(--vs-menu-background-color);
-  z-index: var(--vs-menu-z-index);
-}
-
-.no-results {
-  padding: var(--vs-option-padding);
-  font-size: var(--vs-font-size);
-  font-family: var(--vs-font-family);
-  color: var(--vs-text-color);
-}
-
-.taggable-no-options {
-  padding: var(--vs-option-padding);
-  font-size: var(--vs-font-size);
-  font-family: var(--vs-font-family);
-  color: var(--vs-text-color);
-  cursor: pointer;
 }
 </style>

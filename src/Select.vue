@@ -1,15 +1,13 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
 import type { Option } from "@/types/option";
 import type { Props } from "@/types/props";
-import ChevronDownIcon from "@/icons/ChevronDownIcon.vue";
-import XMarkIcon from "@/icons/XMarkIcon.vue";
+import type { Slots } from "@/types/slots";
 import Indicators from "@/Indicators.vue";
 import { DATA_KEY, PROPS_KEY } from "@/lib/provide-inject";
 import { uniqueId } from "@/lib/uid";
 import Menu from "@/Menu.vue";
 import MultiValue from "@/MultiValue.vue";
 import Placeholder from "@/Placeholder.vue";
-import Spinner from "@/Spinner.vue";
 
 import { computed, provide, ref, useTemplateRef, watch } from "vue";
 
@@ -48,6 +46,7 @@ const emit = defineEmits<{
   (e: "search", value: string): void;
 }>();
 
+const slots = defineSlots<Slots<GenericOption, OptionValue>>();
 const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
 
 const containerRef = useTemplateRef("container");
@@ -377,27 +376,10 @@ watch(
         :is-clearable="isClearable"
         :is-loading="isLoading"
         :is-disabled="isDisabled"
+        :slots="{ clear: slots.clear, dropdown: slots.dropdown, loading: slots.loading }"
         @clear="clear"
         @toggle="toggleMenu"
-      >
-        <template #clear>
-          <slot name="clear">
-            <XMarkIcon />
-          </slot>
-        </template>
-
-        <template #dropdown>
-          <slot name="dropdown">
-            <ChevronDownIcon />
-          </slot>
-        </template>
-
-        <template #loading>
-          <slot name="loading">
-            <Spinner v-if="isLoading" />
-          </slot>
-        </template>
-      </Indicators>
+      />
     </div>
 
     <Teleport
@@ -405,7 +387,16 @@ watch(
       :disabled="!teleport"
       :defer="true"
     >
-      <Menu v-if="menuOpen" />
+      <Menu
+        v-if="menuOpen"
+        v-model="selected"
+        :slots="{
+          'option': slots.option,
+          'menu-header': slots['menu-header'],
+          'no-options': slots['no-options'],
+          'taggable-no-options': slots['taggable-no-options'],
+        }"
+      />
     </Teleport>
   </div>
 </template>

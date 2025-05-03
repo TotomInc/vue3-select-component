@@ -1,16 +1,19 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
+import type { Option } from "@/types/option";
+import type { IndicatorsSlots } from "@/types/slots";
+import ChevronDownIcon from "@/icons/ChevronDownIcon.vue";
+import XMarkIcon from "@/icons/XMarkIcon.vue";
+import Spinner from "@/Spinner.vue";
+
 import { useTemplateRef } from "vue";
 
-import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
-import XMarkIcon from "./icons/XMarkIcon.vue";
-import Spinner from "./Spinner.vue";
-
-defineProps<{
+const props = defineProps<{
   hasSelectedOption: boolean;
   isMenuOpen: boolean;
   isClearable: boolean;
   isLoading: boolean;
   isDisabled: boolean;
+  slots: IndicatorsSlots<GenericOption, OptionValue>;
 }>();
 
 const emit = defineEmits<{
@@ -36,9 +39,13 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
       :disabled="isDisabled"
       @click.stop="emit('clear')"
     >
-      <slot name="clear">
+      <template v-if="props.slots.clear">
+        <component :is="props.slots.clear" />
+      </template>
+
+      <template v-else>
         <XMarkIcon />
-      </slot>
+      </template>
     </button>
 
     <button
@@ -51,14 +58,22 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
       :disabled="isDisabled"
       @click.stop="emit('toggle')"
     >
-      <slot name="dropdown">
+      <template v-if="props.slots.dropdown">
+        <component :is="props.slots.dropdown" />
+      </template>
+
+      <template v-else>
         <ChevronDownIcon />
-      </slot>
+      </template>
     </button>
 
-    <slot name="loading">
+    <template v-if="props.slots.loading">
+      <component :is="props.slots.loading" />
+    </template>
+
+    <template v-else>
       <Spinner v-if="isLoading" />
-    </slot>
+    </template>
   </div>
 </template>
 

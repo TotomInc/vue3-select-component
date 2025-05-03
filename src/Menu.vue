@@ -1,19 +1,26 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
 import type { DataInjection, PropsInjection } from "@/lib/provide-inject";
 import type { Option } from "@/types/option";
+import type { MenuSlots } from "@/types/slots";
 import { DATA_KEY, PROPS_KEY } from "@/lib/provide-inject";
 import MenuOption from "@/MenuOption.vue";
 
 import { inject, onBeforeUnmount, onMounted, useTemplateRef } from "vue";
 
-const props = inject<PropsInjection<GenericOption, OptionValue>>(PROPS_KEY)!;
-const data = inject<DataInjection<GenericOption, OptionValue>>(DATA_KEY)!;
+const props = defineProps<{
+  slots: MenuSlots<GenericOption, OptionValue>;
+}>();
+
+const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
+
+const sharedProps = inject<PropsInjection<GenericOption, OptionValue>>(PROPS_KEY)!;
+const sharedData = inject<DataInjection<GenericOption, OptionValue>>(DATA_KEY)!;
 
 const menuRef = useTemplateRef("menu");
 
 const calculateMenuPosition = () => {
-  if (data.containerRef.value) {
-    const rect = data.containerRef.value.getBoundingClientRect();
+  if (sharedData.containerRef.value) {
+    const rect = sharedData.containerRef.value.getBoundingClientRect();
 
     return {
       left: `${rect.x}px`,
@@ -27,74 +34,74 @@ const calculateMenuPosition = () => {
 };
 
 const handleNavigation = (e: KeyboardEvent) => {
-  if (data.menuOpen.value) {
-    const currentIndex = data.focusedOption.value;
+  if (sharedData.menuOpen.value) {
+    const currentIndex = sharedData.focusedOption.value;
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
 
-      const nextOptionIndex = data.availableOptions.value.findIndex((option, i) => !option.disabled && i > currentIndex);
-      const firstOptionIndex = data.availableOptions.value.findIndex((option) => !option.disabled);
+      const nextOptionIndex = sharedData.availableOptions.value.findIndex((option, i) => !option.disabled && i > currentIndex);
+      const firstOptionIndex = sharedData.availableOptions.value.findIndex((option) => !option.disabled);
 
-      data.focusedOption.value = nextOptionIndex === -1 ? firstOptionIndex : nextOptionIndex;
+      sharedData.focusedOption.value = nextOptionIndex === -1 ? firstOptionIndex : nextOptionIndex;
     }
 
     if (e.key === "ArrowUp") {
       e.preventDefault();
 
-      const prevOptionIndex = data.availableOptions.value.reduce(
+      const prevOptionIndex = sharedData.availableOptions.value.reduce(
         (acc, option, i) => (!option.disabled && i < currentIndex ? i : acc),
         -1,
       );
 
-      const lastOptionIndex = data.availableOptions.value.reduce(
+      const lastOptionIndex = sharedData.availableOptions.value.reduce(
         (acc, option, i) => (!option.disabled ? i : acc),
         -1,
       );
 
-      data.focusedOption.value = prevOptionIndex === -1 ? lastOptionIndex : prevOptionIndex;
+      sharedData.focusedOption.value = prevOptionIndex === -1 ? lastOptionIndex : prevOptionIndex;
     }
 
     if (e.key === "Enter") {
-      const selectedOption = data.availableOptions.value[currentIndex];
+      const selectedOption = sharedData.availableOptions.value[currentIndex];
 
       e.preventDefault();
 
       if (selectedOption) {
-        data.setOption(selectedOption);
+        sharedData.setOption(selectedOption);
       }
-      else if (props.isTaggable && data.search.value) {
-        data.createOption();
+      else if (sharedProps.isTaggable && sharedData.search.value) {
+        sharedData.createOption();
       }
     }
 
     // When pressing space with menu open but no search, select the focused option.
-    if (e.code === "Space" && data.search.value.length === 0) {
-      const selectedOption = data.availableOptions.value[currentIndex];
+    if (e.code === "Space" && sharedData.search.value.length === 0) {
+      const selectedOption = sharedData.availableOptions.value[currentIndex];
 
       e.preventDefault();
 
       if (selectedOption) {
-        data.setOption(selectedOption);
+        sharedData.setOption(selectedOption);
       }
     }
 
     if (e.key === "Escape") {
       e.preventDefault();
-      data.closeMenu();
+      sharedData.closeMenu();
     }
 
-    const hasSelectedValue = props.isMulti && Array.isArray(data.vmodel.value) ? data.vmodel.value.length > 0 : !!data.vmodel.value;
+    const hasSelectedValue = sharedProps.isMulti && Array.isArray(selected.value) ? selected.value.length > 0 : !!selected.value;
 
     // When pressing backspace with no search, remove the last selected option.
-    if (e.key === "Backspace" && data.search.value.length === 0 && hasSelectedValue) {
+    if (e.key === "Backspace" && sharedData.search.value.length === 0 && hasSelectedValue) {
       e.preventDefault();
 
-      if (props.isMulti && Array.isArray(data.vmodel.value)) {
-        data.vmodel.value = data.vmodel.value.slice(0, -1);
+      if (sharedProps.isMulti && Array.isArray(selected.value)) {
+        selected.value = selected.value.slice(0, -1);
       }
       else {
-        data.vmodel.value = undefined as OptionValue;
+        selected.value = undefined as OptionValue;
       }
     }
   }
@@ -102,11 +109,11 @@ const handleNavigation = (e: KeyboardEvent) => {
 
 const handleClickOutside = (event: MouseEvent) => {
   const target = event.target as Node;
-  const isInsideContainer = data.containerRef.value && data.containerRef.value.contains(target);
+  const isInsideContainer = sharedData.containerRef.value && sharedData.containerRef.value.contains(target);
   const isInsideMenu = menuRef.value && menuRef.value.contains(target);
 
   if (!isInsideContainer && !isInsideMenu) {
-    data.closeMenu();
+    sharedData.closeMenu();
   }
 };
 
@@ -123,67 +130,80 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    :id="`vue-select-${props.uid}-listbox`"
+    :id="`vue-select-${sharedProps.uid}-listbox`"
     ref="menu"
     class="menu"
-    :class="props.classes?.menuContainer"
+    :class="sharedProps.classes?.menuContainer"
     role="listbox"
-    :aria-label="props.aria?.labelledby"
-    :aria-multiselectable="props.isMulti"
+    :aria-label="sharedProps.aria?.labelledby"
+    :aria-multiselectable="sharedProps.isMulti"
     :style="{
-      width: props.teleport ? `${data.containerRef?.value?.getBoundingClientRect().width}px` : '100%',
-      top: props.teleport ? calculateMenuPosition().top : 'unset',
-      left: props.teleport ? calculateMenuPosition().left : 'unset',
+      width: sharedProps.teleport ? `${sharedData.containerRef?.value?.getBoundingClientRect().width}px` : '100%',
+      top: sharedProps.teleport ? calculateMenuPosition().top : 'unset',
+      left: sharedProps.teleport ? calculateMenuPosition().left : 'unset',
     }"
   >
     <MenuOption
-      v-for="(option, i) in data.availableOptions.value"
+      v-for="(option, i) in sharedData.availableOptions.value"
       :key="i"
       type="button"
       :menu="menuRef"
       :index="i"
-      :is-focused="data.focusedOption.value === i"
-      :is-selected="Array.isArray(data.vmodel.value) ? data.vmodel.value.includes(option.value) : option.value === data.vmodel.value"
+      :is-focused="sharedData.focusedOption.value === i"
+      :is-selected="Array.isArray(selected) ? selected.includes(option.value) : option.value === selected"
       :is-disabled="option.disabled || false"
-      :class="props.classes?.menuOption"
-      @select="data.setOption(option)"
+      :class="sharedProps.classes?.menuOption"
+      @select="sharedData.setOption(option)"
     >
-      <slot name="menu-header" />
+      <component :is="props.slots['menu-header']" />
 
-      <slot
-        name="option"
-        :option="option"
-        :index="i"
-        :is-focused="data.focusedOption.value === i"
-        :is-selected="Array.isArray(data.vmodel.value) ? data.vmodel.value.includes(option.value) : option.value === data.vmodel.value"
-        :is-disabled="option.disabled || false"
-      >
-        {{ props.getOptionLabel ? props.getOptionLabel(option) : option.label }}
-      </slot>
+      <template v-if="props.slots.option">
+        <component
+          :is="props.slots.option"
+          :option="option"
+          :index="i"
+          :is-focused="sharedData.focusedOption.value === i"
+          :is-selected="Array.isArray(selected) ? selected.includes(option.value) : option.value === selected"
+          :is-disabled="option.disabled || false"
+        />
+      </template>
+
+      <template v-else-if="sharedProps.getOptionLabel">
+        {{ sharedProps.getOptionLabel(option) }}
+      </template>
+
+      <template v-else>
+        {{ option.label }}
+      </template>
     </MenuOption>
 
     <div
-      v-if="!props.isTaggable && data.availableOptions.value.length === 0"
+      v-if="!sharedProps.isTaggable && sharedData.availableOptions.value.length === 0"
       class="no-results"
-      :class="props.classes?.noResults"
+      :class="sharedProps.classes?.noResults"
     >
-      <slot name="no-options">
+      <template v-if="props.slots['no-options']">
+        <component :is="props.slots['no-options']" />
+      </template>
+
+      <template v-else>
         No results found
-      </slot>
+      </template>
     </div>
 
     <div
-      v-if="props.isTaggable && data.search.value"
+      v-if="sharedProps.isTaggable && sharedData.search.value"
       class="taggable-no-options"
-      :class="props.classes?.taggableNoOptions"
-      @click="data.createOption"
+      :class="sharedProps.classes?.taggableNoOptions"
+      @click="sharedData.createOption"
     >
-      <slot
-        name="taggable-no-options"
-        :option="data.search.value"
-      >
-        Press enter to add {{ data.search.value }} option
-      </slot>
+      <template v-if="props.slots['taggable-no-options']">
+        <component :is="props.slots['taggable-no-options']" :option="sharedData.search.value" />
+      </template>
+
+      <template v-else>
+        Press enter to add {{ sharedData.search.value }} option
+      </template>
     </div>
   </div>
 </template>

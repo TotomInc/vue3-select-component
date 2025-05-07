@@ -326,9 +326,13 @@ watch(
           :class="[props.classes?.singleValue]"
           @click="openMenu()"
         >
-          <slot name="value" :option="selectedOptions[0]">
+          <template v-if="slots.value">
+            <component :is="slots.value" :option="selectedOptions[0]" />
+          </template>
+
+          <template v-else>
             {{ getOptionLabel(selectedOptions[0]) }}
-          </slot>
+          </template>
         </div>
 
         <template
@@ -336,21 +340,24 @@ watch(
           v-else-if="props.isMulti && selectedOptions.length"
           :key="selectedOption.value"
         >
-          <slot
-            name="tag"
-            :option="selectedOption"
-            :remove-option="() => removeOption(selectedOption)"
-          >
-            <MultiValue
-              :label="getOptionLabel(selectedOption)"
-              :classes="{
-                multiValue: props.classes?.multiValue,
-                multiValueLabel: props.classes?.multiValueLabel,
-                multiValueRemove: props.classes?.multiValueRemove,
-              }"
-              @remove="removeOption(selectedOption)"
+          <template v-if="slots.tag">
+            <component
+              :is="slots.tag"
+              :option="selectedOption"
+              :remove-option="() => removeOption(selectedOption)"
             />
-          </slot>
+          </template>
+
+          <MultiValue
+            v-else
+            :label="getOptionLabel(selectedOption)"
+            :classes="{
+              multiValue: props.classes?.multiValue,
+              multiValueLabel: props.classes?.multiValueLabel,
+              multiValueRemove: props.classes?.multiValueRemove,
+            }"
+            @remove="removeOption(selectedOption)"
+          />
         </template>
 
         <div

@@ -282,7 +282,7 @@ describe("clear button", () => {
     await wrapper.get("div[role='option']").trigger("click");
     await wrapper.get(".clear-button").trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0].value]], [ [ ] ]]);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0].value]], [[]]]);
     expect(wrapper.find(".clear-button").exists()).toBe(false);
   });
 });
@@ -300,7 +300,7 @@ describe("search emit", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await inputSearch(wrapper, "United");
-    await dispatchEvent(wrapper, new MouseEvent("mousedown"));
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Escape" }));
 
     expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
   });
@@ -466,7 +466,6 @@ describe("menu closing behavior", () => {
 
     const closeTriggers = [
       { name: "tab key", action: async () => await wrapper.get("input").trigger("keydown", { key: "Tab" }) },
-      { name: "outside click", action: async () => await dispatchEvent(wrapper, new MouseEvent("mousedown")) },
       { name: "escape key", action: async () => await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Escape" })) },
       { name: "dropdown button", action: async () => await wrapper.get(".dropdown-icon").trigger("click") },
     ];

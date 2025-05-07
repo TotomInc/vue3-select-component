@@ -1,5 +1,6 @@
 import type { UserConfig } from "vite";
 
+import { resolve as pathResolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
@@ -13,7 +14,12 @@ export default defineConfig((configEnv) => {
   // Default config shared config by all modes.
   const config: UserConfig = {
     plugins: [vue()],
-    resolve: { alias: { "@": resolve("./src") } },
+
+    resolve: {
+      alias: {
+        "@": pathResolve(__dirname, "./src"),
+      },
+    },
   };
 
   // Build library when in production mode (npm run build).

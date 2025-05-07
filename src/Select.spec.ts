@@ -1,4 +1,4 @@
-import type { Option } from "@/types/option";
+import type { Option } from "./types/option";
 import { mount } from "@vue/test-utils";
 
 import { describe, expect, it } from "vitest";

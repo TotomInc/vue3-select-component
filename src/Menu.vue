@@ -1,11 +1,11 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
-import type { DataInjection, PropsInjection } from "@/lib/provide-inject";
-import type { Option } from "@/types/option";
-import type { MenuSlots } from "@/types/slots";
-import { DATA_KEY, PROPS_KEY } from "@/lib/provide-inject";
-import MenuOption from "@/MenuOption.vue";
-
+import type { DataInjection, PropsInjection } from "./lib/provide-inject";
+import type { Option } from "./types/option";
+import type { MenuSlots } from "./types/slots";
 import { inject, onBeforeUnmount, onMounted, useTemplateRef } from "vue";
+import { DATA_KEY, PROPS_KEY } from "./lib/provide-inject";
+
+import MenuOption from "./MenuOption.vue";
 
 const props = defineProps<{
   slots: MenuSlots<GenericOption, OptionValue>;

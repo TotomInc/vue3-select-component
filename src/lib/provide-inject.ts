@@ -1,7 +1,7 @@
-import type { Option } from "@/types/option";
-import type { Props } from "@/types/props";
-
 import type { InjectionKey, Ref, ShallowRef } from "vue";
+import type { Option } from "../types/option";
+
+import type { Props } from "../types/props";
 
 /**
  * This type allows you to inject the props with the correct generics

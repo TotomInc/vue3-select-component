@@ -1,4 +1,4 @@
-import type { Option } from "@/types/option";
+import type { Option } from "./option";
 
 /**
  * Define all existing slots across all internal components.

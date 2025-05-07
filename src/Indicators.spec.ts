@@ -3,7 +3,6 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
 import XMarkIcon from "./icons/XMarkIcon.vue";
-import Indicators from "./Indicators.vue";
 import Select from "./Select.vue";
 import Spinner from "./Spinner.vue";
 
@@ -65,7 +64,7 @@ describe("dropdown button rendering", () => {
 
   it("should emit toggle event when dropdown button is clicked", async () => {
     const wrapper = mount(Select, { props: defaultProps });
-    const indicators = wrapper.findComponent(Indicators);
+    const indicators = wrapper.getComponent({ name: "Indicators" });
 
     await wrapper.find(".dropdown-icon").trigger("click");
     expect(indicators.emitted("toggle")).toStrictEqual([[]]);
@@ -138,7 +137,7 @@ describe("clear button behavior", () => {
 
   it("should emit clear event when clear button is clicked", async () => {
     const wrapper = mount(Select, { props: defaultProps });
-    const indicators = wrapper.findComponent(Indicators);
+    const indicators = wrapper.getComponent({ name: "Indicators" });
 
     await wrapper.get("input").trigger("mousedown");
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));

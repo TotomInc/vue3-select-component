@@ -1,11 +1,11 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
-import type { Option } from "@/types/option";
-import type { IndicatorsSlots } from "@/types/slots";
-import ChevronDownIcon from "@/icons/ChevronDownIcon.vue";
-import XMarkIcon from "@/icons/XMarkIcon.vue";
-import Spinner from "@/Spinner.vue";
-
+import type { Option } from "./types/option";
+import type { IndicatorsSlots } from "./types/slots";
 import { useTemplateRef } from "vue";
+import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
+import XMarkIcon from "./icons/XMarkIcon.vue";
+
+import Spinner from "./Spinner.vue";
 
 const props = defineProps<{
   hasSelectedOption: boolean;

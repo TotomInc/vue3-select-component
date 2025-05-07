@@ -1,15 +1,15 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
-import type { Option } from "@/types/option";
-import type { Props } from "@/types/props";
-import type { Slots } from "@/types/slots";
-import Indicators from "@/Indicators.vue";
-import { DATA_KEY, PROPS_KEY } from "@/lib/provide-inject";
-import { uniqueId } from "@/lib/uid";
-import Menu from "@/Menu.vue";
-import MultiValue from "@/MultiValue.vue";
-import Placeholder from "@/Placeholder.vue";
-
+import type { Option } from "./types/option";
+import type { Props } from "./types/props";
+import type { Slots } from "./types/slots";
 import { computed, provide, ref, useTemplateRef, watch } from "vue";
+import Indicators from "./Indicators.vue";
+import { DATA_KEY, PROPS_KEY } from "./lib/provide-inject";
+import { uniqueId } from "./lib/uid";
+import Menu from "./Menu.vue";
+import MultiValue from "./MultiValue.vue";
+
+import Placeholder from "./Placeholder.vue";
 
 const props = withDefaults(
   defineProps<Props<GenericOption, OptionValue>>(),

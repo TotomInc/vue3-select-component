@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import XMarkIcon from "@/icons/XMarkIcon.vue";
+import XMarkIcon from "./icons/XMarkIcon.vue";
 
 const props = defineProps<{
   label: string;

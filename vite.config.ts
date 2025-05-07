@@ -3,6 +3,7 @@ import type { UserConfig } from "vite";
 import { resolve as pathResolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import { defineConfig } from "vite";
 import cssInject from "vite-plugin-css-injected-by-js";
 import dts from "vite-plugin-dts";
@@ -13,7 +14,7 @@ const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 export default defineConfig((configEnv) => {
   // Default config shared config by all modes.
   const config: UserConfig = {
-    plugins: [vue()],
+    plugins: [vue(), vueJsx()],
 
     resolve: {
       alias: {

@@ -126,6 +126,7 @@ function openMenu() {
 function closeMenu() {
   menuOpen.value = false;
   search.value = "";
+  emit("search", "");
   emit("menuClosed");
 };
 
@@ -207,7 +208,9 @@ const clear = () => {
     emit("optionDeselected", selectedOptions.value[0]);
   }
 
-  closeMenu();
+  if (menuOpen.value) {
+    closeMenu();
+  }
 
   if (inputRef.value) {
     inputRef.value.blur();
@@ -249,21 +252,29 @@ provide(DATA_KEY, {
   createOption,
 });
 
+// Watch the search input value to emit search events and auto-open the menu when typing
 watch(
   () => search.value,
   () => {
-    emit("search", search.value);
+    if (search.value) {
+      emit("search", search.value);
 
-    // When starting to type, open the menu automatically.
-    if (search.value && !menuOpen.value) {
-      openMenu();
+      if (!menuOpen.value) {
+        openMenu();
+      }
     }
   },
 );
 
+// Watch the isMenuOpen prop to allow external control of the dropdown menu visibility
 watch(
   () => props.isMenuOpen,
-  (newValue) => {
+  (newValue, oldValue) => {
+    // Skip the initial call when the component is mounted
+    if (oldValue === undefined && newValue === undefined) {
+      return;
+    }
+
     if (newValue) {
       openMenu();
     }

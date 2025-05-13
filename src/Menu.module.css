@@ -1,0 +1,30 @@
+:global(*) {
+  box-sizing: border-box;
+}
+
+.menu {
+  position: absolute;
+  margin-top: var(--vs-menu-offset-top);
+  max-height: var(--vs-menu-height);
+  overflow-y: auto;
+  border: var(--vs-menu-border);
+  border-radius: var(--vs-border-radius);
+  box-shadow: var(--vs-menu-box-shadow);
+  background-color: var(--vs-menu-background-color);
+  z-index: var(--vs-menu-z-index);
+}
+
+.no-results {
+  padding: var(--vs-option-padding);
+  font-size: var(--vs-font-size);
+  font-family: var(--vs-font-family);
+  color: var(--vs-text-color);
+}
+
+.taggable-no-options {
+  padding: var(--vs-option-padding);
+  font-size: var(--vs-font-size);
+  font-family: var(--vs-font-family);
+  color: var(--vs-text-color);
+  cursor: pointer;
+}

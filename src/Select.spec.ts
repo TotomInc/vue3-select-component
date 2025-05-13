@@ -392,7 +392,7 @@ describe("taggable prop", () => {
 
     await openMenu(wrapper);
     await inputSearch(wrapper, "New Option");
-    await wrapper.get(".taggable-no-options").trigger("click");
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
 
     expect(wrapper.emitted("optionCreated")).toStrictEqual([["New Option"]]);
   });
@@ -401,8 +401,8 @@ describe("taggable prop", () => {
     const wrapper = mount(VueSelect, {
       props: { modelValue: null, options, isTaggable: true },
       slots: {
-        "taggable-no-options": `<template #taggable-no-options="{ option }">
-          <div class="custom-taggable-no-options">Create option: {{ option }}</div>
+        "taggable-no-options": `<template #taggable-no-options="{ value }">
+          <div class="custom-taggable-no-options">Create option: {{ value }}</div>
         </template>`,
       },
     });

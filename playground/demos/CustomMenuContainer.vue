@@ -19,9 +19,24 @@ const options: Option<string>[] = [
     :options="options"
     :is-multi="false"
     placeholder="Pick a book"
-  />
+  >
+    <template #menu-container="{ defaultContent }">
+      <div class="custom-menu-container">
+        <template v-if="defaultContent">
+          <component :is="defaultContent" />
+        </template>
+      </div>
+    </template>
+  </VueSelect>
 
   <p class="selected-value">
     Selected book value: {{ selected || "none" }}
   </p>
 </template>
+
+<style lang="css" scoped>
+.custom-menu-container {
+  background-color: #eff6ff;
+  padding: 4px;
+}
+</style>

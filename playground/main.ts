@@ -2,9 +2,10 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import ControlledMenu from "./demos/ControlledMenu.vue";
+import CustomMenuContainer from "./demos/CustomMenuContainer.vue";
+import CustomMenuOption from "./demos/CustomMenuOption.vue";
 import CustomOptionLabelValue from "./demos/CustomOptionLabelValue.vue";
 import CustomSearchFilter from "./demos/CustomSearchFilter.vue";
-import ExtraOptionProperties from "./demos/ExtraOptionProperties.vue";
 import MenuHeader from "./demos/MenuHeader.vue";
 import MultiSelect from "./demos/MultiSelect.vue";
 import MultiSelectTaggable from "./demos/MultiSelectTaggable.vue";
@@ -20,7 +21,8 @@ const router = createRouter({
     { path: "/single-select", component: SingleSelect },
     { path: "/multi-select", component: MultiSelect },
     { path: "/multi-select-taggable", component: MultiSelectTaggable },
-    { path: "/extra-option-properties", component: ExtraOptionProperties },
+    { path: "/custom-menu-container", component: CustomMenuContainer },
+    { path: "/custom-menu-option", component: CustomMenuOption },
     { path: "/custom-option-label-value", component: CustomOptionLabelValue },
     { path: "/custom-search-filter", component: CustomSearchFilter },
     { path: "/select-is-loading", component: SelectIsLoading },

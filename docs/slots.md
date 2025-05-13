@@ -90,6 +90,36 @@ Customize the rendered template for the menu header. This slot is placed **befor
 </template>
 ```
 
+## menu-container
+
+**Type**: `slotProps: { defaultContent: JSX.Element }`
+
+Wrap the entire menu content with a custom container without disrupting the default behavior. This slot is particularly useful for implementing advanced scrolling techniques such as:
+
+- Virtual scrolling for large option lists
+- Infinite scrolling to dynamically load more options
+- Custom scrollbars or scroll behavior
+- Any other UI enhancements that need to wrap the menu options
+
+The `defaultContent` prop is a render function that returns all the default menu content (options, no-options message, etc.). You must call this function within your custom implementation to preserve the component's original content and functionality.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #menu-container="{ defaultContent }">
+      <MyVirtualScroller>
+        <!-- Render the default menu content inside your custom container -->
+        <component :is="defaultContent" />
+      </MyVirtualScroller>
+    </template>
+  </VueSelect>
+</template>
+```
+
+::: tip
+This slot doesn't replace individual option customization. For that, use the `option` slot. The `menu-container` slot is specifically for wrapping the entire menu content.
+:::
+
 ## no-options
 
 **Type**: `slotProps: {}`
@@ -160,7 +190,7 @@ Customize the rendered template when the select component is in a loading state.
 
 ## taggable-no-options
 
-**Type**: `slotProps: { option: string }`
+**Type**: `slotProps: { value: string }`
 
 Customize the rendered template when there are no matching options and the `taggable` prop is set to `true`. You can use the slot props to retrieve the current search value.
 
@@ -171,8 +201,8 @@ Customize the rendered template when there are no matching options and the `tagg
     :options="options"
     :taggable="true"
   >
-    <template #taggable-no-options="{ option }">
-      Press enter to add {{ option }} option
+    <template #taggable-no-options="{ value }">
+      Press enter to add {{ value }} option
     </template>
   </VueSelect>
 </template>

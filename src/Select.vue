@@ -6,7 +6,7 @@ import { computed, provide, ref, useTemplateRef, watch } from "vue";
 import Indicators from "./Indicators.vue";
 import { DATA_KEY, PROPS_KEY } from "./lib/provide-inject";
 import { uniqueId } from "./lib/uid";
-import Menu from "./Menu.vue";
+import { Menu } from "./Menu.tsx";
 import MultiValue from "./MultiValue.vue";
 
 import Placeholder from "./Placeholder.vue";
@@ -413,6 +413,7 @@ watch(
           'menu-header': slots['menu-header'],
           'no-options': slots['no-options'],
           'taggable-no-options': slots['taggable-no-options'],
+          'menu-container': slots['menu-container'],
         }"
       />
     </Teleport>

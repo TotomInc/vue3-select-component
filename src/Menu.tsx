@@ -4,7 +4,6 @@ import type { MenuSlots } from "./types/slots";
 import { computed, defineComponent, inject, onBeforeUnmount, onMounted, useTemplateRef } from "vue";
 import { DATA_KEY, PROPS_KEY } from "./lib/provide-inject";
 import classes from "./Menu.module.css";
-// @ts-expect-error -- IDE can't resolve .vue inside a .tsx file.
 import MenuOption from "./MenuOption.vue";
 
 export const Menu = defineComponent(

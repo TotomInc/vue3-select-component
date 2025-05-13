@@ -58,6 +58,10 @@ watch(
 </template>
 
 <style lang="css" scoped>
+* {
+  box-sizing: border-box;
+}
+
 .menu-option {
   display: flex;
   width: var(--vs-option-width);

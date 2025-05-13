@@ -1,3 +1,4 @@
+import type { JSX } from "vue/jsx-runtime";
 import type { Option } from "./option";
 
 /**
@@ -12,9 +13,10 @@ export type Slots<GenericOption extends Option<OptionValue>, OptionValue> = {
   "dropdown"?: () => any;
   "loading"?: () => any;
   "menu-header"?: () => any;
+  "menu-container"?: (props: { defaultContent: JSX.Element }) => any;
   "option"?: (props: { option: GenericOption; index: number; isFocused: boolean; isSelected: boolean; isDisabled: boolean }) => any;
   "no-options"?: () => any;
-  "taggable-no-options"?: () => any;
+  "taggable-no-options"?: (props: { value: string }) => any;
 };
 
 export type IndicatorsSlots<GenericOption extends Option<OptionValue>, OptionValue> = Pick<
@@ -24,5 +26,5 @@ export type IndicatorsSlots<GenericOption extends Option<OptionValue>, OptionVal
 
 export type MenuSlots<GenericOption extends Option<OptionValue>, OptionValue> = Pick<
   Slots<GenericOption, OptionValue>,
-  "menu-header" | "option" | "no-options" | "taggable-no-options"
+  "menu-header" | "menu-container" | "option" | "no-options" | "taggable-no-options"
 >;

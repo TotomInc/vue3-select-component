@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 
 const props = defineProps<{
-  menu: HTMLDivElement | null;
+  menu: HTMLElement | null;
   index: number;
   isFocused: boolean;
   isSelected: boolean;

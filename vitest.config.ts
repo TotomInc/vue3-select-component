@@ -9,7 +9,7 @@ export default defineConfig((configEnv) => mergeConfig(
       environment: "jsdom",
       coverage: {
         provider: "v8",
-        include: ["src/**/*.vue", "src/**/*.ts"],
+        include: ["src/**/*.vue", "src/**/*.ts", "src/**/*.tsx"],
       },
     },
   }),

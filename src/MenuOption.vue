@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 
 const props = defineProps<{
-  menu: HTMLDivElement | null;
+  menu: HTMLElement | null;
   index: number;
   isFocused: boolean;
   isSelected: boolean;
@@ -58,6 +58,10 @@ watch(
 </template>
 
 <style lang="css" scoped>
+* {
+  box-sizing: border-box;
+}
+
 .menu-option {
   display: flex;
   width: var(--vs-option-width);

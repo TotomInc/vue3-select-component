@@ -55,6 +55,7 @@ export default defineConfig({
           { text: "Custom displayed options", link: "/demo/custom-displayed-options" },
           { text: "Controlled menu", link: "/demo/controlled-menu" },
           { text: "Pre-selected values", link: "/demo/pre-selected-values" },
+          { text: "Infinite scroll", link: "/demo/infinite-scroll" },
         ],
       },
     ],

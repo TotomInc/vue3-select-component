@@ -1,10 +1,11 @@
 import type { ComponentProps } from "vue-component-type-helpers";
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import ChevronDownIcon from "./icons/ChevronDownIcon.vue";
-import XMarkIcon from "./icons/XMarkIcon.vue";
-import Select from "./Select.vue";
-import Spinner from "./Spinner.vue";
+import ChevronDownIcon from "../src/icons/ChevronDownIcon.vue";
+import XMarkIcon from "../src/icons/XMarkIcon.vue";
+import Select from "../src/Select.vue";
+import Spinner from "../src/Spinner.vue";
+import { dispatchEvent } from "./utils";
 
 const options = [
   { label: "France", value: "FR" },
@@ -19,11 +20,6 @@ const defaultProps: ComponentProps<typeof Select> = {
   isClearable: true,
   isLoading: false,
   isDisabled: false,
-};
-
-async function dispatchEvent(wrapper: ReturnType<typeof mount>, event: Event) {
-  document.dispatchEvent(event);
-  await wrapper.vm.$nextTick();
 };
 
 describe("component setup and initialization", () => {

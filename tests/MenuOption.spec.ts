@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import MenuOption from "./MenuOption.vue";
+import MenuOption from "../src/MenuOption.vue";
 
 describe("scrolling behavior when option is above viewport", () => {
   it("should scroll the menu to show the focused option when it's above the viewport", async () => {

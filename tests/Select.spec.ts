@@ -1,8 +1,9 @@
-import type { Option } from "./types/option";
+import type { Option } from "../src/types/option";
 import { mount } from "@vue/test-utils";
 
 import { describe, expect, it } from "vitest";
-import VueSelect from "./Select.vue";
+import VueSelect from "../src/Select.vue";
+import { dispatchEvent, inputSearch, openMenu } from "./utils";
 
 const options = [
   { label: "France", value: "FR" },
@@ -10,28 +11,6 @@ const options = [
   { label: "United States", value: "US" },
   { label: "Germany", value: "DE" },
 ];
-
-async function openMenu(wrapper: ReturnType<typeof mount>, method: "mousedown" | "focus-space" | "single-value" = "mousedown") {
-  if (method === "mousedown") {
-    await wrapper.get("input").trigger("mousedown");
-  }
-  else if (method === "focus-space") {
-    await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown", { code: "Space" });
-  }
-  else if (method === "single-value") {
-    await wrapper.get(".single-value").trigger("click");
-  }
-}
-
-async function dispatchEvent(wrapper: ReturnType<typeof mount>, event: Event) {
-  document.dispatchEvent(event);
-  await wrapper.vm.$nextTick();
-};
-
-async function inputSearch(wrapper: ReturnType<typeof mount>, search: string) {
-  await wrapper.get("input").setValue(search);
-}
 
 describe("input + menu interactions behavior", () => {
   it("should display the placeholder when no option is selected", () => {

@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
+import { h } from "vue";
 import VueSelect from "../src/Select.vue";
 import { dispatchEvent, inputSearch, openMenu } from "./utils";
 
@@ -193,5 +194,53 @@ describe("menu autofocus behavior", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
     await openMenu(wrapper);
     expect(wrapper.get(".focused[role='option']").text()).toBe("France");
+  });
+});
+
+describe("menu-container slot", () => {
+  it("should render custom container while preserving default content", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options },
+      slots: {
+        "menu-container": ({ defaultContent }) => (
+          h("div", { class: "custom-container" }, [defaultContent])
+        ),
+      },
+    });
+
+    await openMenu(wrapper);
+
+    // Verify custom container is rendered
+    expect(wrapper.find(".custom-container").exists()).toBe(true);
+
+    // Verify default content is preserved inside custom container
+    const customContainer = wrapper.get(".custom-container");
+    expect(customContainer.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should maintain menu functionality when using custom container", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options },
+      slots: {
+        "menu-container": ({ defaultContent }) => (
+          h("div", { class: "custom-container" }, [defaultContent])
+        ),
+      },
+    });
+
+    await openMenu(wrapper);
+
+    // Test option selection still works
+    await wrapper.get("div[role='option']").trigger("click");
+    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([options[0].value]);
+
+    // Test search filtering still works
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "United");
+
+    const customContainer = wrapper.get(".custom-container");
+    expect(customContainer.findAll("div[role='option']").length).toBe(2);
+    expect(customContainer.findAll("div[role='option']").map((option) => option.text()))
+      .toEqual(expect.arrayContaining(["United Kingdom", "United States"]));
   });
 });

@@ -194,7 +194,7 @@ export const Menu = defineComponent(
     return () => (
       <div
         id={`vue-select-${sharedProps.uid}-listbox`}
-        ref={menuRef}
+        ref="menu"
         class={[classes.menu, sharedProps.classes?.menuContainer]}
         role="listbox"
         aria-label={sharedProps.aria?.labelledby}

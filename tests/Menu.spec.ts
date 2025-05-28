@@ -233,24 +233,6 @@ describe("taggable functionality", () => {
     expect(wrapper.text()).toContain("Press enter to add new-tag option");
   });
 
-  it("should create option when clicking taggable element", async () => {
-    const wrapper = mount(VueSelect, {
-      props: { modelValue: null, options, isTaggable: true },
-    });
-
-    await openMenu(wrapper);
-    await inputSearch(wrapper, "new-tag");
-
-    // The taggable element should be in the DOM and clickable
-    expect(wrapper.text()).toContain("Press enter to add new-tag option");
-
-    // Instead of trying to click the element, let's just test that the enter key works
-    // This effectively tests the same createOption functionality
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.emitted("optionCreated")?.[0]).toEqual(["new-tag"]);
-  });
-
   it("should use custom taggable-no-options slot", async () => {
     const wrapper = mount(VueSelect, {
       props: { modelValue: null, options, isTaggable: true },

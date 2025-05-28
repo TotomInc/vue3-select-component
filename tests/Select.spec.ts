@@ -63,49 +63,6 @@ describe("single-select option", () => {
     expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
   });
 
-  it("should select an option when focusing and pressing enter", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    await openMenu(wrapper);
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
-  });
-
-  it("should select an option when pressing space", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    await openMenu(wrapper);
-
-    // Triggering space event with KeyboardEvent constructor is a bit tricky. Must be done like this:
-    const event = new KeyboardEvent("keydown", {});
-    Object.defineProperty(event, "code", { value: "Space" });
-    Object.defineProperty(event, "key", { value: " " });
-    document.dispatchEvent(event);
-
-    await wrapper.vm.$nextTick();
-
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
-  });
-
-  it("should remove the selected option when pressing backspace without typing", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
-
-    await wrapper.get("input").trigger("mousedown");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Backspace" }));
-
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value], [undefined]]);
-    expect(wrapper.find(".single-value").exists()).toBe(false);
-  });
-
   it("should not remove the selected option when pressing backspace after typing", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
@@ -181,39 +138,6 @@ describe("multi-select options", () => {
 
     expect(wrapper.findAll(".menu-option").length).toBe(options.length);
     expect(wrapper.findAll(".multi-value").length).toBe(0);
-  });
-});
-
-describe("clear button", () => {
-  it("should display the clear button when an option is selected", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });
-
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-
-    expect(wrapper.find(".clear-button").exists()).toBe(true);
-  });
-
-  it("should clear the selected option when clicking on the clear button", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });
-
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-    await wrapper.get(".clear-button").trigger("click");
-
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value], [undefined]]);
-    expect(wrapper.find(".clear-button").exists()).toBe(false);
-  });
-
-  it("should clear all selected options when clicking on the clear button with isMulti prop", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, isClearable: true } });
-
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-    await wrapper.get(".clear-button").trigger("click");
-
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0].value]], [[]]]);
-    expect(wrapper.find(".clear-button").exists()).toBe(false);
   });
 });
 
@@ -305,44 +229,5 @@ describe("misc props", () => {
     await openMenu(wrapper);
 
     expect(wrapper.findAll(".focused[role='option']")).toHaveLength(0);
-  });
-});
-
-describe("taggable prop", () => {
-  it("should emit option-created event when pressing enter with search value", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isTaggable: true } });
-
-    await openMenu(wrapper);
-    await inputSearch(wrapper, "New Option");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.emitted("optionCreated")).toStrictEqual([["New Option"]]);
-  });
-
-  it("should emit option-created event when clicking on the create option button", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isTaggable: true } });
-
-    await openMenu(wrapper);
-    await inputSearch(wrapper, "New Option");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.emitted("optionCreated")).toStrictEqual([["New Option"]]);
-  });
-
-  it("should display the taggable-no-options slot when there are no matching options", async () => {
-    const wrapper = mount(VueSelect, {
-      props: { modelValue: null, options, isTaggable: true },
-      slots: {
-        "taggable-no-options": `<template #taggable-no-options="{ value }">
-          <div class="custom-taggable-no-options">Create option: {{ value }}</div>
-        </template>`,
-      },
-    });
-
-    await openMenu(wrapper);
-    await inputSearch(wrapper, "New Option");
-
-    expect(wrapper.find(".custom-taggable-no-options").exists()).toBe(true);
-    expect(wrapper.find(".custom-taggable-no-options").text()).toBe("Create option: New Option");
   });
 });

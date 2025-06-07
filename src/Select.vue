@@ -314,11 +314,13 @@ watch(
         :aria-controls="`vue-select-${uid}-listbox`"
         aria-haspopup="true"
       >
-        <Placeholder
-          v-if="!selectedOptions[0] && !search.length"
-          :text="placeholder"
-          :class="props.classes?.placeholder"
-        />
+        <template v-if="!selectedOptions[0] && !search.length">
+          <Placeholder
+            :text="placeholder"
+            :placeholder-slot="slots.placeholder"
+            :class="props.classes?.placeholder"
+          />
+        </template>
 
         <div
           v-else-if="!props.isMulti && selectedOptions[0]"

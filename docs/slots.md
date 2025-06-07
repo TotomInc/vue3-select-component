@@ -177,3 +177,19 @@ Customize the rendered template when there are no matching options and the `tagg
   </VueSelect>
 </template>
 ```
+
+## placeholder
+
+**Type**: `slotProps: { text: string }`
+
+Customize the rendered template for the placeholder.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #placeholder>
+      <span>Custom placeholder</span>
+    </template>
+  </VueSelect>
+</template>
+```

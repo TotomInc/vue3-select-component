@@ -1,7 +1,8 @@
 import type { Option } from "./types/option";
 import { mount } from "@vue/test-utils";
-
 import { describe, expect, it } from "vitest";
+import { h } from "vue";
+
 import VueSelect from "./Select.vue";
 
 const options = [
@@ -38,6 +39,18 @@ describe("input + menu interactions behavior", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, placeholder: "Select an option" } });
 
     expect(wrapper.find(".input-placeholder").text()).toBe("Select an option");
+  });
+
+  it("should display the placeholder slot", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options, placeholder: "placeholder prop" },
+      slots: {
+        placeholder: () => h("div", { class: "custom-placeholder" }, "Custom placeholder"),
+      },
+    });
+
+    expect(wrapper.find(".custom-placeholder").exists()).toBe(true);
+    expect(wrapper.get(".custom-placeholder").text()).toBe("Custom placeholder");
   });
 
   it("should not open the menu when focusing the input", async () => {

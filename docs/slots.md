@@ -168,6 +168,22 @@ Customize the rendered template for the clear icon. Please note that the slot is
 </template>
 ```
 
+## placeholder
+
+**Type**: `slotProps: { text: string }`
+
+Customize the rendered template for the placeholder.
+
+```vue
+<template>
+  <VueSelect v-model="option" :options="options">
+    <template #placeholder>
+      <span>Custom placeholder</span>
+    </template>
+  </VueSelect>
+</template>
+```
+
 ## loading
 
 **Type**: `slotProps: {}`

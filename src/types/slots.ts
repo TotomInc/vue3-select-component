@@ -12,6 +12,7 @@ export type Slots<GenericOption extends Option<OptionValue>, OptionValue> = {
   "clear"?: () => any;
   "dropdown"?: () => any;
   "loading"?: () => any;
+  "placeholder"?: () => any;
   "menu-header"?: () => any;
   "menu-container"?: (props: { defaultContent: JSX.Element }) => any;
   "option"?: (props: { option: GenericOption; index: number; isFocused: boolean; isSelected: boolean; isDisabled: boolean }) => any;

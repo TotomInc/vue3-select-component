@@ -4,6 +4,7 @@ import { ref } from "vue";
 import VueSelect from "../../src";
 
 const selected = ref<string | null>(null);
+
 const options: Option<string>[] = [
   { label: "Alice's Adventures in Wonderland", value: "alice" },
   { label: "A Wizard of Earthsea", value: "wizard" },

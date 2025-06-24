@@ -8,6 +8,7 @@ const links = [
   { value: "/single-select", label: "Single Select" },
   { value: "/multi-select", label: "Multi Select" },
   { value: "/multi-select-taggable", label: "Multi Select Taggable" },
+  { value: "/custom-placeholder", label: "Custom Placeholder" },
   { value: "/custom-menu-container", label: "Custom Menu Container" },
   { value: "/custom-menu-option", label: "Custom Menu Option" },
   { value: "/custom-option-label-value", label: "Custom Option Label/Value" },

@@ -316,13 +316,10 @@ watch(
       >
         <template v-if="!selectedOptions[0] && !search.length">
           <Placeholder
-            v-if="!$slots.placeholder"
             :text="placeholder"
+            :placeholder-slot="slots.placeholder"
             :class="props.classes?.placeholder"
           />
-          <div v-else>
-            <slot name="placeholder"></slot>
-          </div>
         </template>
 
         <div

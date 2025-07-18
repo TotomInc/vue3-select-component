@@ -9,8 +9,7 @@ import type { Props } from "../types/props";
  * @example
  * const props = inject<PropsInjection<GenericOption, OptionValue>>(PROPS_KEY);
  */
-export type PropsInjection<GenericOption extends Option<OptionValue>, OptionValue = string> =
-  Props<GenericOption, OptionValue>;
+export type PropsInjection<GenericOption extends Option<OptionValue>, OptionValue = string> = Props<GenericOption, OptionValue>;
 
 /**
  * This type allows you to inject the data with the correct generics

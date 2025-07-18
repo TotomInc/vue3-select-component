@@ -16,7 +16,6 @@ export type Slots<GenericOption extends Option<OptionValue>, OptionValue> = {
   "option"?: (props: { option: GenericOption; index: number; isFocused: boolean; isSelected: boolean; isDisabled: boolean }) => any;
   "no-options"?: () => any;
   "taggable-no-options"?: () => any;
-  "placeholder"?: () => any;
 };
 
 export type IndicatorsSlots<GenericOption extends Option<OptionValue>, OptionValue> = Pick<

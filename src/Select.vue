@@ -189,7 +189,7 @@ const setOption = (option: GenericOption) => {
 const removeOption = (option: GenericOption) => {
   if (props.isMulti && !props.isDisabled) {
     if (Array.isArray(selected.value)) {
-      selected.value = selected.value.filter((value) => value !== option.value);
+      selected.value = selected.value.filter((value) => value !== props.getOptionValue(option));
       emit("optionDeselected", option);
     }
     else if (!props.disableInvalidVModelWarn) {

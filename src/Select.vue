@@ -31,6 +31,7 @@ const props = withDefaults(
     uid: uniqueId(),
     aria: undefined,
     disableInvalidVModelWarn: false,
+    inputAttrs: undefined,
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionValue: (option: GenericOption) => option.value,
     getOptionLabel: (option: GenericOption) => option.label,
@@ -103,6 +104,22 @@ const selectedOptions = computed<GenericOption[]>(() => {
   const found = props.options.find((option) => props.getOptionValue(option) === selected.value);
 
   return found ? [found] : [];
+});
+
+const inputAttributes = computed(() => {
+  const defaultAttrs = {
+    autocapitalize: "none",
+    autocomplete: "off",
+    autocorrect: "off",
+    spellcheck: false,
+    tabindex: 0,
+    type: "text",
+  };
+
+  return {
+    ...defaultAttrs,
+    ...props.inputAttrs,
+  };
 });
 
 function openMenu() {
@@ -388,12 +405,7 @@ watch(
             v-model="search"
             class="search-input"
             :class="props.classes?.searchInput"
-            autocapitalize="none"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-            tabindex="0"
-            type="text"
+            v-bind="inputAttributes"
             aria-autocomplete="list"
             :aria-labelledby="`vue-select-${uid}-combobox`"
             :disabled="isDisabled"

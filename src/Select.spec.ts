@@ -389,6 +389,106 @@ describe("component props", () => {
   });
 });
 
+describe("inputAttrs prop", () => {
+  it("should apply custom tabindex from inputAttrs", () => {
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options,
+        inputAttrs: { tabindex: 5 },
+      },
+    });
+
+    expect(wrapper.get("input").attributes("tabindex")).toBe("5");
+  });
+
+  it("should apply custom autocomplete from inputAttrs", () => {
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options,
+        inputAttrs: { autocomplete: "country" },
+      },
+    });
+
+    expect(wrapper.get("input").attributes("autocomplete")).toBe("country");
+  });
+
+  it("should apply required attribute from inputAttrs", () => {
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options,
+        inputAttrs: { required: true },
+      },
+    });
+
+    expect(wrapper.get("input").attributes("required")).toBe("");
+  });
+
+  it("should apply multiple custom attributes from inputAttrs", () => {
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options,
+        inputAttrs: {
+          "tabindex": 3,
+          "autocomplete": "username",
+          "required": true,
+          "data-testid": "custom-select",
+        },
+      },
+    });
+
+    const input = wrapper.get("input");
+    expect(input.attributes("tabindex")).toBe("3");
+    expect(input.attributes("autocomplete")).toBe("username");
+    expect(input.attributes("required")).toBe("");
+    expect(input.attributes("data-testid")).toBe("custom-select");
+  });
+
+  it("should override default attributes with inputAttrs", () => {
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options,
+        inputAttrs: {
+          spellcheck: true,
+          autocorrect: "on",
+        },
+      },
+    });
+
+    const input = wrapper.get("input");
+    expect(input.attributes("spellcheck")).toBe("true");
+    expect(input.attributes("autocorrect")).toBe("on");
+  });
+
+  it("should preserve essential attributes when inputAttrs is provided", () => {
+    const wrapper = mount(VueSelect, {
+      props: {
+        modelValue: null,
+        options,
+        inputAttrs: { tabindex: 5 },
+      },
+    });
+
+    const input = wrapper.get("input");
+    expect(input.attributes("type")).toBe("text");
+    expect(input.attributes("aria-autocomplete")).toBe("list");
+    expect(input.attributes("placeholder")).toBe("");
+  });
+
+  it("should work without inputAttrs prop", () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    const input = wrapper.get("input");
+    expect(input.attributes("tabindex")).toBe("0");
+    expect(input.attributes("autocomplete")).toBe("off");
+    expect(input.attributes("spellcheck")).toBe("false");
+  });
+});
+
 describe("taggable prop", () => {
   it("should emit option-created event when pressing enter with search value", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, isTaggable: true } });

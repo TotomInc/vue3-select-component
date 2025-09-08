@@ -149,4 +149,10 @@ export type Props<GenericOption, OptionValue> = {
    * @param option The option to render.
    */
   getOptionLabel?: (option: GenericOption) => string;
+
+  /**
+   * HTML attributes to apply to the search input element.
+   * Useful for form integration (tabindex, autocomplete, required, etc.).
+   */
+  inputAttrs?: Record<string, string | number | boolean | undefined | null | Array<unknown>>;
 };

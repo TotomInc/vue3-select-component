@@ -644,4 +644,33 @@ describe("exposed component methods and refs", () => {
 
     expect(wrapper.emitted("update:modelValue")).toContainEqual([[]]);
   });
+
+  it("should render menu-header slot only once before options", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options },
+      slots: {
+        "menu-header": () => h("div", { class: "test-menu-header" }, "Menu Header"),
+      },
+    });
+
+    await openMenu(wrapper);
+
+    // Should have exactly one menu header
+    const menuHeaders = wrapper.findAll(".test-menu-header");
+    expect(menuHeaders.length).toBe(1);
+
+    // Should have the same number of options as provided
+    const menuOptions = wrapper.findAll("div[role='option']");
+    expect(menuOptions.length).toBe(options.length);
+
+    // Menu header should appear before all options in the DOM
+    const menu = wrapper.find(".menu");
+    const menuContent = menu.element.innerHTML;
+    const headerIndex = menuContent.indexOf("test-menu-header");
+    const firstOptionIndex = menuContent.indexOf("role=\"option\"");
+
+    expect(headerIndex).toBeGreaterThan(-1);
+    expect(firstOptionIndex).toBeGreaterThan(-1);
+    expect(headerIndex).toBeLessThan(firstOptionIndex);
+  });
 });

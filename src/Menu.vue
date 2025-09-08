@@ -143,6 +143,8 @@ onBeforeUnmount(() => {
       left: sharedProps.teleport ? calculateMenuPosition().left : 'unset',
     }"
   >
+    <component :is="props.slots['menu-header']" v-if="props.slots['menu-header']" />
+
     <MenuOption
       v-for="(option, i) in sharedData.availableOptions.value"
       :key="i"
@@ -155,8 +157,6 @@ onBeforeUnmount(() => {
       :class="sharedProps.classes?.menuOption"
       @select="sharedData.setOption(option)"
     >
-      <component :is="props.slots['menu-header']" />
-
       <template v-if="props.slots.option">
         <component
           :is="props.slots.option"

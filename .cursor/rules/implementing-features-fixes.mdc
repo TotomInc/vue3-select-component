@@ -7,6 +7,11 @@ description: End-to-end flow for implementing features and bug fixes using AI. E
 
 Use this checklist for every feature or bug fix. Do not skip steps. Commands assume npm.
 
+### 0. Important notes
+- You are writing code for a Vue 3 select component.
+- Try to think in terms of the component's API and how it should be used.
+- When necessary, take a step back and think about the architecture of the component.
+
 ### 1. Write or update tests first
 - **Where**: colocate tests in `src/*.spec.ts` (see existing examples like `src/Select.spec.ts`).
 - **Run tests**: `npm run test`

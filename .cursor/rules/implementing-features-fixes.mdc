@@ -1,0 +1,68 @@
+---
+alwaysApply: true
+description: End-to-end flow for implementing features and bug fixes using AI. Enforces playground demos, strict type-safety, tests, successful builds, and documentation updates.
+---
+
+## Implementing Features & Fixes (AI Playbook)
+
+Use this checklist for every feature or bug fix. Do not skip steps. Commands assume npm.
+
+### 1. Write or update tests first
+- **Where**: colocate tests in `src/*.spec.ts` (see existing examples like `src/Select.spec.ts`).
+- **Run tests**: `npm run test`
+  - Uses JSDOM and coverage settings from [vitest.config.ts](mdc:vitest.config.ts).
+- **Adapt existing tests** when changing behavior; add new tests for new props/events/slots.
+
+### 2. Enforce type-safety (no ts-ignore)
+- **Run type-check**: `npm run type-check`
+- **Rule**: no `@ts-ignore` or `// @ts-expect-error`. Fix types instead.
+- **Types locations**: update when needed
+  - Props: [src/types/props.ts](mdc:src/types/props.ts)
+  - Options: [src/types/option.ts](mdc:src/types/option.ts)
+  - Slots: [src/types/slots.ts](mdc:src/types/slots.ts)
+- Prefer extracting complex logic into helpers (see [src/lib/*](mdc:src/lib)) to keep components scannable.
+
+### 3. Add a Playground demo (for new features)
+- **Create demo component** under `playground/demos/YourFeature.vue`.
+- **Register route** in [playground/main.ts](mdc:playground/main.ts)
+  - Import your demo and add a `{ path: "/your-feature", component: YourFeature }` route.
+- **Add navigation link** in [playground/PlaygroundLayout.vue](mdc:playground/PlaygroundLayout.vue)
+  - Append to `links`: `{ value: "/your-feature", label: "Your Feature" }`.
+- **Run playground**: `npm run dev:playground` and manually verify the UX.
+
+### 4. Build must pass (no early exits)
+- **Run build**: `npm run build`
+  - This runs `type-check` and then `vite build` via `build-only`.
+  - Fix all errors; do not bypass checks. Do not introduce build-time warnings that indicate type holes.
+- Output is generated in `dist/` (do not edit `dist/` by hand).
+
+### 5. Documentation (new features or behavior changes)
+- **Add a docs page** under `docs/demo/*.md` when showcasing a new capability (see existing demos in `docs/demo/`).
+- **Update reference docs** if applicable:
+  - Getting started: [docs/getting-started.md](mdc:docs/getting-started.md)
+  - Props: [docs/props.md](mdc:docs/props.md)
+  - Events: [docs/events.md](mdc:docs/events.md)
+  - Slots: [docs/slots.md](mdc:docs/slots.md)
+  - Options: [docs/options.md](mdc:docs/options.md)
+  - Styling: [docs/styling.md](mdc:docs/styling.md)
+  - TypeScript: [docs/typescript.md](mdc:docs/typescript.md)
+- **Preview docs**: `npm run docs:dev` and ensure navigation from [docs/index.md](mdc:docs/index.md) remains coherent.
+- **Validate docs build**: `npm run docs:build`.
+
+### 6. Linting
+- **Run**: `npm run lint`
+- **Auto-fix**: `npm run lint:fix` (then re-run `npm run lint`).
+
+### 7. PR readiness checklist
+- Tests added/updated and `npm run test` passes.
+- `npm run type-check` passes with zero `@ts-ignore`.
+- New demo added in `playground/` (if new feature) and manually verified via `npm run dev:playground`.
+- `npm run build` completes without errors (no early exit).
+- Docs added/updated and `npm run docs:build` passes.
+- Code is scannable: complex logic extracted into helpers under `src/lib/` and meaningful names used.
+
+### Useful references
+- Package scripts: [package.json](mdc:package.json)
+- Test config: [vitest.config.ts](mdc:vitest.config.ts)
+- Playground router: [playground/main.ts](mdc:playground/main.ts)
+- Playground layout links: [playground/PlaygroundLayout.vue](mdc:playground/PlaygroundLayout.vue)

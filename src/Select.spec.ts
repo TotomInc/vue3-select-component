@@ -564,3 +564,84 @@ describe("hideSelectedOptions prop", () => {
     expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain("United States");
   });
 });
+
+describe("exposed component methods and refs", () => {
+  it("should expose inputRef for direct DOM access", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    expect(wrapper.vm.inputRef).toBeDefined();
+    expect(wrapper.vm.inputRef).toBe(wrapper.get("input").element);
+  });
+
+  it("should expose containerRef for direct DOM access", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    expect(wrapper.vm.containerRef).toBeDefined();
+    expect(wrapper.vm.containerRef).toBe(wrapper.get(".vue-select").element);
+  });
+
+  it("should expose openMenu method", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    expect(typeof wrapper.vm.openMenu).toBe("function");
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+
+    wrapper.vm.openMenu();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should expose closeMenu method", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
+    wrapper.vm.closeMenu();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+  });
+
+  it("should expose toggleMenu method", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    expect(typeof wrapper.vm.toggleMenu).toBe("function");
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+
+    wrapper.vm.toggleMenu();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
+    wrapper.vm.toggleMenu();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+  });
+
+  it("should expose clear method for single select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: options[0].value, options } });
+
+    expect(typeof wrapper.vm.clear).toBe("function");
+    expect(wrapper.get(".single-value").text()).toBe(options[0].label);
+
+    wrapper.vm.clear();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted("update:modelValue")).toContainEqual([undefined]);
+  });
+
+  it("should expose clear method for multi select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [options[0].value], isMulti: true, options } });
+
+    expect(typeof wrapper.vm.clear).toBe("function");
+    expect(wrapper.find(".multi-value").exists()).toBe(true);
+
+    wrapper.vm.clear();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted("update:modelValue")).toContainEqual([[]]);
+  });
+});

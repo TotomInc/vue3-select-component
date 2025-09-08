@@ -165,3 +165,114 @@ const roleOptions = [
   />
 </template>
 ```
+
+## Component ref and exposed API
+
+The Vue3 Select component exposes several refs and methods through `defineExpose()` for programmatic control. This provides a type-safe way to interact with the component instance.
+
+### Available exposed properties
+
+```ts
+type ExposedAPI = {
+  // DOM element refs
+  inputRef: Ref<HTMLInputElement | undefined>;
+  containerRef: Ref<HTMLDivElement | undefined>;
+
+  // Control methods
+  openMenu: () => void;
+  closeMenu: () => void;
+  toggleMenu: () => void;
+  clear: () => void;
+};
+```
+
+### Accessing the component ref
+
+Use template refs to access the exposed API:
+
+```vue
+<script setup lang="ts">
+import { nextTick, ref } from "vue";
+import VueSelect from "vue3-select-component";
+
+const selectRef = ref<InstanceType<typeof VueSelect>>();
+const selectedValue = ref<string | null>(null);
+
+const options = [
+  { label: "Option 1", value: "1" },
+  { label: "Option 2", value: "2" },
+];
+
+// Focus the input programmatically
+const focusSelect = async () => {
+  await nextTick();
+  selectRef.value?.inputRef?.focus();
+};
+
+// Open the dropdown menu
+const openDropdown = () => {
+  selectRef.value?.openMenu();
+};
+
+// Clear the selection
+const clearSelection = () => {
+  selectRef.value?.clear();
+};
+</script>
+
+<template>
+  <VueSelect
+    ref="selectRef"
+    v-model="selectedValue"
+    :options="options"
+    placeholder="Select an option"
+  />
+
+  <button @click="focusSelect">
+    Focus Input
+  </button>
+  <button @click="openDropdown">
+    Open Menu
+  </button>
+  <button @click="clearSelection">
+    Clear
+  </button>
+</template>
+```
+
+### Type safety with multi-select
+
+When using multi-select, ensure proper typing:
+
+```vue
+<script setup lang="ts">
+import type { Option } from "vue3-select-component";
+import { ref } from "vue";
+import VueSelect from "vue3-select-component";
+
+type UserOption = Option<number>;
+
+const selectRef = ref<InstanceType<typeof VueSelect<UserOption, number>>>();
+const selectedUsers = ref<number[]>([]);
+
+const userOptions: UserOption[] = [
+  { label: "Alice", value: 1 },
+  { label: "Bob", value: 2 },
+];
+</script>
+
+<template>
+  <VueSelect
+    ref="selectRef"
+    v-model="selectedUsers"
+    :options="userOptions"
+    :is-multi="true"
+  />
+</template>
+```
+
+### Best practices
+
+- Always use `nextTick()` when accessing DOM elements after component mounting
+- Check for element existence before calling methods: `selectRef.value?.inputRef?.focus()`
+- Type the ref with `InstanceType<typeof VueSelect>` for full TypeScript support

@@ -1,5 +1,7 @@
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
+import { DATA_KEY } from "./lib/provide-inject";
 import MenuOption from "./MenuOption.vue";
 
 describe("scrolling behavior when option is above viewport", () => {
@@ -157,5 +159,68 @@ describe("keyboard event handling", () => {
     // Verify the 'select' event was emitted
     expect(wrapper.emitted("select")).toBeTruthy();
     expect(wrapper.emitted("select")).toHaveLength(1);
+  });
+});
+
+describe("hover to focus behavior", () => {
+  it("should set focused option when hovered", async () => {
+    const mockSetFocusedOption = vi.fn();
+    const mockData = {
+      setFocusedOption: mockSetFocusedOption,
+      focusedOption: ref(-1),
+      menuOpen: ref(true),
+    };
+
+    const wrapper = mount(MenuOption, {
+      props: {
+        menu: null,
+        index: 2,
+        isFocused: false,
+        isSelected: false,
+        isDisabled: false,
+      },
+      global: {
+        provide: {
+          [DATA_KEY as symbol]: mockData,
+        },
+      },
+    });
+
+    // Trigger mouse enter
+    await wrapper.trigger("mouseenter");
+
+    // Verify setFocusedOption was called with the correct index
+    expect(mockSetFocusedOption).toHaveBeenCalledWith(2);
+    expect(mockSetFocusedOption).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not set focused option when hovered on disabled option", async () => {
+    const mockSetFocusedOption = vi.fn();
+    const mockData = {
+      setFocusedOption: mockSetFocusedOption,
+      focusedOption: ref(-1),
+      menuOpen: ref(true),
+    };
+
+    const wrapper = mount(MenuOption, {
+      props: {
+        menu: null,
+        index: 2,
+        isFocused: false,
+        isSelected: false,
+        isDisabled: true, // Option is disabled
+      },
+      global: {
+        provide: {
+          [DATA_KEY as symbol]: mockData,
+        },
+      },
+    });
+
+    // Trigger mouse enter
+    await wrapper.trigger("mouseenter");
+
+    // Verify setFocusedOption was NOT called
+    expect(mockSetFocusedOption).not.toHaveBeenCalled();
   });
 });

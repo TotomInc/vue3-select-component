@@ -223,6 +223,10 @@ const createOption = () => {
   closeMenu();
 };
 
+const setFocusedOption = (index: number) => {
+  focusedOption.value = index;
+};
+
 const handleInputKeydown = (e: KeyboardEvent) => {
   if (e.key === "Tab") {
     closeMenu();
@@ -250,6 +254,7 @@ provide(DATA_KEY, {
   setOption,
   removeOption,
   createOption,
+  setFocusedOption,
 });
 
 // Expose useful refs and methods for external component control
@@ -469,7 +474,7 @@ watch(
   --vs-option-disabled-text-color: #52525b;
   --vs-option-background-color: var(--vs-menu-background);
   --vs-option-hover-background-color: #dbeafe;
-  --vs-option-focused-background-color: var(--vs-option-hover-background-color);
+  --vs-option-focused-background-color: #dbeafe;
   --vs-option-selected-background-color: #93c5fd;
   --vs-option-disabled-background-color: #f4f4f5;
   --vs-option-opacity-menu-open: 0.4;

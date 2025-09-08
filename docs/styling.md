@@ -57,7 +57,7 @@ For a complete list of CSS variables, we recommend to take a look at the source-
   --vs-option-disabled-text-color: #52525b;
   --vs-option-background-color: var(--vs-menu-background);
   --vs-option-hover-background-color: #dbeafe;
-  --vs-option-focused-background-color: var(--vs-option-hover-background-color);
+  --vs-option-focused-background-color: #dbeafe;
   --vs-option-selected-background-color: #93c5fd;
   --vs-option-disabled-background-color: #f4f4f5;
   --vs-option-opacity-menu-open: 0.4;

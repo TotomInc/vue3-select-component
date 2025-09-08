@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { inject, ref, watch } from "vue";
+import { DATA_KEY } from "./lib/provide-inject";
 
 const props = defineProps<{
   menu: HTMLDivElement | null;
@@ -12,6 +13,14 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "select"): void;
 }>();
+
+const sharedData = inject(DATA_KEY);
+
+const handleMouseEnter = () => {
+  if (!props.isDisabled && sharedData?.setFocusedOption) {
+    sharedData.setFocusedOption(props.index);
+  }
+};
 
 const option = ref<HTMLButtonElement | null>(null);
 
@@ -52,6 +61,7 @@ watch(
     :aria-selected="isSelected"
     @click="emit('select')"
     @keydown.enter="emit('select')"
+    @mouseenter="handleMouseEnter"
   >
     <slot />
   </div>
@@ -78,12 +88,7 @@ watch(
   cursor: var(--vs-option-cursor);
 }
 
-.menu-option:hover {
-  background-color: var(--vs-option-hover-background-color);
-  color: var(--vs-option-hover-text-color);
-}
-
-.menu-option.focused {
+.menu-option.focused:not(.selected):not(.disabled) {
   background-color: var(--vs-option-focused-background-color);
   color: var(--vs-option-focused-text-color);
 }

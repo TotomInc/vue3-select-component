@@ -54,7 +54,7 @@ Use this checklist for every feature or bug fix. Do not skip steps. Commands ass
 - **Auto-fix**: `npm run lint:fix` (then re-run `npm run lint`).
 
 ### 7. PR readiness checklist
-- Tests added/updated and `npm run test` passes.
+- Tests added/updated and `npm run test` passes. Ensure `npm run test` with Vitest is running smoothly inside Cursor agent (e.g. waiting for user interaction "q to exit" in terminal to resume AI flow).
 - `npm run type-check` passes with zero `@ts-ignore`.
 - New demo added in `playground/` (if new feature) and manually verified via `npm run dev:playground`.
 - `npm run build` completes without errors (no early exit).

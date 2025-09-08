@@ -252,6 +252,16 @@ provide(DATA_KEY, {
   createOption,
 });
 
+// Expose useful refs and methods for external component control
+defineExpose({
+  inputRef,
+  containerRef,
+  openMenu,
+  closeMenu,
+  toggleMenu,
+  clear,
+});
+
 // Watch the search input value to emit search events and auto-open the menu when typing
 watch(
   () => search.value,

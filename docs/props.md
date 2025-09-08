@@ -187,6 +187,48 @@ Top and left properties are calculated using a ref on the `.vue-select` with a `
 
 The `id` attribute to be passed to the `<input />` element. This is useful for accessibility or forms.
 
+## inputAttrs
+
+**Type**: `Record<string, string | number | boolean | undefined | null | Array<unknown>>`
+
+**Default**: `undefined`
+
+HTML attributes to apply to the search input element. This is useful for form integration and accessibility.
+
+Common use cases include:
+- `tabindex` - Control tab order in forms
+- `autocomplete` - Enable browser autocomplete (e.g., "country", "username")
+- `required` - Mark field as required for form validation
+- `data-*` - Custom data attributes for testing or analytics
+- Any other valid HTML input attributes
+
+**Example:**
+
+```vue
+<template>
+  <VueSelect
+    v-model="country"
+    :options="countries"
+    :input-attrs="{
+      'tabindex': 2,
+      'autocomplete': 'country',
+      'required': true,
+      'data-testid': 'country-select',
+    }"
+  />
+</template>
+```
+
+::: info
+User-provided attributes override the default attributes. Default attributes include:
+- `autocapitalize: "none"`
+- `autocomplete: "off"`
+- `autocorrect: "off"`
+- `spellcheck: false`
+- `tabindex: 0`
+- `type: "text"`
+:::
+
 ## classes
 
 **Type**:

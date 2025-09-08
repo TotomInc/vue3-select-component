@@ -57,6 +57,12 @@ export default defineConfig({
           { text: "Pre-selected values", link: "/demo/pre-selected-values" },
         ],
       },
+      {
+        text: "Guides",
+        items: [
+          { text: "Input attributes", link: "/guides/input-attributes" },
+        ],
+      },
     ],
 
     socialLinks: [

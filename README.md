@@ -126,6 +126,16 @@ const userOptions: UserOption[] = [
 - 🧪 **Testing requirements** - All PRs need tests and type safety
 - 📖 **Documentation** - How to add examples and update docs
 
+### Development documentation
+
+The `dev` branch documentation can be found at:
+
+https://dev-vue3-select-component.vercel.app/
+
+This documentation is automatically generated from the `dev` branch and is updated with each commit.
+
+**Note**: it doesn't reflect the latest stable release.
+
 ## Releases
 
 For changelog, visit [releases](https://github.com/TotomInc/vue3-select-component/releases).

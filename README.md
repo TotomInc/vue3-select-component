@@ -109,6 +109,23 @@ const userOptions: UserOption[] = [
 
 [There's an entire documentation page](https://vue3-select-component.vercel.app/typescript.html) dedicated to usage with TypeScript.
 
+## Contributing & Development
+
+### Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the playground: `npm run dev:playground`
+4. Run tests: `npm run test`
+
+### Contributing
+
+- 🌿 **Branching strategy** - We use `dev` for integration and `master` for releases
+- 🚀 **Release process** - How to create prereleases and stable releases
+- 📝 **Commit conventions** - We follow conventional commits
+- 🧪 **Testing requirements** - All PRs need tests and type safety
+- 📖 **Documentation** - How to add examples and update docs
+
 ## Releases
 
 For changelog, visit [releases](https://github.com/TotomInc/vue3-select-component/releases).

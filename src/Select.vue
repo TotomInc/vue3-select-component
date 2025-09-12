@@ -375,11 +375,13 @@ watch(
           :key="selectedOption.value"
         >
           <template v-if="slots.tag">
+            <!-- eslint-disable vue/attribute-hyphenation -->
             <component
               :is="slots.tag"
               :option="selectedOption"
-              :remove-option="() => removeOption(selectedOption)"
+              :removeOption="() => removeOption(selectedOption)"
             />
+            <!-- eslint-enable vue/attribute-hyphenation -->
           </template>
 
           <MultiValue

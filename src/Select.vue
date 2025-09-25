@@ -116,8 +116,13 @@ const inputAttributes = computed(() => {
     type: "text",
   };
 
+  const nonSearchableAttrs = props.isSearchable
+    ? {}
+    : { "readonly": true, "tabindex": -1, "aria-hidden": true };
+
   return {
     ...defaultAttrs,
+    ...nonSearchableAttrs,
     ...props.inputAttrs,
   };
 });
@@ -133,7 +138,7 @@ function openMenu() {
     focusedOption.value = props.options.findIndex((option) => !option.disabled);
   }
 
-  if (inputRef.value) {
+  if (props.isSearchable && inputRef.value) {
     inputRef.value.focus();
   }
 
@@ -288,7 +293,7 @@ defineExpose({
 watch(
   () => search.value,
   () => {
-    if (search.value) {
+    if (props.isSearchable && search.value) {
       emit("search", search.value);
 
       if (!menuOpen.value) {

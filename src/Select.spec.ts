@@ -380,6 +380,28 @@ describe("component props", () => {
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });
 
+  it("should not allow focusing or typing when isSearchable is false", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, isSearchable: false } });
+
+    const input = wrapper.get("input");
+
+    // Input should be readonly and removed from tab order
+    expect(input.attributes("readonly")).toBe("");
+    expect(input.attributes("tabindex")).toBe("-1");
+
+    // Focus attempt should not set focus-visible behavior or allow typing to change value
+    await input.trigger("focus");
+    await input.setValue("United");
+
+    // Menu shouldn't open due to typing, and no search event should be emitted
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+    expect(wrapper.emitted("search")).toBeUndefined();
+
+    // Opening the menu via control still works
+    await openMenu(wrapper, "mousedown");
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
   it("should not autofocus an option when passing the autofocus prop", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, shouldAutofocusOption: false } });
 

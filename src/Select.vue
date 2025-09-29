@@ -227,7 +227,10 @@ const clear = () => {
   }
   else {
     selected.value = undefined as OptionValue;
-    emit("optionDeselected", selectedOptions.value[0]);
+
+    if (selectedOptions.value[0]) {
+      emit("optionDeselected", selectedOptions.value[0]);
+    }
   }
 
   if (menuOpen.value) {

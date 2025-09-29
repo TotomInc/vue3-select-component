@@ -62,7 +62,7 @@ describe("input + menu interactions behavior", () => {
   });
 
   it("should not open the menu when is-disabled and an option is selected", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: options[0].value, options, isDisabled: true } });
+    const wrapper = mount(VueSelect, { props: { modelValue: options[0]?.value, options, isDisabled: true } });
 
     await openMenu(wrapper, "single-value");
 
@@ -93,11 +93,11 @@ describe("menu keyboard navigation", () => {
     await openMenu(wrapper);
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
 
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1].label);
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
 
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowUp" }));
 
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
   });
 
   it("should navigate through the options with the arrow keys and skip disabled options", async () => {
@@ -112,11 +112,11 @@ describe("menu keyboard navigation", () => {
     await openMenu(wrapper);
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
 
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[2].label);
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[2]?.label);
 
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowUp" }));
 
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
   });
 });
 
@@ -142,8 +142,8 @@ describe("single-select option", () => {
     await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value]]);
+    expect(wrapper.get(".single-value").element.textContent).toBe(options[0]?.label);
   });
 
   it("should select an option when focusing and pressing enter", async () => {
@@ -152,8 +152,8 @@ describe("single-select option", () => {
     await openMenu(wrapper);
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value]]);
+    expect(wrapper.get(".single-value").element.textContent).toBe(options[0]?.label);
   });
 
   it("should select an option when pressing space", async () => {
@@ -169,8 +169,8 @@ describe("single-select option", () => {
 
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value]]);
+    expect(wrapper.get(".single-value").element.textContent).toBe(options[0]?.label);
   });
 
   it("should remove the selected option when pressing backspace without typing", async () => {
@@ -179,13 +179,13 @@ describe("single-select option", () => {
     await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value]]);
+    expect(wrapper.get(".single-value").element.textContent).toBe(options[0]?.label);
 
     await wrapper.get("input").trigger("mousedown");
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Backspace" }));
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value], [undefined]]);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value], [undefined]]);
     expect(wrapper.find(".single-value").exists()).toBe(false);
   });
 
@@ -195,14 +195,14 @@ describe("single-select option", () => {
     await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value]]);
+    expect(wrapper.get(".single-value").element.textContent).toBe(options[0]?.label);
 
     await inputSearch(wrapper, "F");
     await wrapper.get("input").trigger("keydown", { key: "Backspace" });
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value]]);
-    expect(wrapper.get(".single-value").element.textContent).toBe(options[0].label);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value]]);
+    expect(wrapper.get(".single-value").element.textContent).toBe(options[0]?.label);
   });
 
   it("cannot select an option when there are no matching options", async () => {
@@ -236,8 +236,8 @@ describe("multi-select options", () => {
     await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0].value]]]);
-    expect(wrapper.get(".multi-value").element.textContent).toBe(options[0].label);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0]?.value]]]);
+    expect(wrapper.get(".multi-value").element.textContent).toBe(options[0]?.label);
   });
 
   it("should display non-selected remaining options on the list", async () => {
@@ -284,7 +284,7 @@ describe("clear button", () => {
     await wrapper.get("div[role='option']").trigger("click");
     await wrapper.get(".clear-button").trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0].value], [undefined]]);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value], [undefined]]);
     expect(wrapper.find(".clear-button").exists()).toBe(false);
   });
 
@@ -295,7 +295,7 @@ describe("clear button", () => {
     await wrapper.get("div[role='option']").trigger("click");
     await wrapper.get(".clear-button").trigger("click");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0].value]], [[]]]);
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[0]?.value]], [[]]]);
     expect(wrapper.find(".clear-button").exists()).toBe(false);
   });
 });
@@ -357,8 +357,8 @@ describe("component props", () => {
     await openMenu(wrapper);
 
     const optionElements = wrapper.findAll("div[role='option']");
-    expect(optionElements[0].text()).toBe("Admin");
-    expect(optionElements[1].text()).toBe("User");
+    expect(optionElements[0]?.text()).toBe("Admin");
+    expect(optionElements[1]?.text()).toBe("User");
 
     await wrapper.get("div[role='option']").trigger("click");
 
@@ -561,7 +561,7 @@ describe("menu autofocus behavior", () => {
       // @ts-expect-error -- ignore type error
       const wrapper = mount(VueSelect, { props: testCase.props });
       await openMenu(wrapper);
-      expect(wrapper.get(".focused[role='option']").text()).toBe(options[0].label);
+      expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
     }
   });
 
@@ -623,7 +623,7 @@ describe("hideSelectedOptions prop", () => {
     await openMenu(wrapper);
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length - 1);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0].label);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0]?.label);
   });
 
   it("should show selected options in menu when hideSelectedOptions is false", async () => {
@@ -634,7 +634,7 @@ describe("hideSelectedOptions prop", () => {
     await openMenu(wrapper);
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0].label);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0]?.label);
   });
 
   it("should show all options when in single-select mode regardless of hideSelectedOptions", async () => {
@@ -645,7 +645,7 @@ describe("hideSelectedOptions prop", () => {
     await openMenu(wrapper);
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0].label);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0]?.label);
   });
 
   it("should correctly restore hidden options when they are deselected", async () => {
@@ -658,7 +658,7 @@ describe("hideSelectedOptions prop", () => {
 
     // Verify it's hidden from dropdown
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length - 1);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0].label);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0]?.label);
 
     // Remove the option
     await wrapper.get(".multi-value-remove").trigger("click");
@@ -666,7 +666,7 @@ describe("hideSelectedOptions prop", () => {
 
     // Verify it's back in the dropdown
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0].label);
+    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0]?.label);
   });
 
   it("should correctly filter options when searching with hideSelectedOptions enabled", async () => {
@@ -744,10 +744,10 @@ describe("exposed component methods and refs", () => {
   });
 
   it("should expose clear method for single select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: options[0].value, options } });
+    const wrapper = mount(VueSelect, { props: { modelValue: options[0]?.value, options } });
 
     expect(typeof wrapper.vm.clear).toBe("function");
-    expect(wrapper.get(".single-value").text()).toBe(options[0].label);
+    expect(wrapper.get(".single-value").text()).toBe(options[0]?.label);
 
     wrapper.vm.clear();
     await wrapper.vm.$nextTick();
@@ -756,7 +756,7 @@ describe("exposed component methods and refs", () => {
   });
 
   it("should expose clear method for multi select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [options[0].value], isMulti: true, options } });
+    const wrapper = mount(VueSelect, { props: { modelValue: [options[0]?.value], isMulti: true, options } });
 
     expect(typeof wrapper.vm.clear).toBe("function");
     expect(wrapper.find(".multi-value").exists()).toBe(true);

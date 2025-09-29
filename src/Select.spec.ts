@@ -595,6 +595,34 @@ describe("menu opening behavior", () => {
   });
 });
 
+describe("teleport class propagation", () => {
+  it("adds root custom class to teleported menu", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: null, options, teleport: "body" },
+      attrs: { class: "custom-select" },
+    });
+
+    await openMenu(wrapper);
+
+    const menus = Array.from(document.body.querySelectorAll(".menu"));
+    const menuEl = menus[menus.length - 1] as HTMLElement | undefined;
+
+    expect(menuEl).toBeTruthy();
+    if (!menuEl) {
+      return;
+    };
+
+    // Should have user-defined class copied from root container
+    expect(menuEl.classList.contains("custom-select")).toBe(true);
+
+    // Should not copy internal classes
+    expect(menuEl.classList.contains("vue-select")).toBe(false);
+    expect(menuEl.classList.contains("open")).toBe(false);
+    expect(menuEl.classList.contains("typing")).toBe(false);
+    expect(menuEl.classList.contains("disabled")).toBe(false);
+  });
+});
+
 describe("menu closing behavior", () => {
   it("should close menu with different triggers", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });

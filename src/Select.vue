@@ -1,8 +1,9 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
+import type { HTMLAttributes } from "vue";
 import type { Option } from "./types/option";
 import type { Props } from "./types/props";
 import type { Slots } from "./types/slots";
-import { computed, provide, ref, useTemplateRef, watch } from "vue";
+import { computed, provide, ref, useAttrs, useTemplateRef, watch } from "vue";
 import Indicators from "./Indicators.vue";
 import { DATA_KEY, PROPS_KEY } from "./lib/provide-inject";
 import { uniqueId } from "./lib/uid";
@@ -49,6 +50,9 @@ const emit = defineEmits<{
 
 const slots = defineSlots<Slots<GenericOption, OptionValue>>();
 const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
+
+const attrs = useAttrs();
+const rootClass = computed(() => attrs.class as HTMLAttributes["class"]);
 
 const containerRef = useTemplateRef("container");
 const inputRef = useTemplateRef("input");
@@ -447,6 +451,7 @@ watch(
       <Menu
         v-if="menuOpen"
         v-model="selected"
+        :root-class="rootClass"
         :slots="{
           'option': slots.option,
           'menu-header': slots['menu-header'],

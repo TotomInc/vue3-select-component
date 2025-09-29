@@ -1,4 +1,5 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
+import type { HTMLAttributes } from "vue";
 import type { DataInjection, PropsInjection } from "./lib/provide-inject";
 import type { Option } from "./types/option";
 import type { MenuSlots } from "./types/slots";
@@ -9,6 +10,7 @@ import MenuOption from "./MenuOption.vue";
 
 const props = defineProps<{
   slots: MenuSlots<GenericOption, OptionValue>;
+  rootClass?: HTMLAttributes["class"];
 }>();
 
 const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
@@ -133,7 +135,7 @@ onBeforeUnmount(() => {
     :id="`vue-select-${sharedProps.uid}-listbox`"
     ref="menu"
     class="menu"
-    :class="sharedProps.classes?.menuContainer"
+    :class="[sharedProps.classes?.menuContainer, props.rootClass]"
     role="listbox"
     :aria-label="sharedProps.aria?.labelledby"
     :aria-multiselectable="sharedProps.isMulti"

@@ -3,6 +3,7 @@ import type { HTMLAttributes } from "vue";
 import type { DataInjection, PropsInjection } from "./lib/provide-inject";
 import type { Option } from "./types/option";
 import type { MenuSlots } from "./types/slots";
+import { autoUpdate, flip, offset, shift, size, useFloating } from "@floating-ui/vue";
 import { inject, onBeforeUnmount, onMounted, useTemplateRef } from "vue";
 import { DATA_KEY, PROPS_KEY } from "./lib/provide-inject";
 
@@ -20,20 +21,22 @@ const sharedData = inject<DataInjection<GenericOption, OptionValue>>(DATA_KEY)!;
 
 const menuRef = useTemplateRef("menu");
 
-const calculateMenuPosition = () => {
-  if (sharedData.containerRef.value) {
-    const rect = sharedData.containerRef.value.getBoundingClientRect();
-
-    return {
-      left: `${rect.x}px`,
-      top: `${rect.y + rect.height}px`,
-    };
-  }
-
-  console.warn("Unable to calculate dynamic menu position because of missing internal DOM reference.");
-
-  return { top: "0px", left: "0px" };
-};
+const { floatingStyles } = useFloating(sharedData.containerRef, menuRef, {
+  whileElementsMounted: autoUpdate,
+  placement: "bottom-start",
+  middleware: [
+    flip(),
+    offset(5),
+    shift(),
+    size({
+      apply({ elements, rects }) {
+        Object.assign(elements.floating.style, {
+          width: `${Math.max(0, rects.reference.width)}px`,
+        });
+      },
+    }),
+  ],
+});
 
 const handleNavigation = (e: KeyboardEvent) => {
   if (sharedData.menuOpen.value) {
@@ -140,9 +143,7 @@ onBeforeUnmount(() => {
     :aria-label="sharedProps.aria?.labelledby"
     :aria-multiselectable="sharedProps.isMulti"
     :style="{
-      width: sharedProps.teleport ? `${sharedData.containerRef?.value?.getBoundingClientRect().width}px` : '100%',
-      top: sharedProps.teleport ? calculateMenuPosition().top : 'unset',
-      left: sharedProps.teleport ? calculateMenuPosition().left : 'unset',
+      ...floatingStyles,
     }"
   >
     <component :is="props.slots['menu-header']" v-if="props.slots['menu-header']" />

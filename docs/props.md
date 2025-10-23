@@ -176,7 +176,7 @@ Whether the dropdown should close after an option is selected.
 Teleport the menu outside of the component DOM tree. You can pass a valid string according to the official Vue 3 Teleport documentation (e.g. `teleport="body"` will teleport the menu into the `<body>` tree). This can be used in case you are having `z-index` issues within your DOM tree structure.
 
 ::: info
-Top and left properties are calculated using a ref on the `.vue-select` with a `container.getBoundingClientRect()`.
+The menu positioning is powered by [Floating UI](https://floating-ui.com/), which automatically handles positioning, flipping, and shifting to ensure the menu stays visible within the viewport. The menu width is automatically matched to the select control width.
 :::
 
 ## inputId

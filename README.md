@@ -40,7 +40,7 @@
 - ✅ Single & multi-select support
 - 🖌️ Infinite customization with `<slot>`s
 - 🪄 `<Teleport />` menu where you want
-- 📦 Extremely light, **0 dependencies** (4.4kb gzip)
+- 📦 Extremely light, minimal dependencies (17kb gzip)
 
 ## Installation
 

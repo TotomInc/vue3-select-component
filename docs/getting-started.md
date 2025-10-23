@@ -28,6 +28,8 @@ $ bun add vue3-select-component
 
 ::: tip
 [Vue.js](https://vuejs.org) 3.5+ is required to use this component.
+
+The component uses [Floating UI](https://floating-ui.com/) for intelligent menu positioning and viewport detection.
 :::
 
 ## Single select usage

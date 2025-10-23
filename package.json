@@ -43,6 +43,9 @@
   "peerDependencies": {
     "vue": "^3.5.0"
   },
+  "dependencies": {
+    "@floating-ui/vue": "1.1.9"
+  },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.52.5"
   },
@@ -72,8 +75,5 @@
     "vue-component-type-helpers": "3.1.1",
     "vue-router": "4.6.3",
     "vue-tsc": "3.1.1"
-  },
-  "dependencies": {
-    "@floating-ui/vue": "^1.1.9"
   }
 }

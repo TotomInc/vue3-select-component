@@ -6,6 +6,7 @@ import CustomOptionLabelValue from "./demos/CustomOptionLabelValue.vue";
 import CustomPlaceholder from "./demos/CustomPlaceholder.vue";
 import CustomSearchFilter from "./demos/CustomSearchFilter.vue";
 import ExtraOptionProperties from "./demos/ExtraOptionProperties.vue";
+import KeyboardNavigation from "./demos/KeyboardNavigation.vue";
 import MenuHeader from "./demos/MenuHeader.vue";
 import MultiSelect from "./demos/MultiSelect.vue";
 import MultiSelectTaggable from "./demos/MultiSelectTaggable.vue";
@@ -29,6 +30,7 @@ const router = createRouter({
     { path: "/taggable-no-options-slot", component: TaggableNoOptionsSlot },
     { path: "/controlled-menu", component: ControlledMenu },
     { path: "/menu-header", component: MenuHeader },
+    { path: "/keyboard-navigation", component: KeyboardNavigation },
   ],
 });
 

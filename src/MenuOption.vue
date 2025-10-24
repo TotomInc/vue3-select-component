@@ -55,7 +55,6 @@ watch(
     ref="option"
     class="menu-option"
     :class="{ focused: isFocused, selected: isSelected, disabled: isDisabled }"
-    tabindex="-1"
     role="option"
     :aria-disabled="isDisabled"
     :aria-selected="isSelected"

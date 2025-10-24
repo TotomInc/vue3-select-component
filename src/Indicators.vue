@@ -35,7 +35,6 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
       ref="clearButton"
       type="button"
       class="clear-button"
-      tabindex="-1"
       :disabled="isDisabled"
       @click.stop="emit('clear')"
     >
@@ -54,7 +53,6 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
       type="button"
       class="dropdown-icon"
       :class="{ active: isMenuOpen }"
-      tabindex="-1"
       :disabled="isDisabled"
       @click.stop="emit('toggle')"
     >
@@ -97,8 +95,12 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
   height: var(--vs-indicator-icon-size);
   color: var(--vs-indicator-icon-color);
   background: none;
-  outline: none;
   cursor: var(--vs-indicator-icon-cursor);
+}
+
+.clear-button:focus-visible {
+  border-radius: var(--vs-border-radius);
+  outline: var(--vs-outline-width) solid var(--vs-outline-color);
 }
 
 .dropdown-icon {
@@ -114,6 +116,11 @@ defineExpose({ containerRef, clearButtonRef, dropdownButtonRef });
   outline: none;
   cursor: var(--vs-indicator-icon-cursor);
   transition: var(--vs-indicator-dropdown-icon-transition);
+}
+
+.dropdown-icon:focus-visible {
+  border-radius: var(--vs-border-radius);
+  outline: var(--vs-outline-width) solid var(--vs-outline-color);
 }
 
 .dropdown-icon.active {

@@ -229,7 +229,11 @@ const setOption = (option: GenericOption) => {
 };
 
 const removeOption = (option: GenericOption) => {
-  if (props.isMulti && !props.isDisabled) {
+  if (props.isDisabled) {
+    return;
+  }
+
+  if (props.isMulti) {
     if (Array.isArray(selected.value)) {
       selected.value = selected.value.filter((value) => value !== props.getOptionValue(option));
       emit("optionDeselected", option);
@@ -237,6 +241,10 @@ const removeOption = (option: GenericOption) => {
     else if (!props.disableInvalidVModelWarn) {
       console.warn(`[vue3-select-component warn]: The v-model provided should be an array when using \`isMulti\` prop, instead it was: ${selected.value}`);
     }
+  }
+  else {
+    selected.value = undefined as OptionValue;
+    emit("optionDeselected", option);
   }
 };
 

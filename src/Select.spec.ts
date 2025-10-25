@@ -13,7 +13,16 @@ const options = [
 ];
 
 async function openMenu(wrapper: ReturnType<typeof mount>, method: "mousedown" | "focus-space" | "single-value" = "mousedown") {
+  // Check if menu is already closed, if so proceed normally
+  // If menu is open, use the dropdown toggle button instead to avoid the new toggle logic
+  const isMenuOpen = wrapper.findAll("div[role='option']").length > 0;
+
   if (method === "mousedown") {
+    if (isMenuOpen) {
+      // Menu is open, close it first then reopen
+      await wrapper.get(".dropdown-icon").trigger("click");
+    }
+
     await wrapper.get("input").trigger("mousedown");
   }
   else if (method === "focus-space") {
@@ -639,6 +648,37 @@ describe("menu closing behavior", () => {
       await trigger.action();
       expect(wrapper.findAll("div[role='option']").length).toBe(0);
     }
+  });
+
+  it("should toggle menu when clicking input while menu is open and search is empty", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    // First click should open menu
+    await wrapper.get("input").trigger("mousedown");
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
+    // Second click should close menu (when search is empty)
+    await wrapper.get("input").trigger("mousedown");
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+
+    // Third click should open menu again
+    await wrapper.get("input").trigger("mousedown");
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should keep menu open when clicking input while typing", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    // Open menu and start typing
+    await wrapper.get("input").trigger("mousedown");
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
+    await inputSearch(wrapper, "United");
+    expect(wrapper.findAll("div[role='option']").length).toBe(2);
+
+    // Clicking input while typing should keep menu open
+    await wrapper.get("input").trigger("mousedown");
+    expect(wrapper.findAll("div[role='option']").length).toBe(2);
   });
 });
 

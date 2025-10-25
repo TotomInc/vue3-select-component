@@ -167,6 +167,22 @@ function toggleMenu() {
 
 function handleControlClick(event: MouseEvent) {
   if (indicatorsRef.value?.containerRef && !indicatorsRef.value.containerRef.contains(event.target as Node)) {
+    // If menu is open and search is empty, close it; otherwise open it
+    if (menuOpen.value && search.value.length === 0) {
+      closeMenu();
+    }
+    else {
+      openMenu();
+    }
+  }
+};
+
+function handleInputMousedown() {
+  // If menu is open and search is empty, close it; otherwise open it
+  if (menuOpen.value && search.value.length === 0) {
+    closeMenu();
+  }
+  else {
     openMenu();
   }
 };
@@ -280,6 +296,7 @@ provide(DATA_KEY, {
   closeMenu,
   toggleMenu,
   handleControlClick,
+  handleInputMousedown,
   setOption,
   removeOption,
   createOption,
@@ -424,7 +441,7 @@ watch(
             :aria-labelledby="`vue-select-${uid}-combobox`"
             :disabled="isDisabled"
             placeholder=""
-            @mousedown="openMenu()"
+            @mousedown="handleInputMousedown"
             @keydown="handleInputKeydown"
           >
         </div>

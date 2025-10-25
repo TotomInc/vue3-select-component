@@ -123,6 +123,70 @@ You can also use the `:deep` selector to apply the CSS variables to the componen
 </style>
 ```
 
+## Menu positioning data attribute
+
+The dropdown menu automatically includes a `data-state-position` attribute that reflects the current position of the menu relative to the select control. This attribute is powered by [Floating UI](https://floating-ui.com/) and updates dynamically when the menu flips or adjusts its position to stay within the viewport.
+
+::: tip
+The component automatically adjusts the menu offset based on position. When the menu opens below (`bottom-*`), it uses `margin-top`, and when it opens above (`top-*`), it uses `margin-bottom` to maintain consistent spacing.
+:::
+
+### Available positions
+
+The `data-state-position` attribute can have the following values:
+
+- `bottom-start` - Default position, menu below the control aligned to the left
+- `bottom-end` - Menu below the control aligned to the right
+- `top-start` - Menu above the control aligned to the left (when flipped)
+- `top-end` - Menu above the control aligned to the right (when flipped)
+- Other [Floating UI placement values](https://floating-ui.com/docs/computeposition#placement)
+
+### Styling based on position
+
+You can use this data attribute to apply position-specific styles:
+
+```css
+/* Different border radius when menu opens upward */
+.menu[data-state-position^="top"] {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.menu[data-state-position^="bottom"] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* Add arrow indicator based on position */
+.menu[data-state-position="bottom-start"]::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  border: 4px solid transparent;
+  border-bottom-color: var(--vs-menu-background-color);
+}
+
+.menu[data-state-position="top-start"]::before {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  border: 4px solid transparent;
+  border-top-color: var(--vs-menu-background-color);
+}
+```
+
+With TailwindCSS, you can use arbitrary values:
+
+```vue
+<VueSelect
+  :classes="{
+    menuContainer: '[&[data-state-position^=top]]:rounded-t-none [&[data-state-position^=bottom]]:rounded-b-none'
+  }"
+/>
+```
+
 ## Custom classes with TailwindCSS
 
 The component provides a `classes` prop that allows you to apply custom TailwindCSS classes to different parts of the select component. This is particularly useful when you want to customize the appearance without overriding the default CSS variables.

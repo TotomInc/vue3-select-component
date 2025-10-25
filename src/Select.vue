@@ -399,6 +399,8 @@ watch(
           <MultiValue
             v-else
             :label="getOptionLabel(selectedOption)"
+            :option="selectedOption"
+            :tag-content-slot="slots['tag-content']"
             :classes="{
               multiValue: props.classes?.multiValue,
               multiValueLabel: props.classes?.multiValueLabel,

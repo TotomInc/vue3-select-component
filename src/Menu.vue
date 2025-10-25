@@ -102,11 +102,20 @@ const handleNavigation = (e: KeyboardEvent) => {
     if (e.key === "Backspace" && sharedData.search.value.length === 0 && hasSelectedValue) {
       e.preventDefault();
 
-      if (sharedProps.isMulti && Array.isArray(selected.value)) {
-        selected.value = selected.value.slice(0, -1);
+      if (sharedProps.isMulti) {
+        const selectedOptions = sharedData.selectedOptions.value;
+        const lastOption = selectedOptions[selectedOptions.length - 1];
+
+        if (lastOption) {
+          sharedData.removeOption(lastOption);
+        }
       }
       else {
-        selected.value = undefined as OptionValue;
+        const selectedOption = sharedData.selectedOptions.value[0];
+
+        if (selectedOption) {
+          sharedData.removeOption(selectedOption);
+        }
       }
     }
   }

@@ -96,6 +96,25 @@ const handleNavigation = (e: KeyboardEvent) => {
       sharedData.closeMenu();
     }
 
+    if (e.key === "PageDown") {
+      e.preventDefault();
+
+      const lastOptionIndex = sharedData.availableOptions.value.reduce(
+        (acc, option, i) => (!option.disabled ? i : acc),
+        -1,
+      );
+
+      sharedData.focusedOption.value = lastOptionIndex;
+    }
+
+    if (e.key === "PageUp") {
+      e.preventDefault();
+
+      const firstOptionIndex = sharedData.availableOptions.value.findIndex((option) => !option.disabled);
+
+      sharedData.focusedOption.value = firstOptionIndex;
+    }
+
     const hasSelectedValue = sharedProps.isMulti && Array.isArray(selected.value) ? selected.value.length > 0 : !!selected.value;
 
     // When pressing backspace with no search, remove the last selected option.

@@ -339,3 +339,17 @@ The label of an option is displayed in the dropdown and as the selected option (
 Resolves option data to a string to compare options and specify value attributes.
 
 This function can be used if you don't want to use the standard `option.value` as the value of the option.
+
+## selectOnBlur
+
+**Type**: `boolean`
+
+**Default**: `true`
+
+When set to `true`, the focused option will be automatically selected when the component loses focus. This behavior is useful for WAI-ARIA compliance and provides a better user experience for keyboard navigation.
+
+When set to `false`, the component will not select any option when losing focus, requiring users to explicitly select options using Enter, Space, or mouse clicks.
+
+::: info
+This prop only affects the behavior when the dropdown menu is open and an option is focused. If no option is focused or the menu is closed, no selection will occur regardless of this prop's value.
+:::

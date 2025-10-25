@@ -1,13 +1,15 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="GenericOption">
 import XMarkIcon from "./icons/XMarkIcon.vue";
 
 const props = defineProps<{
   label: string;
+  option: GenericOption;
   classes?: {
     multiValue?: string;
     multiValueLabel?: string;
     multiValueRemove?: string;
   };
+  tagContentSlot?: (props: { option: GenericOption }) => any;
 }>();
 
 const emit = defineEmits<{
@@ -21,7 +23,13 @@ const emit = defineEmits<{
     :class="props.classes?.multiValue"
   >
     <div class="multi-value-label" :class="props.classes?.multiValueLabel">
-      {{ props.label }}
+      <template v-if="props.tagContentSlot">
+        <component :is="props.tagContentSlot" :option="props.option" />
+      </template>
+
+      <template v-else>
+        {{ props.label }}
+      </template>
     </div>
 
     <button

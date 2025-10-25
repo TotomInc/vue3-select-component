@@ -8,6 +8,7 @@ import type { Option } from "./option";
 export type Slots<GenericOption extends Option<OptionValue>, OptionValue> = {
   "value"?: (props: { option: GenericOption }) => any;
   "tag"?: (props: { option: GenericOption; removeOption: () => void }) => any;
+  "tag-content"?: (props: { option: GenericOption }) => any;
   "clear"?: () => any;
   "dropdown"?: () => any;
   "loading"?: () => any;

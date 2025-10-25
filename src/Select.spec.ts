@@ -550,6 +550,97 @@ describe("taggable prop", () => {
   });
 });
 
+describe("tag-content slot", () => {
+  it("should render custom tag content using tag-content slot", () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: ["FR", "GB"], options, isMulti: true },
+      slots: {
+        "tag-content": `<template #tag-content="{ option }">
+          <strong class="custom-tag-content">{{ option.label.toUpperCase() }}</strong>
+        </template>`,
+      },
+    });
+
+    const customTagContent = wrapper.findAll(".custom-tag-content");
+    expect(customTagContent.length).toBe(2);
+    expect(customTagContent[0]?.text()).toBe("FRANCE");
+    expect(customTagContent[1]?.text()).toBe("UNITED KINGDOM");
+  });
+
+  it("should preserve remove button functionality with tag-content slot", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: ["FR", "GB"], options, isMulti: true },
+      slots: {
+        "tag-content": `<template #tag-content="{ option }">
+          <span class="custom-tag-content">{{ option.label }}</span>
+        </template>`,
+      },
+    });
+
+    const removeButtons = wrapper.findAll(".multi-value-remove");
+    expect(removeButtons.length).toBe(2);
+
+    await removeButtons[0]?.trigger("click");
+
+    expect(wrapper.emitted("optionDeselected")).toBeTruthy();
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[["GB"]]]);
+  });
+
+  it("should pass option data correctly to tag-content slot", () => {
+    const extendedOptions: Option<string>[] = [
+      { label: "France", value: "FR", extra: "FRA" },
+      { label: "United Kingdom", value: "GB", extra: "GBR" },
+    ];
+
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: ["FR"], options: extendedOptions, isMulti: true },
+      slots: {
+        "tag-content": `<template #tag-content="{ option }">
+          <span class="custom-tag-content" :data-extra="option.extra">{{ option.label }}</span>
+        </template>`,
+      },
+    });
+
+    const customTagContent = wrapper.find(".custom-tag-content");
+    expect(customTagContent.exists()).toBe(true);
+    expect(customTagContent.text()).toBe("France");
+    expect(customTagContent.attributes("data-extra")).toBe("FRA");
+  });
+
+  it("should prioritize tag slot over tag-content slot when both are provided", () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: ["FR"], options, isMulti: true },
+      slots: {
+        "tag": `<template #tag="{ option }">
+          <div class="full-custom-tag">{{ option.label }}</div>
+        </template>`,
+        "tag-content": `<template #tag-content="{ option }">
+          <span class="custom-tag-content">{{ option.label }}</span>
+        </template>`,
+      },
+    });
+
+    expect(wrapper.find(".full-custom-tag").exists()).toBe(true);
+    expect(wrapper.find(".custom-tag-content").exists()).toBe(false);
+    expect(wrapper.find(".multi-value").exists()).toBe(false);
+  });
+
+  it("should maintain default styling with tag-content slot", () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: ["FR"], options, isMulti: true },
+      slots: {
+        "tag-content": `<template #tag-content="{ option }">
+          <span>{{ option.label }}</span>
+        </template>`,
+      },
+    });
+
+    expect(wrapper.find(".multi-value").exists()).toBe(true);
+    expect(wrapper.find(".multi-value-label").exists()).toBe(true);
+    expect(wrapper.find(".multi-value-remove").exists()).toBe(true);
+  });
+});
+
 describe("menu autofocus behavior", () => {
   it("should autofocus first option when opening menu", async () => {
     const testCases = [

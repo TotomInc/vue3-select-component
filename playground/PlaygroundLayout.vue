@@ -9,6 +9,7 @@ const links = [
   { value: "/multi-select", label: "Multi Select" },
   { value: "/multi-select-taggable", label: "Multi Select Taggable" },
   { value: "/custom-placeholder", label: "Custom Placeholder" },
+  { value: "/custom-tag-content", label: "Custom Tag Content" },
   { value: "/extra-option-properties", label: "Extra Option Properties" },
   { value: "/custom-option-label-value", label: "Custom Option Label/Value" },
   { value: "/custom-search-filter", label: "Custom Search Filter" },

@@ -58,6 +58,8 @@ Customize the rendered template if a selected option (inside the select control)
 
 When using `isMulti` prop, customize the rendered template of a selected option. You can use the slot props to retrieve the current selected option and a function to remove it.
 
+This slot gives you complete control over the tag structure, styling, and behavior. You are responsible for implementing the remove button and its event handler.
+
 ```vue
 <template>
   <VueSelect
@@ -71,6 +73,48 @@ When using `isMulti` prop, customize the rendered template of a selected option.
   </VueSelect>
 </template>
 ```
+
+::: tip
+If you only want to customize the text inside a tag while keeping the default structure, styling, and remove button, consider using the `#tag-content` slot instead. See below.
+:::
+
+## tag-content
+
+**Type**: `slotProps: { option: Option }`
+
+When using `isMulti` prop, customize only the text content inside a tag, while keeping the default tag structure, styling, and remove button.
+
+This is a simpler alternative to the `#tag` slot when you only need to format or enhance the label text without recreating the entire tag structure.
+
+```vue
+<template>
+  <VueSelect
+    v-model="option"
+    :options="options"
+    :is-multi="true"
+  >
+    <template #tag-content="{ option }">
+      <strong>{{ option.label }}</strong>
+    </template>
+  </VueSelect>
+</template>
+```
+
+::: info
+**When to use `#tag-content` vs `#tag`:**
+
+Use `#tag-content` when:
+- You only want to format or transform the label text
+- You want to add icons, badges, or emphasis to the text
+- You want to keep the default tag styling and remove button
+
+Use `#tag` when:
+- You need complete control over the tag structure
+- You want custom styling that can't be achieved with CSS variables
+- You need to change the remove button appearance or behavior
+
+**Note:** If both slots are provided, `#tag` takes priority and `#tag-content` is ignored.
+:::
 
 ## menu-header
 

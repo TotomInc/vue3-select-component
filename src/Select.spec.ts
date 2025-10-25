@@ -267,6 +267,67 @@ describe("multi-select options", () => {
   });
 });
 
+describe("option-deselected event", () => {
+  it("should emit option-deselected when removing a tag via click in multi-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(wrapper.emitted("optionDeselected")).toBeUndefined();
+
+    await wrapper.get(".multi-value-remove").trigger("click");
+
+    const emittedEvents = wrapper.emitted("optionDeselected");
+    expect(emittedEvents).toBeDefined();
+    expect(emittedEvents?.[0]?.[0]).toEqual(options[0]);
+  });
+
+  it("should emit option-deselected when removing a tag via backspace in multi-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(wrapper.emitted("optionDeselected")).toBeUndefined();
+
+    await wrapper.get("input").trigger("mousedown");
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Backspace" }));
+
+    const emittedEvents = wrapper.emitted("optionDeselected");
+    expect(emittedEvents).toBeDefined();
+    expect(emittedEvents?.[0]?.[0]).toEqual(options[0]);
+  });
+
+  it("should emit option-deselected when removing via backspace in single-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(wrapper.emitted("optionDeselected")).toBeUndefined();
+
+    await wrapper.get("input").trigger("mousedown");
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Backspace" }));
+
+    const emittedEvents = wrapper.emitted("optionDeselected");
+    expect(emittedEvents).toBeDefined();
+    expect(emittedEvents?.[0]?.[0]).toEqual(options[0]);
+  });
+
+  it("should emit option-deselected with null when clearing all options in multi-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, isClearable: true } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await wrapper.get(".clear-button").trigger("click");
+
+    const emittedEvents = wrapper.emitted("optionDeselected");
+    expect(emittedEvents).toBeDefined();
+    expect(emittedEvents?.[0]?.[0]).toBeNull();
+  });
+});
+
 describe("clear button", () => {
   it("should display the clear button when an option is selected", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options, isClearable: true } });

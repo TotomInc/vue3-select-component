@@ -5,6 +5,7 @@ import ControlledMenu from "./demos/ControlledMenu.vue";
 import CustomOptionLabelValue from "./demos/CustomOptionLabelValue.vue";
 import CustomPlaceholder from "./demos/CustomPlaceholder.vue";
 import CustomSearchFilter from "./demos/CustomSearchFilter.vue";
+import CustomTagContent from "./demos/CustomTagContent.vue";
 import ExtraOptionProperties from "./demos/ExtraOptionProperties.vue";
 import MenuHeader from "./demos/MenuHeader.vue";
 import MenuPositioning from "./demos/MenuPositioning.vue";
@@ -23,6 +24,7 @@ const router = createRouter({
     { path: "/multi-select", component: MultiSelect },
     { path: "/multi-select-taggable", component: MultiSelectTaggable },
     { path: "/custom-placeholder", component: CustomPlaceholder },
+    { path: "/custom-tag-content", component: CustomTagContent },
     { path: "/extra-option-properties", component: ExtraOptionProperties },
     { path: "/custom-option-label-value", component: CustomOptionLabelValue },
     { path: "/custom-search-filter", component: CustomSearchFilter },

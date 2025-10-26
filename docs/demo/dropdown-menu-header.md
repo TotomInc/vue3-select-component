@@ -13,6 +13,7 @@ import { ref } from "vue";
 
 import VueSelect from "../../src";
 
+
 const selected = ref("");
 </script>
 

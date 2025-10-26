@@ -16,6 +16,7 @@ import SelectIsLoading from "./demos/SelectIsLoading.vue";
 import SingleSelect from "./demos/SingleSelect.vue";
 import TaggableNoOptionsSlot from "./demos/TaggableNoOptionsSlot.vue";
 import PlaygroundLayout from "./PlaygroundLayout.vue";
+import "vue3-select-component/styles";
 
 const router = createRouter({
   history: createWebHistory(),

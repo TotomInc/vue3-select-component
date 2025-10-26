@@ -50,12 +50,21 @@ Install the package with npm:
 npm i vue3-select-component
 ```
 
+::: info
+The component requires its CSS styles to be imported manually.
+
+```javascript
+import "vue3-select-component/styles";
+```
+:::
+
 Use it in your Vue 3 app:
 
 ```vue
 <script setup lang="ts">
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 const option = ref("");
 </script>
@@ -85,6 +94,7 @@ It also leverages the power of generics to provide types for additional properti
 import type { Option } from "vue3-select-component";
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 type UserOption = Option<number> & { username: string };
 

@@ -11,6 +11,7 @@ import { ref } from "vue";
 
 import VueSelect from "../../src";
 
+
 const selected = ref("");
 </script>
 
@@ -33,6 +34,7 @@ Selected value: **{{ selected || "none" }}**
 <script setup lang="ts">
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 const selected = ref("");
 </script>

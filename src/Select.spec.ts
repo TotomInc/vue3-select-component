@@ -928,6 +928,165 @@ describe("menu positioning data attribute", () => {
   });
 });
 
+// eslint-disable-next-line test/prefer-lowercase-title
+describe("WAI-ARIA compliance keyboard behaviors", () => {
+  it("should open menu when pressing up arrow on focused input", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await wrapper.get("input").trigger("focus");
+    await wrapper.get("input").trigger("keydown", { key: "ArrowUp" });
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should open menu when pressing down arrow on focused input", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await wrapper.get("input").trigger("focus");
+    await wrapper.get("input").trigger("keydown", { key: "ArrowDown" });
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
+
+  it("should not open menu when pressing arrow keys if menu is already open", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    const initialOptionCount = wrapper.findAll("div[role='option']").length;
+
+    await wrapper.get("input").trigger("keydown", { key: "ArrowUp" });
+    await wrapper.get("input").trigger("keydown", { key: "ArrowDown" });
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(initialOptionCount);
+  });
+
+  it("should select focused option when component loses focus with selectOnBlur enabled", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur: true } });
+
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
+
+    await wrapper.get("input").trigger("blur");
+
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[1]?.value]]);
+    expect(wrapper.get(".single-value").text()).toBe(options[1]?.label);
+  });
+
+  it("should not select focused option when component loses focus with selectOnBlur disabled", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur: false } });
+
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
+
+    await wrapper.get("input").trigger("blur");
+
+    expect(wrapper.emitted("update:modelValue")).toBeUndefined();
+    expect(wrapper.find(".single-value").exists()).toBe(false);
+  });
+
+  it("should not select disabled option when component loses focus", async () => {
+    const options = [
+      { label: "France", value: "FR" },
+      { label: "Spain", value: "ES", disabled: true },
+      { label: "United Kingdom", value: "GB" },
+    ];
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur: true } });
+
+    await openMenu(wrapper);
+
+    // Manually set focus to the disabled option to test the behavior
+    const disabledOptionIndex = options.findIndex((option) => option.disabled);
+    // Access the internal focusedOption ref directly
+    (wrapper.vm as any).focusedOption = disabledOptionIndex;
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe("Spain");
+
+    await wrapper.get("input").trigger("blur");
+
+    expect(wrapper.emitted("update:modelValue")).toBeUndefined();
+    expect(wrapper.find(".single-value").exists()).toBe(false);
+  });
+
+  it("should navigate to first option with Page Up key", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[2]?.label);
+
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageUp" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
+  });
+
+  it("should navigate to last option with Page Down key", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
+
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[options.length - 1]?.label);
+  });
+
+  it("should navigate to first available option with Page Up when first option is disabled", async () => {
+    const options = [
+      { label: "Spain", value: "ES", disabled: true },
+      { label: "France", value: "FR" },
+      { label: "United Kingdom", value: "GB" },
+    ];
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe("United Kingdom");
+
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageUp" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe("France");
+  });
+
+  it("should navigate to last available option with Page Down when last option is disabled", async () => {
+    const options = [
+      { label: "France", value: "FR" },
+      { label: "United Kingdom", value: "GB" },
+      { label: "Spain", value: "ES", disabled: true },
+    ];
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe("France");
+
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe("United Kingdom");
+  });
+
+  it("should work with multi-select mode", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, selectOnBlur: true } });
+
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
+
+    await wrapper.get("input").trigger("blur");
+
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[1]?.value]]]);
+    expect(wrapper.get(".multi-value").text()).toBe(options[1]?.label);
+  });
+});
+
 describe("exposed component methods and refs", () => {
   it("should expose inputRef for direct DOM access", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });

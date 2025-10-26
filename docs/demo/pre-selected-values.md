@@ -13,6 +13,7 @@ import { ref } from "vue";
 
 import VueSelect from "../../src";
 
+
 const options = [
   { label: 'Option #1', value: 'option_1' },
   { label: 'Option #2', value: 'option_2' },
@@ -46,6 +47,7 @@ const multiSelected = ref(["option_3", "option_5"]);
 <script setup lang="ts">
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 const options = [
   { label: "Option #1", value: "option_1" },

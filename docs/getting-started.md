@@ -32,14 +32,27 @@ $ bun add vue3-select-component
 The component uses [Floating UI](https://floating-ui.com/) for intelligent menu positioning and viewport detection.
 :::
 
+## CSS Styles
+
+The component requires its CSS styles to be imported manually.
+
+```javascript
+import "vue3-select-component/styles";
+```
+
+::: info
+These styles can be imported in your application entry point (e.g. `main.ts`) or in a specific SFC where you are using the component (e.g. `MyComponent.vue`).
+:::
+
 ## Single select usage
 
-Import the component with the styling, and use it in your Vue 3 application:
+Import the component and its styles, and use it in your Vue 3 application:
 
 ```vue
 <script setup lang="ts">
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 const selected = ref("");
 </script>
@@ -61,7 +74,7 @@ Since the component is built with TypeScript, your IDE will provide you with aut
 
 ## Multiselect usage
 
-Import the component with the styling, and use it in your Vue 3 application.
+Import the component and its styles, and use it in your Vue 3 application.
 
 To enable the multiselect feature, all you need to do is:
 
@@ -72,6 +85,7 @@ To enable the multiselect feature, all you need to do is:
 <script setup>
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 const selected = ref([]);
 </script>

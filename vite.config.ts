@@ -4,7 +4,6 @@ import { resolve as pathResolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
-import cssInject from "vite-plugin-css-injected-by-js";
 import dts from "vite-plugin-dts";
 import vueDevtools from "vite-plugin-vue-devtools";
 
@@ -29,7 +28,6 @@ export default defineConfig((configEnv) => {
 
       plugins: [
         ...config.plugins!,
-        cssInject(),
         dts({ tsconfigPath: "tsconfig.build.json", cleanVueFileName: true }),
       ],
 
@@ -45,7 +43,17 @@ export default defineConfig((configEnv) => {
         },
         rollupOptions: {
           external: ["vue"],
-          output: { globals: { vue: "Vue" } },
+          output: {
+            globals: { vue: "Vue" },
+            // Change default name of the .css file built.
+            assetFileNames: (assetInfo) => {
+              if (assetInfo.names.includes("vue3-select-component.css")) {
+                return "styles.css";
+              }
+
+              return assetInfo.names[0];
+            },
+          },
         },
       },
     };

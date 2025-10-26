@@ -50,6 +50,7 @@ export default defineConfig({
           { text: "Multiple Select Taggable", link: "/demo/multiple-select-taggable" },
           { text: "Custom option slot", link: "/demo/custom-option-slot" },
           { text: "Custom tag slot", link: "/demo/custom-tag-slot" },
+          { text: "Custom tag-content slot", link: "/demo/custom-tag-content-slot" },
           { text: "Custom value mapping", link: "/demo/custom-value-mapping" },
           { text: "Dropdown menu header", link: "/demo/dropdown-menu-header" },
           { text: "Custom displayed options", link: "/demo/custom-displayed-options" },

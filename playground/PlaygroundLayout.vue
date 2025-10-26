@@ -16,6 +16,7 @@ const links = [
   { value: "/taggable-no-options-slot", label: "Taggable No Options Slot" },
   { value: "/controlled-menu", label: "Controlled Menu" },
   { value: "/menu-header", label: "Menu Header" },
+  { value: "/menu-positioning", label: "Menu Positioning" },
 ];
 
 const router = useRouter();

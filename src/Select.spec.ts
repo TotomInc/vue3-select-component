@@ -755,6 +755,27 @@ describe("hideSelectedOptions prop", () => {
   });
 });
 
+describe("menu positioning data attribute", () => {
+  it("should have data-state-position attribute on menu element", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    const menu = wrapper.find(".menu");
+    expect(menu.exists()).toBe(true);
+    expect(menu.attributes("data-state-position")).toBeDefined();
+  });
+
+  it("should set data-state-position to bottom-start by default", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await openMenu(wrapper);
+
+    const menu = wrapper.find(".menu");
+    expect(menu.attributes("data-state-position")).toBe("bottom-start");
+  });
+});
+
 describe("exposed component methods and refs", () => {
   it("should expose inputRef for direct DOM access", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });

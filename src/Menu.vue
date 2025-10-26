@@ -21,7 +21,7 @@ const sharedData = inject<DataInjection<GenericOption, OptionValue>>(DATA_KEY)!;
 
 const menuRef = useTemplateRef("menu");
 
-const { floatingStyles } = useFloating(sharedData.containerRef, menuRef, {
+const { floatingStyles, placement } = useFloating(sharedData.containerRef, menuRef, {
   whileElementsMounted: autoUpdate,
   placement: "bottom-start",
   middleware: [
@@ -142,6 +142,7 @@ onBeforeUnmount(() => {
     role="listbox"
     :aria-label="sharedProps.aria?.labelledby"
     :aria-multiselectable="sharedProps.isMulti"
+    :data-state-position="placement"
     :style="{
       ...floatingStyles,
     }"
@@ -218,7 +219,6 @@ onBeforeUnmount(() => {
 
 .menu {
   position: absolute;
-  margin-top: var(--vs-menu-offset-top);
   max-height: var(--vs-menu-height);
   overflow-y: auto;
   border: var(--vs-menu-border);
@@ -226,6 +226,14 @@ onBeforeUnmount(() => {
   box-shadow: var(--vs-menu-box-shadow);
   background-color: var(--vs-menu-background-color);
   z-index: var(--vs-menu-z-index);
+}
+
+.menu[data-state-position^="bottom"] {
+  margin-top: var(--vs-menu-offset-top);
+}
+
+.menu[data-state-position^="top"] {
+  margin-bottom: var(--vs-menu-offset-top);
 }
 
 .no-results {

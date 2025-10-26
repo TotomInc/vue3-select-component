@@ -155,4 +155,10 @@ export type Props<GenericOption, OptionValue> = {
    * Useful for form integration (tabindex, autocomplete, required, etc.).
    */
   inputAttrs?: Record<string, string | number | boolean | undefined | null | Array<unknown>>;
+
+  /**
+   * When set to true, selecting the focused option when the component loses focus.
+   * This is useful for WAI-ARIA compliance. Defaults to true.
+   */
+  selectOnBlur?: boolean;
 };

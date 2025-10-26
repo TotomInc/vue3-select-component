@@ -7,6 +7,7 @@ import CustomPlaceholder from "./demos/CustomPlaceholder.vue";
 import CustomSearchFilter from "./demos/CustomSearchFilter.vue";
 import CustomTagContent from "./demos/CustomTagContent.vue";
 import ExtraOptionProperties from "./demos/ExtraOptionProperties.vue";
+import KeyboardNavigation from "./demos/KeyboardNavigation.vue";
 import MenuHeader from "./demos/MenuHeader.vue";
 import MenuPositioning from "./demos/MenuPositioning.vue";
 import MultiSelect from "./demos/MultiSelect.vue";
@@ -33,6 +34,7 @@ const router = createRouter({
     { path: "/controlled-menu", component: ControlledMenu },
     { path: "/menu-header", component: MenuHeader },
     { path: "/menu-positioning", component: MenuPositioning },
+    { path: "/keyboard-navigation", component: KeyboardNavigation },
   ],
 });
 

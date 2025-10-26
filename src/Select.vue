@@ -33,6 +33,7 @@ const props = withDefaults(
     aria: undefined,
     disableInvalidVModelWarn: false,
     inputAttrs: undefined,
+    selectOnBlur: true,
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionValue: (option: GenericOption) => option.value,
     getOptionLabel: (option: GenericOption) => option.label,
@@ -289,6 +290,23 @@ const handleInputKeydown = (e: KeyboardEvent) => {
     e.stopImmediatePropagation();
     openMenu();
   }
+  else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !menuOpen.value) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openMenu();
+  }
+};
+
+const handleInputBlur = () => {
+  if (props.selectOnBlur && menuOpen.value && focusedOption.value >= 0) {
+    const focusedOptionData = availableOptions.value[focusedOption.value];
+
+    if (focusedOptionData && !focusedOptionData.disabled) {
+      setOption(focusedOptionData);
+    }
+  }
+
+  closeMenu();
 };
 
 provide(PROPS_KEY, props);
@@ -453,6 +471,7 @@ watch(
             placeholder=""
             @mousedown="handleInputMousedown"
             @keydown="handleInputKeydown"
+            @blur="handleInputBlur"
           >
         </div>
       </div>

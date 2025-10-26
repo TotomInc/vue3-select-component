@@ -29,6 +29,7 @@ export type DataInjection<GenericOption extends Option<OptionValue>, OptionValue
   closeMenu: () => void;
   toggleMenu: () => void;
   handleControlClick: (event: MouseEvent) => void;
+  handleInputMousedown: () => void;
   setOption: (option: GenericOption) => void;
   removeOption: (option: GenericOption) => void;
   createOption: () => void;

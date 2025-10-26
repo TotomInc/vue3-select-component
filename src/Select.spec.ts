@@ -1002,6 +1002,7 @@ describe("WAI-ARIA compliance keyboard behaviors", () => {
     const disabledOptionIndex = options.findIndex((option) => option.disabled);
     // Access the internal focusedOption ref directly
     (wrapper.vm as any).focusedOption = disabledOptionIndex;
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.get(".focused[role='option']").text()).toBe("Spain");
 

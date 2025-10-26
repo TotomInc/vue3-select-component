@@ -15,6 +15,7 @@ import { ref } from "vue";
 
 import VueSelect from "../../src";
 
+
 const selected = ref([]);
 </script>
 
@@ -38,6 +39,7 @@ Selected value(s): **{{ selected.length ? selected.join(", ") : "none" }}**
 <script setup lang="ts">
 import { ref } from "vue";
 import VueSelect from "vue3-select-component";
+import "vue3-select-component/styles";
 
 // When setting `is-multi` to `true`, the `v-model` should be an array of strings.
 const selected = ref<string[]>([]);

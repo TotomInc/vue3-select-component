@@ -6,9 +6,14 @@ title: 'Styling'
 
 Vue 3 Select Component provides multiple types of customization.
 
-::: tip
-The default component styling is already included and bundled with the `<VueSelect />` component.
-You don't need to import any other CSS file to make it work, by default.
+::: info
+The component requires its CSS styles to be imported manually.
+
+```javascript
+import "vue3-select-component/styles";
+```
+
+You must import the styles in your application for the component to display correctly.
 :::
 
 ## CSS variables
@@ -241,3 +246,11 @@ You can apply any custom styling using [the `:deep` selector](https://vuejs.org/
 }
 </style>
 ```
+
+## Why styles cannot be automatically injected
+
+Previously, the styles were automatically injected into the application's global scope. This was done to ensure that the styles were applied to the component's specific instance.
+
+However, this approach was not compatible with strict Content Security Policy (CSP) environments.
+
+To ensure compatibility with CSP environments, the styles should be imported manually.

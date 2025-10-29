@@ -223,10 +223,6 @@ const setOption = (option: GenericOption) => {
   if (props.closeOnSelect) {
     closeMenu();
   }
-
-  if (inputRef.value) {
-    inputRef.value.blur();
-  }
 };
 
 const removeOption = (option: GenericOption) => {
@@ -267,7 +263,7 @@ const clear = () => {
   }
 
   if (inputRef.value) {
-    inputRef.value.blur();
+    inputRef.value.focus();
   }
 };
 

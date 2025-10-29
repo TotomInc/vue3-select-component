@@ -1197,3 +1197,113 @@ describe("exposed component methods and refs", () => {
     expect(headerIndex).toBeLessThan(firstOptionIndex);
   });
 });
+
+describe("accessibility focus management", () => {
+  it("should keep focus on input after selecting an option via click in single-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+
+  it("should keep focus on input after selecting an option via keyboard in single-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+
+  it("should keep focus on input after selecting an option via click in multi-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+
+  it("should keep focus on input after selecting an option via keyboard in multi-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+    await openMenu(wrapper);
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+
+  it("should keep focus on input after clearing via clear button in single-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: options[0]?.value, options, isClearable: true }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+    await wrapper.get(".clear-button").trigger("click");
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+
+  it("should keep focus on input after clearing via clear button in multi-select", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [options[0]?.value], isMulti: true, options, isClearable: true }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+    await wrapper.get(".clear-button").trigger("click");
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+
+  it("should keep focus on input after clearing via exposed clear method", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: options[0]?.value, options }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+
+    wrapper.vm.clear();
+    await wrapper.vm.$nextTick();
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+
+  it("should keep focus on input after selecting with Space key", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options }, attachTo: document.body });
+
+    const input = wrapper.get("input");
+    await input.trigger("focus");
+    await openMenu(wrapper);
+
+    const event = new KeyboardEvent("keydown", {});
+    Object.defineProperty(event, "code", { value: "Space" });
+    Object.defineProperty(event, "key", { value: " " });
+    document.dispatchEvent(event);
+    await wrapper.vm.$nextTick();
+
+    expect(document.activeElement).toBe(input.element);
+
+    wrapper.unmount();
+  });
+});

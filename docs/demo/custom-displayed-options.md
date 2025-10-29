@@ -16,7 +16,6 @@ import { computed, ref } from "vue";
 
 import VueSelect from "../../src";
 
-
 const itUsers = [
   { label: "Alice (IT)", value: "alice" },
   { label: "Bob (IT)", value: "bob" },

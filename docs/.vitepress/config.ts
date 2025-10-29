@@ -39,6 +39,7 @@ export default defineConfig({
           { text: "Slots", link: "/slots" },
           { text: "Events", link: "/events" },
           { text: "Styling", link: "/styling" },
+          { text: "Accessibility", link: "/accessibility" },
           { text: "TypeScript Guide", link: "/typescript" },
         ],
       },

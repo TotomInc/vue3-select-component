@@ -51,7 +51,7 @@
     "@floating-ui/vue": "1.1.9"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.53.1"
+    "@rollup/rollup-linux-x64-gnu": "4.53.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "6.2.0",
@@ -62,7 +62,7 @@
     "@vitest/coverage-v8": "4.0.8",
     "@vue/test-utils": "2.4.6",
     "@vue/tsconfig": "0.8.1",
-    "autoprefixer": "10.4.21",
+    "autoprefixer": "10.4.22",
     "bumpp": "10.3.1",
     "eslint": "9.36.0",
     "jsdom": "27.1.0",

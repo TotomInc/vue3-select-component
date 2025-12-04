@@ -54,7 +54,7 @@
     "@rollup/rollup-linux-x64-gnu": "4.53.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "6.3.0",
+    "@antfu/eslint-config": "6.4.1",
     "@tsconfig/node22": "22.0.5",
     "@types/jsdom": "27.0.0",
     "@types/node": "24.10.1",

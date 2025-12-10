@@ -57,7 +57,7 @@
     "@antfu/eslint-config": "6.6.1",
     "@tsconfig/node22": "22.0.5",
     "@types/jsdom": "27.0.0",
-    "@types/node": "24.10.2",
+    "@types/node": "24.10.3",
     "@vitejs/plugin-vue": "6.0.2",
     "@vitest/coverage-v8": "4.0.15",
     "@vue/test-utils": "2.4.6",

@@ -14,6 +14,7 @@ const links = [
   { value: "/custom-option-label-value", label: "Custom Option Label/Value" },
   { value: "/custom-search-filter", label: "Custom Search Filter" },
   { value: "/select-is-loading", label: "Select isLoading" },
+  { value: "/no-select-on-blur", label: "No Select on Blur" },
   { value: "/taggable-no-options-slot", label: "Taggable No Options Slot" },
   { value: "/controlled-menu", label: "Controlled Menu" },
   { value: "/menu-header", label: "Menu Header" },

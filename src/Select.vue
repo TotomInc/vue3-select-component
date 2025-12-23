@@ -301,8 +301,6 @@ const handleInputBlur = () => {
       setOption(focusedOptionData);
     }
   }
-
-  closeMenu();
 };
 
 provide(PROPS_KEY, props);

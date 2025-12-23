@@ -479,6 +479,17 @@ describe("component props", () => {
 
     expect(wrapper.findAll(".focused[role='option']")).toHaveLength(0);
   });
+
+  it("should select option on click if selectOnBlur is disabled", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur: false } });
+
+    await openMenu(wrapper);
+    await wrapper.get("input").trigger("blur");
+
+    await wrapper.get("div[role='option']").trigger("click");
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[0]?.value]]);
+    expect(wrapper.get(".single-value").text()).toBe(options[0]?.label);
+  });
 });
 
 describe("inputAttrs prop", () => {

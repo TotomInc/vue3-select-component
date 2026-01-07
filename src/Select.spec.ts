@@ -638,6 +638,24 @@ describe("taggable prop", () => {
     expect(wrapper.find(".custom-taggable-no-options").exists()).toBe(true);
     expect(wrapper.find(".custom-taggable-no-options").text()).toBe("Create option: New Option");
   });
+
+  it("should clear focusOption when searching for similar option", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    // Make sure the first option is focused
+    await openMenu(wrapper);
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
+
+    // Get search text that is a substring of an existing option label
+    const inputText = options[3]?.label.substring(0, 2);
+    if (!inputText) {
+      throw new Error("inputText should not be undefined. Please check the options array.");
+    }
+
+    // Search for the substring and verify that no options are focused now
+    await inputSearch(wrapper, inputText);
+    expect(wrapper.findAll(".focused[role='option']")).toHaveLength(0);
+  });
 });
 
 describe("tag-content slot", () => {
@@ -820,6 +838,24 @@ describe("menu closing behavior", () => {
       await trigger.action();
       expect(wrapper.findAll("div[role='option']").length).toBe(0);
     }
+  });
+
+  it("should clear focusOption when closing menu", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, shouldAutofocusOption: false } });
+
+    await openMenu(wrapper);
+
+    // Focus on option 2
+    wrapper.findAll("div[role='option']")[2]?.trigger("mouseenter");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[2]?.label);
+
+    wrapper.vm.closeMenu();
+    await wrapper.vm.$nextTick();
+
+    // Reopen menu and verify that no options are focused
+    await openMenu(wrapper);
+    expect(wrapper.findAll(".focused[role='option']")).toHaveLength(0);
   });
 
   it("should toggle menu when clicking input while menu is open and search is empty", async () => {

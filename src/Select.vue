@@ -153,6 +153,7 @@ function openMenu() {
 function closeMenu() {
   menuOpen.value = false;
   search.value = "";
+  focusedOption.value = -1;
   emit("search", "");
   emit("menuClosed");
 };
@@ -339,6 +340,7 @@ watch(
   () => {
     if (props.isSearchable && search.value) {
       emit("search", search.value);
+      focusedOption.value = -1;
 
       if (!menuOpen.value) {
         openMenu();

@@ -20,6 +20,7 @@ const links = [
   { value: "/menu-header", label: "Menu Header" },
   { value: "/menu-positioning", label: "Menu Positioning" },
   { value: "/keyboard-navigation", label: "Keyboard Navigation" },
+  { value: "/search-event", label: "Search Event" },
 ];
 
 const router = useRouter();

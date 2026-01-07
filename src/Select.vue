@@ -154,7 +154,6 @@ function closeMenu() {
   menuOpen.value = false;
   search.value = "";
   focusedOption.value = -1;
-  emit("search", "");
   emit("menuClosed");
 };
 
@@ -337,8 +336,8 @@ defineExpose({
 // Watch the search input value to emit search events and auto-open the menu when typing
 watch(
   () => search.value,
-  () => {
-    if (props.isSearchable && search.value) {
+  (newSearch, oldSearch) => {
+    if (props.isSearchable && newSearch !== oldSearch) {
       emit("search", search.value);
       focusedOption.value = -1;
 

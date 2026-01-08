@@ -34,6 +34,7 @@ export type DataInjection<GenericOption extends Option<OptionValue>, OptionValue
   removeOption: (option: GenericOption) => void;
   createOption: () => void;
   setFocusedOption: (index: number) => void;
+  handleInputBlur: () => void;
 };
 
 export const PROPS_KEY = Symbol("props") as InjectionKey<Props<any, any>>;

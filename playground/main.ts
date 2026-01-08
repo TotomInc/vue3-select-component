@@ -12,6 +12,8 @@ import MenuHeader from "./demos/MenuHeader.vue";
 import MenuPositioning from "./demos/MenuPositioning.vue";
 import MultiSelect from "./demos/MultiSelect.vue";
 import MultiSelectTaggable from "./demos/MultiSelectTaggable.vue";
+import NoSelectOnBlur from "./demos/NoSelectOnBlur.vue";
+import SearchEvent from "./demos/SearchEvent.vue";
 import SelectIsLoading from "./demos/SelectIsLoading.vue";
 import SingleSelect from "./demos/SingleSelect.vue";
 import TaggableNoOptionsSlot from "./demos/TaggableNoOptionsSlot.vue";
@@ -31,11 +33,13 @@ const router = createRouter({
     { path: "/custom-option-label-value", component: CustomOptionLabelValue },
     { path: "/custom-search-filter", component: CustomSearchFilter },
     { path: "/select-is-loading", component: SelectIsLoading },
+    { path: "/no-select-on-blur", component: NoSelectOnBlur },
     { path: "/taggable-no-options-slot", component: TaggableNoOptionsSlot },
     { path: "/controlled-menu", component: ControlledMenu },
     { path: "/menu-header", component: MenuHeader },
     { path: "/menu-positioning", component: MenuPositioning },
     { path: "/keyboard-navigation", component: KeyboardNavigation },
+    { path: "/search-event", component: SearchEvent },
   ],
 });
 

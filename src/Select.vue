@@ -656,6 +656,8 @@ watch(
 
 .input-container.typing::after {
   content: attr(data-value) " ";
+  font-size: var(--vs-font-size);
+  font-family: var(--vs-font-family);
   visibility: hidden;
   white-space: pre;
   grid-area: 1 / 2;

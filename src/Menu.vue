@@ -146,6 +146,7 @@ const handleClickOutside = (event: MouseEvent) => {
   const isInsideMenu = menuRef.value && menuRef.value.contains(target);
 
   if (!isInsideContainer && !isInsideMenu) {
+    sharedData.handleInputBlur();
     sharedData.closeMenu();
   }
 };

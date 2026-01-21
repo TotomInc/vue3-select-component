@@ -153,7 +153,7 @@ function openMenu() {
 function closeMenu() {
   menuOpen.value = false;
   search.value = "";
-  emit("search", "");
+  focusedOption.value = -1;
   emit("menuClosed");
 };
 
@@ -301,8 +301,6 @@ const handleInputBlur = () => {
       setOption(focusedOptionData);
     }
   }
-
-  closeMenu();
 };
 
 provide(PROPS_KEY, props);
@@ -323,6 +321,7 @@ provide(DATA_KEY, {
   removeOption,
   createOption,
   setFocusedOption,
+  handleInputBlur,
 });
 
 // Expose useful refs and methods for external component control
@@ -338,9 +337,10 @@ defineExpose({
 // Watch the search input value to emit search events and auto-open the menu when typing
 watch(
   () => search.value,
-  () => {
-    if (props.isSearchable && search.value) {
+  (newSearch, oldSearch) => {
+    if (props.isSearchable && newSearch !== oldSearch) {
       emit("search", search.value);
+      focusedOption.value = -1;
 
       if (!menuOpen.value) {
         openMenu();
@@ -467,7 +467,6 @@ watch(
             placeholder=""
             @mousedown="handleInputMousedown"
             @keydown="handleInputKeydown"
-            @blur="handleInputBlur"
           >
         </div>
       </div>

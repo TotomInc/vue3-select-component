@@ -12,11 +12,14 @@
     {
       "groupName": "all dependencies",
       "groupSlug": "all",
-      "matchPackagePatterns": [
+      "matchPackageNames": [
         "*"
       ]
     }
   ],
-  "ignoreDeps": ["eslint", "typescript"],
+  "ignoreDeps": [
+    "eslint",
+    "typescript"
+  ],
   "separateMajorMinor": false
 }

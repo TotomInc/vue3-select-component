@@ -48,22 +48,22 @@
     "vue": "^3.5.0"
   },
   "dependencies": {
-    "@floating-ui/vue": "1.1.9"
+    "@floating-ui/vue": "1.1.10"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.55.1"
+    "@rollup/rollup-linux-x64-gnu": "4.57.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "6.7.3",
+    "@antfu/eslint-config": "7.2.0",
     "@tsconfig/node22": "22.0.5",
     "@types/jsdom": "27.0.0",
-    "@types/node": "24.10.4",
+    "@types/node": "24.10.9",
     "@vitejs/plugin-vue": "6.0.3",
-    "@vitest/coverage-v8": "4.0.16",
+    "@vitest/coverage-v8": "4.0.18",
     "@vue/test-utils": "2.4.6",
     "@vue/tsconfig": "0.8.1",
-    "autoprefixer": "10.4.23",
-    "bumpp": "10.3.2",
+    "autoprefixer": "10.4.24",
+    "bumpp": "10.4.0",
     "eslint": "9.39.2",
     "jsdom": "27.4.0",
     "npm-run-all2": "8.0.4",
@@ -73,10 +73,10 @@
     "vite-plugin-dts": "4.5.4",
     "vite-plugin-vue-devtools": "8.0.5",
     "vitepress": "1.6.4",
-    "vitest": "4.0.16",
-    "vue": "3.5.26",
-    "vue-component-type-helpers": "3.2.2",
-    "vue-router": "4.6.4",
-    "vue-tsc": "3.2.2"
+    "vitest": "4.0.18",
+    "vue": "3.5.27",
+    "vue-component-type-helpers": "3.2.4",
+    "vue-router": "5.0.1",
+    "vue-tsc": "3.2.4"
   }
 }

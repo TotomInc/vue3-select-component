@@ -4,12 +4,14 @@
 :root {
   color-scheme: dark;
 
-  --playground-bg: #0b0f14;
-  --playground-panel: #11161f;
-  --playground-panel-strong: #0f1722;
+  --playground-bg: var(--color-neutral-950);
+  --playground-panel: var(--color-neutral-900);
+  --playground-panel-strong: var(--color-neutral-950);
   --playground-border: rgba(148, 163, 184, 0.18);
-  --playground-muted: rgba(148, 163, 184, 0.7);
-  --playground-accent: #22d3ee;
+  --playground-muted: rgba(148, 163, 184, 0.8);
+  --playground-text: var(--color-neutral-50);
+  --playground-text-strong: var(--color-neutral-100);
+  --playground-accent: var(--color-green-500);
 }
 
 @layer base {
@@ -23,14 +25,10 @@
     margin: 0;
     min-height: 100vh;
     font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
-    color: #e2e8f0;
+    color: var(--playground-text);
     background-color: var(--playground-bg);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-
-  ::selection {
-    background: rgba(34, 211, 238, 0.2);
   }
 
   a {
@@ -42,6 +40,7 @@
   margin: 0;
   padding: 0;
   background: transparent !important;
+  overflow-x: auto;
 }
 
 .shiki-container code {

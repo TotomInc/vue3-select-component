@@ -212,21 +212,21 @@ watch(currentSourceUrl, loadSource, { immediate: true });
 
 <template>
   <div class="min-h-screen">
-    <header class="border-b border-slate-800/80 bg-[var(--playground-panel)]/80">
+    <header class="border-b border-neutral-800/80 bg-[var(--playground-panel)]/80">
       <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
         <div class="space-y-2">
-          <p class="text-xs font-semibold text-slate-500">
+          <p class="text-xs font-semibold text-neutral-500">
             Vue 3 Select Component
           </p>
 
-          <h1 class="text-2xl font-semibold text-slate-100">
+          <h1 class="text-2xl font-semibold text-neutral-100">
             Playground
           </h1>
         </div>
-        <div class="flex flex-wrap items-center gap-3 text-sm text-slate-400">
+        <div class="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
           <a
-            class="inline-flex items-center gap-2 rounded-full border border-slate-800/80 px-3 py-1.5 transition hover:border-slate-700 hover:text-slate-200"
-            href="https://totominc.github.io/vue3-select-component/"
+            class="inline-flex items-center gap-2 rounded-full border border-neutral-800/80 px-3 py-1.5 transition hover:border-neutral-700 hover:text-neutral-200"
+            href="https://vue3-select-component.vercel.app/"
             rel="noreferrer"
             target="_blank"
           >
@@ -234,7 +234,7 @@ watch(currentSourceUrl, loadSource, { immediate: true });
             Documentation
           </a>
           <a
-            class="inline-flex items-center gap-2 rounded-full border border-slate-800/80 px-3 py-1.5 transition hover:border-slate-700 hover:text-slate-200"
+            class="inline-flex items-center gap-2 rounded-full border border-neutral-800/80 px-3 py-1.5 transition hover:border-neutral-700 hover:text-neutral-200"
             href="https://github.com/TotomInc/vue3-select-component"
             rel="noreferrer"
             target="_blank"
@@ -263,7 +263,7 @@ watch(currentSourceUrl, loadSource, { immediate: true });
             :key="section.title"
             class="space-y-2"
           >
-            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">
+            <p class="text-xs uppercase tracking-[0.2em] text-neutral-500">
               {{ section.title }}
             </p>
             <div class="flex flex-col gap-2">
@@ -274,14 +274,14 @@ watch(currentSourceUrl, loadSource, { immediate: true });
                 class="rounded-lg border px-3 py-2 text-sm transition"
                 :class="
                   route.path === item.value
-                    ? 'border-cyan-400/40 bg-[var(--playground-panel-strong)] text-slate-100'
-                    : 'border-slate-800/80 bg-[var(--playground-panel)] text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                    ? 'border-green-500/40 bg-[var(--playground-panel-strong)] text-neutral-100'
+                    : 'border-neutral-800/80 bg-[var(--playground-panel)] text-neutral-400 hover:border-neutral-700 hover:text-neutral-200'
                 "
               >
-                <div class="font-medium text-slate-200">
+                <div class="font-medium text-neutral-200">
                   {{ item.label }}
                 </div>
-                <div class="text-xs text-slate-500">
+                <div class="text-xs text-neutral-500">
                   {{ item.description }}
                 </div>
               </RouterLink>
@@ -292,21 +292,21 @@ watch(currentSourceUrl, loadSource, { immediate: true });
 
       <main class="flex min-w-0 flex-1 flex-col gap-6">
         <form
-          class="rounded-xl border border-slate-800/80 bg-[var(--playground-panel)] p-6"
+          class="rounded-xl border border-neutral-800/80 bg-[var(--playground-panel)] p-6"
           @submit.prevent="null"
         >
           <RouterView />
         </form>
 
-        <section class="rounded-xl border border-slate-800/80 bg-[var(--playground-panel)]">
-          <div class="flex items-center justify-between border-b border-slate-800/80 px-4 py-3">
-            <div class="inline-flex items-center gap-2 text-sm text-slate-300">
-              <Code2 class="h-4 w-4 text-cyan-300/80" />
+        <section class="rounded-xl border border-neutral-800/80 bg-[var(--playground-panel)]">
+          <div class="flex items-center justify-between border-b border-neutral-800/80 px-4 py-3">
+            <div class="inline-flex items-center gap-2 text-sm text-neutral-300">
+              <Code2 class="h-4 w-4 text-green-300/80" />
               Source code
             </div>
             <a
               v-if="currentSourceUrl"
-              class="text-xs text-slate-500 transition hover:text-slate-300"
+              class="text-xs text-neutral-500 transition hover:text-neutral-300"
               :href="currentSourceUrl"
               rel="noreferrer"
               target="_blank"
@@ -315,7 +315,7 @@ watch(currentSourceUrl, loadSource, { immediate: true });
             </a>
           </div>
 
-          <div class="min-h-[140px] px-4 py-4 text-sm text-slate-400">
+          <div class="min-h-[140px] px-4 py-4 text-sm text-neutral-400">
             <div v-if="sourceLoading">
               Loading source...
             </div>

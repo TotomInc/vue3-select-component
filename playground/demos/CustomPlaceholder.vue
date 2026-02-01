@@ -2,6 +2,10 @@
 import type { Option } from "../../src";
 import { ref } from "vue";
 import VueSelect from "../../src";
+import DemoHeader from "../components/DemoHeader.vue";
+import DemoLayout from "../components/DemoLayout.vue";
+import DemoPanel from "../components/DemoPanel.vue";
+import DemoValue from "../components/DemoValue.vue";
 
 const selected = ref<string | null>(null);
 
@@ -14,18 +18,28 @@ const options: Option<string>[] = [
 </script>
 
 <template>
-  <VueSelect
-    v-model="selected"
-    :options="options"
-    :is-multi="false"
-    placeholder="Pick a book"
-  >
-    <template #placeholder>
-      <span>Custom placeholder</span>
-    </template>
-  </VueSelect>
+  <DemoLayout>
+    <DemoHeader
+      eyebrow="Slots"
+      title="Custom placeholder"
+      description="Replace the default placeholder with a custom slot to guide users with friendlier empty-state copy."
+    />
 
-  <p class="selected-value">
-    Selected book value: {{ selected || "none" }}
-  </p>
+    <DemoPanel>
+      <VueSelect
+        v-model="selected"
+        :options="options"
+        :is-multi="false"
+        placeholder="Pick a book"
+      >
+        <template #placeholder>
+          <span>Custom placeholder</span>
+        </template>
+      </VueSelect>
+
+      <DemoValue label="Selected book value">
+        {{ selected || "none" }}
+      </DemoValue>
+    </DemoPanel>
+  </DemoLayout>
 </template>

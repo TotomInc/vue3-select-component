@@ -2,6 +2,11 @@
 import type { Option } from "../../src";
 import { ref } from "vue";
 import VueSelect from "../../src";
+import DemoHeader from "../components/DemoHeader.vue";
+import DemoInlineCode from "../components/DemoInlineCode.vue";
+import DemoLayout from "../components/DemoLayout.vue";
+import DemoPanel from "../components/DemoPanel.vue";
+import DemoValue from "../components/DemoValue.vue";
 
 const selected = ref<number[]>([]);
 
@@ -14,14 +19,24 @@ const options: Option<number>[] = [
 </script>
 
 <template>
-  <VueSelect
-    v-model="selected"
-    :options="options"
-    :is-multi="true"
-    placeholder="Select users"
-  />
+  <DemoLayout>
+    <DemoHeader eyebrow="Multi-select" title="Select multiple users">
+      <template #description>
+        Enable <DemoInlineCode>is-multi</DemoInlineCode> to collect multiple values while keeping a single input.
+      </template>
+    </DemoHeader>
 
-  <p class="selected-value">
-    Selected users: {{ selected || "none" }}
-  </p>
+    <DemoPanel>
+      <VueSelect
+        v-model="selected"
+        :options="options"
+        :is-multi="true"
+        placeholder="Select users"
+      />
+
+      <DemoValue label="Selected users">
+        {{ selected.length ? selected : "none" }}
+      </DemoValue>
+    </DemoPanel>
+  </DemoLayout>
 </template>

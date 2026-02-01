@@ -2,6 +2,12 @@
 import type { Option } from "../../src";
 import { ref } from "vue";
 import VueSelect from "../../src";
+import DemoHeader from "../components/DemoHeader.vue";
+import DemoInlineCode from "../components/DemoInlineCode.vue";
+import DemoLayout from "../components/DemoLayout.vue";
+import DemoPanel from "../components/DemoPanel.vue";
+import DemoSection from "../components/DemoSection.vue";
+import DemoValue from "../components/DemoValue.vue";
 
 const selected = ref<string[]>([]);
 
@@ -27,76 +33,56 @@ const levelColors = {
 </script>
 
 <template>
-  <div>
-    <h2>Custom Tag Content Slot</h2>
-    <p>
-      This demo shows the <code>#tag-content</code> slot which allows you to customize
-      only the text inside a tag, while keeping the default structure, styling, and remove button.
-    </p>
-
-    <VueSelect
-      v-model="selected"
-      :options="options"
-      :is-multi="true"
-      placeholder="Select your skills"
-    >
-      <template #tag-content="{ option }">
-        <span :style="{ display: 'flex', alignItems: 'center', gap: '4px' }">
-          <span>{{ option.icon }}</span>
-          <strong>{{ option.label }}</strong>
-          <span
-            :style="{
-              fontSize: '10px',
-              padding: '2px 4px',
-              borderRadius: '2px',
-              backgroundColor: levelColors[option.level],
-              color: '#000',
-              fontWeight: 500,
-            }"
-          >
-            {{ option.level }}
-          </span>
-        </span>
+  <DemoLayout>
+    <DemoHeader eyebrow="Slots" title="Custom tag content">
+      <template #description>
+        Use <DemoInlineCode>#tag-content</DemoInlineCode> when you want to format tag labels but keep the default
+        tag wrapper and remove button.
       </template>
-    </VueSelect>
+    </DemoHeader>
 
-    <div style="margin-top: 20px">
-      <h3>Selected Skills:</h3>
-      <pre>{{ selected.length ? selected : "none" }}</pre>
-    </div>
+    <DemoPanel>
+      <VueSelect
+        v-model="selected"
+        :options="options"
+        :is-multi="true"
+        placeholder="Select your skills"
+      >
+        <template #tag-content="{ option }">
+          <span class="flex items-center gap-1.5">
+            <span>{{ option.icon }}</span>
+            <span class="font-semibold text-[color:var(--playground-text-strong)]">{{ option.label }}</span>
+            <span
+              :style="{
+                fontSize: '10px',
+                padding: '2px 4px',
+                borderRadius: '2px',
+                backgroundColor: levelColors[option.level],
+                color: '#000',
+                fontWeight: 500,
+              }"
+            >
+              {{ option.level }}
+            </span>
+          </span>
+        </template>
+      </VueSelect>
 
-    <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 4px">
-      <h3>Why use #tag-content instead of #tag?</h3>
-      <ul>
-        <li><strong>#tag-content</strong>: Only replaces the text inside the tag. The wrapper, styling, and remove button are preserved automatically.</li>
-        <li><strong>#tag</strong>: Replaces the entire tag structure. You need to recreate the wrapper, styling, and remove button manually.</li>
-      </ul>
-      <p>Use <code>#tag-content</code> when you just want to format the label text differently without dealing with structure and event handlers.</p>
-    </div>
-  </div>
+      <DemoValue label="Selected skills">
+        {{ selected.length ? selected : "none" }}
+      </DemoValue>
+    </DemoPanel>
+
+    <DemoPanel accent>
+      <DemoSection title="Why use #tag-content instead of #tag?">
+        <ul class="grid gap-2 text-sm text-[color:var(--playground-muted)]">
+          <li><strong>#tag-content</strong> keeps the wrapper, styling, and remove button intact.</li>
+          <li><strong>#tag</strong> replaces the entire tag structure, so you must rebuild the wrapper and actions.</li>
+        </ul>
+        <p class="text-sm text-[color:var(--playground-muted)]">
+          Choose <DemoInlineCode>#tag-content</DemoInlineCode> for visual tweaks without extra event wiring.
+        </p>
+      </DemoSection>
+    </DemoPanel>
+  </DemoLayout>
 </template>
-
-<style scoped>
-h2 {
-  margin-bottom: 10px;
-}
-
-p {
-  margin-bottom: 20px;
-  color: #666;
-}
-
-code {
-  background: #f0f0f0;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-family: monospace;
-}
-
-pre {
-  background: #f9f9f9;
-  padding: 10px;
-  border-radius: 4px;
-  overflow-x: auto;
-}
-</style>

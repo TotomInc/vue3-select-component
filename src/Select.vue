@@ -322,6 +322,7 @@ provide(DATA_KEY, {
   removeOption,
   createOption,
   setFocusedOption,
+  handleInputBlur,
 });
 
 // Expose useful refs and methods for external component control
@@ -467,7 +468,6 @@ watch(
             placeholder=""
             @mousedown="handleInputMousedown"
             @keydown="handleInputKeydown"
-            @blur="handleInputBlur"
           >
         </div>
       </div>

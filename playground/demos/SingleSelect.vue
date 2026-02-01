@@ -2,6 +2,11 @@
 import type { Option } from "../../src";
 import { ref } from "vue";
 import VueSelect from "../../src";
+import DemoHeader from "../components/DemoHeader.vue";
+import DemoLayout from "../components/DemoLayout.vue";
+import DemoPanel from "../components/DemoPanel.vue";
+import DemoTag from "../components/DemoTag.vue";
+import DemoValue from "../components/DemoValue.vue";
 
 const selected = ref<string | null>(null);
 
@@ -19,22 +24,30 @@ const handleCreateOption = (value: string) => {
 </script>
 
 <template>
-  <VueSelect
-    v-model="selected"
-    :options="options"
-    :is-multi="false"
-    :is-taggable="true"
-    placeholder="Pick a book"
-    @option-created="(value) => handleCreateOption(value)"
-  >
-    <template #taggable-no-options="{ option }">
-      <div class="custom-taggable-no-options">
-        Create option: {{ option }}
-      </div>
-    </template>
-  </VueSelect>
+  <DemoLayout>
+    <DemoHeader
+      eyebrow="Single select"
+      title="Create-on-type books"
+      description="A minimal single-select with taggable mode enabled, so users can add a new title if it does not exist."
+    />
 
-  <p class="selected-value">
-    Selected book value: {{ selected || "none" }}
-  </p>
+    <DemoPanel>
+      <VueSelect
+        v-model="selected"
+        :options="options"
+        :is-multi="false"
+        :is-taggable="true"
+        placeholder="Pick a book"
+        @option-created="(value) => handleCreateOption(value)"
+      >
+        <template #taggable-no-options="{ option }">
+          <DemoTag>Create option: {{ option }}</DemoTag>
+        </template>
+      </VueSelect>
+
+      <DemoValue label="Selected book value">
+        {{ selected || "none" }}
+      </DemoValue>
+    </DemoPanel>
+  </DemoLayout>
 </template>

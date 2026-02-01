@@ -21,48 +21,47 @@ const defaultProps: ComponentProps<typeof Select> = {
   isDisabled: false,
 };
 
-async function dispatchEvent(wrapper: ReturnType<typeof mount>, event: Event) {
-  document.dispatchEvent(event);
+async function selectFirstOption(wrapper: ReturnType<typeof mount>) {
+  await wrapper.get("input").trigger("mousedown");
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
   await wrapper.vm.$nextTick();
-};
+}
 
-describe("component setup and initialization", () => {
-  it("should render with default imports", () => {
+describe("indicators rendering", () => {
+  it("should render default icons", () => {
     const wrapper = mount(Select, { props: defaultProps });
 
     expect(wrapper.findComponent(ChevronDownIcon).exists()).toBe(true);
     expect(wrapper.findComponent(XMarkIcon).exists()).toBe(false);
     expect(wrapper.findComponent(Spinner).exists()).toBe(false);
   });
+
+  it.each([
+    { isLoading: false, hasDropdown: true, hasSpinner: false },
+    { isLoading: true, hasDropdown: false, hasSpinner: true },
+  ])("loading=$isLoading: dropdown=$hasDropdown, spinner=$hasSpinner", ({ isLoading, hasDropdown, hasSpinner }) => {
+    const wrapper = mount(Select, { props: { ...defaultProps, isLoading } });
+
+    expect(wrapper.find(".dropdown-icon").exists()).toBe(hasDropdown);
+    expect(wrapper.findComponent(Spinner).exists()).toBe(hasSpinner);
+  });
 });
 
-describe("dropdown button rendering", () => {
-  it("should render dropdown button when not loading", () => {
-    const wrapper = mount(Select, { props: { ...defaultProps, isLoading: false } });
-
-    expect(wrapper.find(".dropdown-icon").exists()).toBe(true);
-  });
-
-  it("should not render dropdown button when loading", () => {
-    const wrapper = mount(Select, { props: { ...defaultProps, isLoading: true } });
-
-    expect(wrapper.find(".dropdown-icon").exists()).toBe(false);
-  });
-
-  it("should add active class to dropdown button when menu is open", async () => {
-    const wrapper = mount(Select, { props: { ...defaultProps } });
+describe("dropdown button", () => {
+  it("should have active class when menu is open", async () => {
+    const wrapper = mount(Select, { props: defaultProps });
 
     await wrapper.get("input").trigger("mousedown");
     expect(wrapper.find(".dropdown-icon").classes()).toContain("active");
   });
 
-  it("should disable dropdown button when component is disabled", () => {
+  it("should be disabled when component is disabled", () => {
     const wrapper = mount(Select, { props: { ...defaultProps, isDisabled: true } });
 
     expect(wrapper.find(".dropdown-icon").attributes("disabled")).toBe("");
   });
 
-  it("should emit toggle event when dropdown button is clicked", async () => {
+  it("should emit toggle event when clicked", async () => {
     const wrapper = mount(Select, { props: defaultProps });
     const indicators = wrapper.getComponent({ name: "Indicators" });
 
@@ -71,111 +70,49 @@ describe("dropdown button rendering", () => {
   });
 });
 
-describe("loading state handling", () => {
-  it("should render spinner when loading", () => {
-    const wrapper = mount(Select, { props: { ...defaultProps, isLoading: true } });
+describe("clear button", () => {
+  it.each([
+    { hasSelection: true, isClearable: true, isLoading: false, shouldExist: true },
+    { hasSelection: false, isClearable: true, isLoading: false, shouldExist: false },
+    { hasSelection: true, isClearable: false, isLoading: false, shouldExist: false },
+    { hasSelection: true, isClearable: true, isLoading: true, shouldExist: false },
+  ])("selection=$hasSelection, clearable=$isClearable, loading=$isLoading -> exists=$shouldExist", async ({ hasSelection, isClearable, isLoading, shouldExist }) => {
+    const wrapper = mount(Select, { props: { ...defaultProps, isClearable, isLoading } });
 
-    expect(wrapper.findComponent(Spinner).exists()).toBe(true);
+    if (hasSelection) {
+      await selectFirstOption(wrapper);
+    }
+
+    expect(wrapper.find(".clear-button").exists()).toBe(shouldExist);
   });
 
-  it("should not render spinner when not loading", () => {
-    const wrapper = mount(Select, { props: { ...defaultProps, isLoading: false } });
-
-    expect(wrapper.findComponent(Spinner).exists()).toBe(false);
-  });
-
-  it("should use custom loading slot content when provided", () => {
-    const wrapper = mount(Select, {
-      props: { ...defaultProps, isLoading: true },
-      slots: { loading: "<div class=\"custom-loader\">Loading...</div>" },
-    });
-
-    expect(wrapper.find(".custom-loader").exists()).toBe(true);
-    expect(wrapper.findComponent(Spinner).exists()).toBe(false);
-  });
-});
-
-describe("clear button behavior", () => {
-  it("should render clear button when there is a selected option and isClearable is true", async () => {
-    const wrapper = mount(Select, { props: { ...defaultProps } });
-
-    await wrapper.get("input").trigger("mousedown");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.find(".clear-button").exists()).toBe(true);
-  });
-
-  it("should not render clear button when there is no selected option", () => {
-    const wrapper = mount(Select, {
-      props: { ...defaultProps, isClearable: true },
-    });
-
-    expect(wrapper.find(".clear-button").exists()).toBe(false);
-  });
-
-  it("should not render clear button when isClearable is false", async () => {
-    const wrapper = mount(Select, {
-      props: { ...defaultProps, isClearable: false },
-    });
-
-    await wrapper.get("input").trigger("mousedown");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.find(".clear-button").exists()).toBe(false);
-  });
-
-  it("should not render clear button when loading", async () => {
-    const wrapper = mount(Select, {
-      props: { ...defaultProps, isClearable: true, isLoading: true },
-    });
-
-    await wrapper.get("input").trigger("mousedown");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.find(".clear-button").exists()).toBe(false);
-  });
-
-  it("should emit clear event when clear button is clicked", async () => {
+  it("should emit clear event when clicked", async () => {
     const wrapper = mount(Select, { props: defaultProps });
     const indicators = wrapper.getComponent({ name: "Indicators" });
 
-    await wrapper.get("input").trigger("mousedown");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+    await selectFirstOption(wrapper);
     await wrapper.find(".clear-button").trigger("click");
 
-    expect(indicators.emitted("clear")).toBeTruthy();
-    expect(indicators.emitted("clear")!.length).toBe(1);
+    expect(indicators.emitted("clear")).toHaveLength(1);
   });
 });
 
 describe("custom slots", () => {
-  it("should use custom clear button slot content when provided", async () => {
+  it.each([
+    { slot: "clear", slotContent: "<span class=\"custom-clear\">x</span>", selector: ".custom-clear", hiddenComponent: XMarkIcon, requiresSelection: true },
+    { slot: "dropdown", slotContent: "<span class=\"custom-dropdown\">v</span>", selector: ".custom-dropdown", hiddenComponent: ChevronDownIcon, requiresSelection: false },
+    { slot: "loading", slotContent: "<div class=\"custom-loader\">...</div>", selector: ".custom-loader", hiddenComponent: Spinner, requiresSelection: false, extraProps: { isLoading: true } },
+  ])("should render custom $slot slot", async ({ slot, slotContent, selector, hiddenComponent, requiresSelection, extraProps }) => {
     const wrapper = mount(Select, {
-      props: { ...defaultProps },
-      slots: {
-        clear: "<span class=\"custom-clear\">✕</span>",
-      },
+      props: { ...defaultProps, ...extraProps },
+      slots: { [slot]: slotContent },
     });
 
-    await wrapper.get("input").trigger("mousedown");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+    if (requiresSelection) {
+      await selectFirstOption(wrapper);
+    }
 
-    expect(wrapper.find(".custom-clear").exists()).toBe(true);
-    expect(wrapper.findComponent(XMarkIcon).exists()).toBe(false);
-  });
-
-  it("should use custom dropdown slot content when provided", async () => {
-    const wrapper = mount(Select, {
-      props: defaultProps,
-      slots: {
-        dropdown: "<span class=\"custom-dropdown\">▼</span>",
-      },
-    });
-
-    await wrapper.get("input").trigger("mousedown");
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(wrapper.find(".custom-dropdown").exists()).toBe(true);
-    expect(wrapper.findComponent(ChevronDownIcon).exists()).toBe(false);
+    expect(wrapper.find(selector).exists()).toBe(true);
+    expect(wrapper.findComponent(hiddenComponent).exists()).toBe(false);
   });
 });

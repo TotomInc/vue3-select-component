@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/playground/:path*", "destination": "/playground/index.html" }
+  ]
+}

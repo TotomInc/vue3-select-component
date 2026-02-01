@@ -26,7 +26,7 @@ body:
     attributes:
       label: Link to minimal reproduction
       description: |
-        The easiest way to provide a reproduction is by showing the bug on the Vue3-Select-Component playground, go the the [docs](https://vue3-select-component.vercel.app/) and click on "Playground" on the header links.
+        The easiest way to provide a reproduction is by showing the bug on the Vue3-Select-Component bug reproduction playground, go the the [docs](https://vue3-select-component.vercel.app/) and click on "Bug repro" on the header links.
         If it cannot be reproduced in the playground and requires a proper build setup, try [StackBlitz](https://vite.new/vue).
         If neither of these are suitable, you can always provide a GitHub repository.
 

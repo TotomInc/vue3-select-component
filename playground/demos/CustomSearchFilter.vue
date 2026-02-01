@@ -2,6 +2,10 @@
 import type { Option } from "../../src";
 import { ref } from "vue";
 import VueSelect from "../../src";
+import DemoHeader from "../components/DemoHeader.vue";
+import DemoLayout from "../components/DemoLayout.vue";
+import DemoPanel from "../components/DemoPanel.vue";
+import DemoValue from "../components/DemoValue.vue";
 
 type BookOption = Option<string> & {
   year: number;
@@ -26,23 +30,36 @@ const customSearchFilter = (option: BookOption, label: string, search: string) =
 </script>
 
 <template>
-  <VueSelect
-    v-model="selected"
-    :options="options"
-    :is-multi="false"
-    :filter-by="customSearchFilter"
-    placeholder="Pick a book"
-  >
-    <template #option="{ option }">
-      <b>{{ option.label }}</b> by {{ option.author }} <small>{{ option.year }}</small>
-    </template>
+  <DemoLayout>
+    <DemoHeader
+      eyebrow="Filtering"
+      title="Search by author or year"
+      description="Provide a custom filter to match on additional metadata like author names or publication year."
+    />
 
-    <template #value="{ option }">
-      <b>{{ option.label }}</b>&nbsp;<small>{{ option.year }}</small>
-    </template>
-  </VueSelect>
+    <DemoPanel>
+      <VueSelect
+        v-model="selected"
+        :options="options"
+        :is-multi="false"
+        :filter-by="customSearchFilter"
+        placeholder="Pick a book"
+      >
+        <template #option="{ option }">
+          <span class="font-semibold text-[color:var(--playground-text-strong)]">{{ option.label }}</span>
+          <span class="text-[color:var(--playground-muted)]"> by {{ option.author }}</span>
+          <span class="text-[color:var(--playground-muted)]"> · {{ option.year }}</span>
+        </template>
 
-  <p class="selected-value">
-    Selected book value: {{ selected || "none" }}
-  </p>
+        <template #value="{ option }">
+          <span class="font-semibold text-[color:var(--playground-text-strong)]">{{ option.label }}</span>
+          <span class="text-[color:var(--playground-muted)]"> · {{ option.year }}</span>
+        </template>
+      </VueSelect>
+
+      <DemoValue label="Selected book value">
+        {{ selected || "none" }}
+      </DemoValue>
+    </DemoPanel>
+  </DemoLayout>
 </template>

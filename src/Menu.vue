@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
 import type { HTMLAttributes } from "vue";
 import type { DataInjection, PropsInjection } from "./lib/provide-inject";
+import type { ModelValue } from "./types/model";
 import type { Option } from "./types/option";
 import type { MenuSlots } from "./types/slots";
 import { autoUpdate, flip, offset, shift, size, useFloating } from "@floating-ui/vue";
@@ -14,7 +15,7 @@ const props = defineProps<{
   rootClass?: HTMLAttributes["class"];
 }>();
 
-const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
+const selected = defineModel<ModelValue<OptionValue>>({ required: true });
 
 const sharedProps = inject<PropsInjection<GenericOption, OptionValue>>(PROPS_KEY)!;
 const sharedData = inject<DataInjection<GenericOption, OptionValue>>(DATA_KEY)!;

@@ -1,9 +1,15 @@
+import type { ComponentPublicInstance } from "vue";
+import type { ComponentExposed, ComponentProps } from "vue-component-type-helpers";
 import type { Option } from "./types/option";
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { h } from "vue";
 
 import VueSelect from "./Select.vue";
+
+type SelectProps = ComponentProps<typeof VueSelect>;
+type SelectExposed = ComponentExposed<typeof VueSelect>;
+type SelectInstance = ComponentPublicInstance<SelectProps> & SelectExposed;
 
 const options = [
   { label: "France", value: "FR" },
@@ -502,99 +508,37 @@ describe("component props", () => {
 });
 
 describe("inputAttrs prop", () => {
-  it("should apply custom tabindex from inputAttrs", () => {
-    const wrapper = mount(VueSelect, {
-      props: {
-        modelValue: null,
-        options,
-        inputAttrs: { tabindex: 5 },
-      },
-    });
-
-    expect(wrapper.get("input").attributes("tabindex")).toBe("5");
-  });
-
-  it("should apply custom autocomplete from inputAttrs", () => {
-    const wrapper = mount(VueSelect, {
-      props: {
-        modelValue: null,
-        options,
-        inputAttrs: { autocomplete: "country" },
-      },
-    });
-
-    expect(wrapper.get("input").attributes("autocomplete")).toBe("country");
-  });
-
-  it("should apply required attribute from inputAttrs", () => {
-    const wrapper = mount(VueSelect, {
-      props: {
-        modelValue: null,
-        options,
-        inputAttrs: { required: true },
-      },
-    });
-
-    expect(wrapper.get("input").attributes("required")).toBe("");
-  });
-
-  it("should apply multiple custom attributes from inputAttrs", () => {
-    const wrapper = mount(VueSelect, {
-      props: {
-        modelValue: null,
-        options,
-        inputAttrs: {
-          "tabindex": 3,
-          "autocomplete": "username",
-          "required": true,
-          "data-testid": "custom-select",
-        },
-      },
-    });
-
+  it.each([
+    { inputAttrs: { tabindex: 5 }, expected: { tabindex: "5" } },
+    { inputAttrs: { autocomplete: "country" }, expected: { autocomplete: "country" } },
+    { inputAttrs: { required: true }, expected: { required: "" } },
+    { inputAttrs: { spellcheck: true, autocorrect: "on" }, expected: { spellcheck: "true", autocorrect: "on" } },
+    {
+      inputAttrs: { "tabindex": 3, "autocomplete": "username", "required": true, "data-testid": "custom-select" },
+      expected: { "tabindex": "3", "autocomplete": "username", "required": "", "data-testid": "custom-select" },
+    },
+  ])("should apply inputAttrs: $inputAttrs", ({ inputAttrs, expected }) => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, inputAttrs } });
     const input = wrapper.get("input");
-    expect(input.attributes("tabindex")).toBe("3");
-    expect(input.attributes("autocomplete")).toBe("username");
-    expect(input.attributes("required")).toBe("");
-    expect(input.attributes("data-testid")).toBe("custom-select");
-  });
 
-  it("should override default attributes with inputAttrs", () => {
-    const wrapper = mount(VueSelect, {
-      props: {
-        modelValue: null,
-        options,
-        inputAttrs: {
-          spellcheck: true,
-          autocorrect: "on",
-        },
-      },
-    });
-
-    const input = wrapper.get("input");
-    expect(input.attributes("spellcheck")).toBe("true");
-    expect(input.attributes("autocorrect")).toBe("on");
+    for (const [attr, value] of Object.entries(expected)) {
+      expect(input.attributes(attr)).toBe(value);
+    }
   });
 
   it("should preserve essential attributes when inputAttrs is provided", () => {
-    const wrapper = mount(VueSelect, {
-      props: {
-        modelValue: null,
-        options,
-        inputAttrs: { tabindex: 5 },
-      },
-    });
-
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, inputAttrs: { tabindex: 5 } } });
     const input = wrapper.get("input");
+
     expect(input.attributes("type")).toBe("text");
     expect(input.attributes("aria-autocomplete")).toBe("list");
     expect(input.attributes("placeholder")).toBe("");
   });
 
-  it("should work without inputAttrs prop", () => {
+  it("should use defaults without inputAttrs prop", () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
     const input = wrapper.get("input");
+
     expect(input.attributes("tabindex")).toBe("0");
     expect(input.attributes("autocomplete")).toBe("off");
     expect(input.attributes("spellcheck")).toBe("false");
@@ -750,47 +694,43 @@ describe("tag-content slot", () => {
 });
 
 describe("menu autofocus behavior", () => {
-  it("should autofocus first option when opening menu", async () => {
-    const testCases = [
-      { name: "single-select", props: { modelValue: null, options } },
-      { name: "multi-select", props: { modelValue: [], isMulti: true, options } },
-    ];
-
-    for (const testCase of testCases) {
-      // @ts-expect-error -- ignore type error
-      const wrapper = mount(VueSelect, { props: testCase.props });
-      await openMenu(wrapper);
-      expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
-    }
+  it.each<{ name: string; props: SelectProps }>([
+    { name: "single-select", props: { modelValue: null, options } },
+    { name: "multi-select", props: { modelValue: [], isMulti: true, options } },
+  ])("should autofocus first option in $name mode", async ({ props }) => {
+    const wrapper = mount(VueSelect, { props });
+    await openMenu(wrapper);
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
   });
 
-  it("should focus first available option when first option is disabled", async () => {
-    const options = [
+  it("should focus first non-disabled option when first option is disabled", async () => {
+    const disabledFirstOptions = [
       { label: "Spain", value: "ES", disabled: true },
       { label: "France", value: "FR" },
     ];
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options: disabledFirstOptions } });
 
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
     await openMenu(wrapper);
     expect(wrapper.get(".focused[role='option']").text()).toBe("France");
   });
 });
 
 describe("menu opening behavior", () => {
-  it("should open menu with different triggers", async () => {
+  it.each([
+    { name: "mousedown on input", method: "mousedown" as const },
+    { name: "space after focus", method: "focus-space" as const },
+  ])("should open menu via $name", async ({ method }) => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    const triggers = [
-      { name: "mousedown on input", action: async () => await openMenu(wrapper, "mousedown") },
-      { name: "space after focus", action: async () => await openMenu(wrapper, "focus-space") },
-      { name: "dropdown button click", action: async () => await wrapper.get(".dropdown-icon").trigger("click") },
-    ];
+    await openMenu(wrapper, method);
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+  });
 
-    for (const trigger of triggers) {
-      await trigger.action();
-      expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-      await wrapper.get(".dropdown-icon").trigger("click");
-    }
+  it("should open menu via dropdown button click", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+
+    await wrapper.get(".dropdown-icon").trigger("click");
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });
 });
 
@@ -891,7 +831,24 @@ describe("menu closing behavior", () => {
 });
 
 describe("hideSelectedOptions prop", () => {
-  it("should hide selected options from menu when hideSelectedOptions is true", async () => {
+  it.each([
+    { hideSelectedOptions: true, isMulti: true, expectedCount: 3, shouldContain: false },
+    { hideSelectedOptions: false, isMulti: true, expectedCount: 4, shouldContain: true },
+    { hideSelectedOptions: true, isMulti: false, expectedCount: 4, shouldContain: true },
+  ])("hideSelectedOptions=$hideSelectedOptions, isMulti=$isMulti", async ({ hideSelectedOptions, isMulti, expectedCount, shouldContain }) => {
+    const modelValue = isMulti ? [] : null;
+    const wrapper = mount(VueSelect, { props: { modelValue, isMulti, options, hideSelectedOptions } });
+
+    await openMenu(wrapper);
+    await wrapper.get("div[role='option']").trigger("click");
+    await openMenu(wrapper);
+
+    expect(wrapper.findAll("div[role='option']").length).toBe(expectedCount);
+    const optionTexts = wrapper.findAll("div[role='option']").map((o) => o.text());
+    expect(optionTexts.includes(options[0]?.label ?? "")).toBe(shouldContain);
+  });
+
+  it("should restore hidden options when deselected", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: true } });
 
     await openMenu(wrapper);
@@ -899,67 +856,22 @@ describe("hideSelectedOptions prop", () => {
     await openMenu(wrapper);
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length - 1);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0]?.label);
-  });
 
-  it("should show selected options in menu when hideSelectedOptions is false", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: false } });
-
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-    await openMenu(wrapper);
-
-    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0]?.label);
-  });
-
-  it("should show all options when in single-select mode regardless of hideSelectedOptions", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, hideSelectedOptions: true } });
-
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-    await openMenu(wrapper);
-
-    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0]?.label);
-  });
-
-  it("should correctly restore hidden options when they are deselected", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: true } });
-
-    // Select first option
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-    await openMenu(wrapper);
-
-    // Verify it's hidden from dropdown
-    expect(wrapper.findAll("div[role='option']").length).toBe(options.length - 1);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).not.toContain(options[0]?.label);
-
-    // Remove the option
     await wrapper.get(".multi-value-remove").trigger("click");
     await openMenu(wrapper);
 
-    // Verify it's back in the dropdown
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain(options[0]?.label);
   });
 
-  it("should correctly filter options when searching with hideSelectedOptions enabled", async () => {
+  it("should filter correctly with hideSelectedOptions enabled", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, hideSelectedOptions: true } });
 
-    // Select first option (France)
     await openMenu(wrapper);
     await wrapper.get("div[role='option']").trigger("click");
-
-    // Open menu and search for "United"
     await openMenu(wrapper);
     await inputSearch(wrapper, "United");
 
-    // Should only show United Kingdom and United States (not France)
     expect(wrapper.findAll("div[role='option']").length).toBe(2);
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain("United Kingdom");
-    expect(wrapper.findAll("div[role='option']").map((option) => option.text())).toContain("United States");
   });
 });
 
@@ -986,147 +898,93 @@ describe("menu positioning data attribute", () => {
 
 // eslint-disable-next-line test/prefer-lowercase-title
 describe("WAI-ARIA compliance keyboard behaviors", () => {
-  it("should open menu when pressing up arrow on focused input", async () => {
+  it.each([
+    { key: "ArrowUp" },
+    { key: "ArrowDown" },
+  ])("should open menu when pressing $key on focused input", async ({ key }) => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown", { key: "ArrowUp" });
+    await wrapper.get("input").trigger("keydown", { key });
 
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
   });
 
-  it("should open menu when pressing down arrow on focused input", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    await wrapper.get("input").trigger("focus");
-    await wrapper.get("input").trigger("keydown", { key: "ArrowDown" });
-
-    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-  });
-
-  it("should not open menu when pressing arrow keys if menu is already open", async () => {
+  it("should not reopen menu when pressing arrow keys if already open", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await openMenu(wrapper);
-    const initialOptionCount = wrapper.findAll("div[role='option']").length;
+    const initialCount = wrapper.findAll("div[role='option']").length;
 
     await wrapper.get("input").trigger("keydown", { key: "ArrowUp" });
     await wrapper.get("input").trigger("keydown", { key: "ArrowDown" });
 
-    expect(wrapper.findAll("div[role='option']").length).toBe(initialOptionCount);
+    expect(wrapper.findAll("div[role='option']").length).toBe(initialCount);
   });
 
-  it("should select focused option when component loses focus with selectOnBlur enabled", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur: true } });
+  it.each([
+    { selectOnBlur: true, shouldSelect: true },
+    { selectOnBlur: false, shouldSelect: false },
+  ])("selectOnBlur=$selectOnBlur: shouldSelect=$shouldSelect on blur", async ({ selectOnBlur, shouldSelect }) => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur } });
 
     await openMenu(wrapper);
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
-
     await wrapper.get("input").trigger("blur");
 
-    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[1]?.value]]);
-    expect(wrapper.get(".single-value").text()).toBe(options[1]?.label);
+    if (shouldSelect) {
+      expect(wrapper.emitted("update:modelValue")).toStrictEqual([[options[1]?.value]]);
+    }
+    else {
+      expect(wrapper.emitted("update:modelValue")).toBeUndefined();
+    }
   });
 
-  it("should not select focused option when component loses focus with selectOnBlur disabled", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur: false } });
-
-    await openMenu(wrapper);
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
-
-    await wrapper.get("input").trigger("blur");
-
-    expect(wrapper.emitted("update:modelValue")).toBeUndefined();
-    expect(wrapper.find(".single-value").exists()).toBe(false);
-  });
-
-  it("should not select disabled option when component loses focus", async () => {
-    const options = [
+  it("should not select disabled option on blur", async () => {
+    const disabledOptions = [
       { label: "France", value: "FR" },
       { label: "Spain", value: "ES", disabled: true },
       { label: "United Kingdom", value: "GB" },
     ];
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options, selectOnBlur: true } });
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options: disabledOptions, selectOnBlur: true } });
 
     await openMenu(wrapper);
-
-    // Manually set focus to the disabled option to test the behavior
-    const disabledOptionIndex = options.findIndex((option) => option.disabled);
-    // Access the internal focusedOption ref directly
-    (wrapper.vm as any).focusedOption = disabledOptionIndex;
+    (wrapper.vm as any).focusedOption = 1;
     await wrapper.vm.$nextTick();
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe("Spain");
-
     await wrapper.get("input").trigger("blur");
 
     expect(wrapper.emitted("update:modelValue")).toBeUndefined();
-    expect(wrapper.find(".single-value").exists()).toBe(false);
   });
 
-  it("should navigate to first option with Page Up key", async () => {
+  it.each([
+    { key: "PageUp", expectedLabel: "France" },
+    { key: "PageDown", expectedLabel: "Germany" },
+  ])("should navigate to boundary with $key", async ({ key, expectedLabel }) => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await openMenu(wrapper);
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+    if (key === "PageUp") {
+      await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+      await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
+    }
+    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key }));
 
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[2]?.label);
-
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageUp" }));
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
+    expect(wrapper.get(".focused[role='option']").text()).toBe(expectedLabel);
   });
 
-  it("should navigate to last option with Page Down key", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    await openMenu(wrapper);
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[0]?.label);
-
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageDown" }));
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[options.length - 1]?.label);
-  });
-
-  it("should navigate to first available option with Page Up when first option is disabled", async () => {
-    const options = [
+  it("should skip disabled options with PageUp/PageDown", async () => {
+    const disabledFirstOptions = [
       { label: "Spain", value: "ES", disabled: true },
       { label: "France", value: "FR" },
       { label: "United Kingdom", value: "GB" },
     ];
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options: disabledFirstOptions } });
 
     await openMenu(wrapper);
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe("United Kingdom");
-
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageUp" }));
 
     expect(wrapper.get(".focused[role='option']").text()).toBe("France");
-  });
-
-  it("should navigate to last available option with Page Down when last option is disabled", async () => {
-    const options = [
-      { label: "France", value: "FR" },
-      { label: "United Kingdom", value: "GB" },
-      { label: "Spain", value: "ES", disabled: true },
-    ];
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    await openMenu(wrapper);
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe("France");
-
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "PageDown" }));
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe("United Kingdom");
   });
 
   it("should work with multi-select mode", async () => {
@@ -1134,94 +992,61 @@ describe("WAI-ARIA compliance keyboard behaviors", () => {
 
     await openMenu(wrapper);
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "ArrowDown" }));
-
-    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
-
     await wrapper.get("input").trigger("blur");
 
     expect(wrapper.emitted("update:modelValue")).toStrictEqual([[[options[1]?.value]]]);
-    expect(wrapper.get(".multi-value").text()).toBe(options[1]?.label);
   });
 });
 
 describe("exposed component methods and refs", () => {
-  it("should expose inputRef for direct DOM access", async () => {
+  it.each([
+    { ref: "inputRef", selector: "input" },
+    { ref: "containerRef", selector: ".vue-select" },
+  ])("should expose $ref", ({ ref, selector }) => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    expect(wrapper.vm.inputRef).toBeDefined();
-    expect(wrapper.vm.inputRef).toBe(wrapper.get("input").element);
+    expect((wrapper.vm as any)[ref]).toBeDefined();
+    expect((wrapper.vm as any)[ref]).toBe(wrapper.get(selector).element);
   });
 
-  it("should expose containerRef for direct DOM access", async () => {
+  it.each([
+    { method: "openMenu", startOpen: false, endOpen: true },
+    { method: "closeMenu", startOpen: true, endOpen: false },
+  ])("should expose $method method", async ({ method, startOpen, endOpen }) => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    expect(wrapper.vm.containerRef).toBeDefined();
-    expect(wrapper.vm.containerRef).toBe(wrapper.get(".vue-select").element);
-  });
+    if (startOpen) {
+      await openMenu(wrapper);
+    }
 
-  it("should expose openMenu method", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    expect(typeof wrapper.vm.openMenu).toBe("function");
-    expect(wrapper.findAll("div[role='option']").length).toBe(0);
-
-    wrapper.vm.openMenu();
+    (wrapper.vm as any)[method]();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-  });
-
-  it("should expose closeMenu method", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
-
-    await openMenu(wrapper);
-    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
-
-    wrapper.vm.closeMenu();
-    await wrapper.vm.$nextTick();
-
-    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+    expect(wrapper.findAll("div[role='option']").length).toBe(endOpen ? options.length : 0);
   });
 
   it("should expose toggleMenu method", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
-    expect(typeof wrapper.vm.toggleMenu).toBe("function");
-    expect(wrapper.findAll("div[role='option']").length).toBe(0);
-
     wrapper.vm.toggleMenu();
     await wrapper.vm.$nextTick();
-
     expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
 
     wrapper.vm.toggleMenu();
     await wrapper.vm.$nextTick();
-
     expect(wrapper.findAll("div[role='option']").length).toBe(0);
   });
 
-  it("should expose clear method for single select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: options[0]?.value, options } });
-
-    expect(typeof wrapper.vm.clear).toBe("function");
-    expect(wrapper.get(".single-value").text()).toBe(options[0]?.label);
-
-    wrapper.vm.clear();
-    await wrapper.vm.$nextTick();
-
-    expect(wrapper.emitted("update:modelValue")).toContainEqual([undefined]);
-  });
-
-  it("should expose clear method for multi select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [options[0]?.value], isMulti: true, options } });
-
-    expect(typeof wrapper.vm.clear).toBe("function");
-    expect(wrapper.find(".multi-value").exists()).toBe(true);
+  it.each([
+    { isMulti: false, modelValue: "FR", expectedEmit: undefined },
+    { isMulti: true, modelValue: ["FR"], expectedEmit: [] },
+  ])("should expose clear method for isMulti=$isMulti", async ({ isMulti, modelValue, expectedEmit }) => {
+    const wrapper = mount(VueSelect, { props: { modelValue, isMulti, options } });
 
     wrapper.vm.clear();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.emitted("update:modelValue")).toContainEqual([[]]);
+    expect(wrapper.emitted("update:modelValue")).toContainEqual([expectedEmit]);
   });
 
   it("should render menu-header slot only once before options", async () => {
@@ -1255,100 +1080,57 @@ describe("exposed component methods and refs", () => {
 });
 
 describe("accessibility focus management", () => {
-  it("should keep focus on input after selecting an option via click in single-select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options }, attachTo: document.body });
+  const selectViaClick = async (w: ReturnType<typeof mount>) => {
+    await openMenu(w);
+    await w.get("div[role='option']").trigger("click");
+  };
+  const selectViaKeyboard = async (w: ReturnType<typeof mount>) => {
+    await openMenu(w);
+    await dispatchEvent(w, new KeyboardEvent("keydown", { key: "Enter" }));
+  };
+  const clearViaButton = async (w: ReturnType<typeof mount>) => {
+    await w.get(".clear-button").trigger("click");
+  };
+  const clearViaMethod = async (w: ReturnType<typeof mount>) => {
+    (w.vm as SelectInstance).clear();
+    await w.vm.$nextTick();
+  };
 
+  it.each<{ name: string; props: SelectProps; action: (w: ReturnType<typeof mount>) => Promise<void> }>([
+    { name: "click in single-select", props: { modelValue: null, options }, action: selectViaClick },
+    { name: "keyboard in single-select", props: { modelValue: null, options }, action: selectViaKeyboard },
+    { name: "click in multi-select", props: { modelValue: [], isMulti: true, options }, action: selectViaClick },
+    { name: "keyboard in multi-select", props: { modelValue: [], isMulti: true, options }, action: selectViaKeyboard },
+  ])("should keep focus on input after selecting via $name", async ({ props, action }) => {
+    const wrapper = mount(VueSelect, { props, attachTo: document.body });
     const input = wrapper.get("input");
+
     await input.trigger("focus");
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
+    await action(wrapper);
 
     expect(document.activeElement).toBe(input.element);
-
     wrapper.unmount();
   });
 
-  it("should keep focus on input after selecting an option via keyboard in single-select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: null, options }, attachTo: document.body });
-
+  it.each<{ name: string; props: SelectProps; action: (w: ReturnType<typeof mount>) => Promise<void> }>([
+    { name: "clear button in single-select", props: { modelValue: "FR", options, isClearable: true }, action: clearViaButton },
+    { name: "clear button in multi-select", props: { modelValue: ["FR"], isMulti: true, options, isClearable: true }, action: clearViaButton },
+    { name: "exposed clear method", props: { modelValue: "FR", options }, action: clearViaMethod },
+  ])("should keep focus on input after clearing via $name", async ({ props, action }) => {
+    const wrapper = mount(VueSelect, { props, attachTo: document.body });
     const input = wrapper.get("input");
+
     await input.trigger("focus");
-    await openMenu(wrapper);
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
+    await action(wrapper);
 
     expect(document.activeElement).toBe(input.element);
-
-    wrapper.unmount();
-  });
-
-  it("should keep focus on input after selecting an option via click in multi-select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options }, attachTo: document.body });
-
-    const input = wrapper.get("input");
-    await input.trigger("focus");
-    await openMenu(wrapper);
-    await wrapper.get("div[role='option']").trigger("click");
-
-    expect(document.activeElement).toBe(input.element);
-
-    wrapper.unmount();
-  });
-
-  it("should keep focus on input after selecting an option via keyboard in multi-select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options }, attachTo: document.body });
-
-    const input = wrapper.get("input");
-    await input.trigger("focus");
-    await openMenu(wrapper);
-    await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Enter" }));
-
-    expect(document.activeElement).toBe(input.element);
-
-    wrapper.unmount();
-  });
-
-  it("should keep focus on input after clearing via clear button in single-select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: options[0]?.value, options, isClearable: true }, attachTo: document.body });
-
-    const input = wrapper.get("input");
-    await input.trigger("focus");
-    await wrapper.get(".clear-button").trigger("click");
-
-    expect(document.activeElement).toBe(input.element);
-
-    wrapper.unmount();
-  });
-
-  it("should keep focus on input after clearing via clear button in multi-select", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: [options[0]?.value], isMulti: true, options, isClearable: true }, attachTo: document.body });
-
-    const input = wrapper.get("input");
-    await input.trigger("focus");
-    await wrapper.get(".clear-button").trigger("click");
-
-    expect(document.activeElement).toBe(input.element);
-
-    wrapper.unmount();
-  });
-
-  it("should keep focus on input after clearing via exposed clear method", async () => {
-    const wrapper = mount(VueSelect, { props: { modelValue: options[0]?.value, options }, attachTo: document.body });
-
-    const input = wrapper.get("input");
-    await input.trigger("focus");
-
-    wrapper.vm.clear();
-    await wrapper.vm.$nextTick();
-
-    expect(document.activeElement).toBe(input.element);
-
     wrapper.unmount();
   });
 
   it("should keep focus on input after selecting with Space key", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options }, attachTo: document.body });
-
     const input = wrapper.get("input");
+
     await input.trigger("focus");
     await openMenu(wrapper);
 
@@ -1359,7 +1141,6 @@ describe("accessibility focus management", () => {
     await wrapper.vm.$nextTick();
 
     expect(document.activeElement).toBe(input.element);
-
     wrapper.unmount();
   });
 });

@@ -2,6 +2,12 @@
 import type { Option } from "../../src";
 import { ref } from "vue";
 import VueSelect from "../../src";
+import DemoHeader from "../components/DemoHeader.vue";
+import DemoInlineCode from "../components/DemoInlineCode.vue";
+import DemoLayout from "../components/DemoLayout.vue";
+import DemoPanel from "../components/DemoPanel.vue";
+import DemoTag from "../components/DemoTag.vue";
+import DemoValue from "../components/DemoValue.vue";
 
 const selected = ref<string | null>(null);
 const search = ref<string | null>(null);
@@ -20,27 +26,36 @@ const handleCreateOption = (value: string) => {
 </script>
 
 <template>
-  <p class="selected-value">
-    Search text: {{ search }}
-  </p>
+  <DemoLayout>
+    <DemoHeader eyebrow="Events" title="Search input updates">
+      <template #description>
+        Listen to the <DemoInlineCode>search</DemoInlineCode> event to track the live query and drive analytics
+        or remote suggestions.
+      </template>
+    </DemoHeader>
 
-  <VueSelect
-    v-model="selected"
-    :options="options"
-    :is-multi="false"
-    :is-taggable="true"
-    placeholder="Pick a book"
-    @option-created="(value) => handleCreateOption(value)"
-    @search="(value) => search = value"
-  >
-    <template #taggable-no-options="{ option }">
-      <div class="custom-taggable-no-options">
-        Create option: {{ option }}
-      </div>
-    </template>
-  </VueSelect>
+    <DemoPanel>
+      <DemoValue label="Search text">
+        {{ search || "none" }}
+      </DemoValue>
 
-  <p class="selected-value">
-    Selected book value: {{ selected || "none" }}
-  </p>
+      <VueSelect
+        v-model="selected"
+        :options="options"
+        :is-multi="false"
+        :is-taggable="true"
+        placeholder="Pick a book"
+        @option-created="(value) => handleCreateOption(value)"
+        @search="(value) => search = value"
+      >
+        <template #taggable-no-options="{ option }">
+          <DemoTag>Create option: {{ option }}</DemoTag>
+        </template>
+      </VueSelect>
+
+      <DemoValue label="Selected book value">
+        {{ selected || "none" }}
+      </DemoValue>
+    </DemoPanel>
+  </DemoLayout>
 </template>

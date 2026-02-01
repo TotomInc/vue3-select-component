@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300..700&family=IBM+Plex+Mono:wght@400..600&display=swap");
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+
+  --playground-bg: var(--color-neutral-950);
+  --playground-panel: var(--color-neutral-900);
+  --playground-panel-strong: var(--color-neutral-950);
+  --playground-border: rgba(148, 163, 184, 0.18);
+  --playground-muted: rgba(148, 163, 184, 0.8);
+  --playground-text: var(--color-neutral-50);
+  --playground-text-strong: var(--color-neutral-100);
+  --playground-accent: var(--color-green-500);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    color: var(--playground-text);
+    background-color: var(--playground-bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
+.shiki-container .shiki {
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+  overflow-x: auto;
+}
+
+.shiki-container code {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+}

@@ -1,5 +1,6 @@
 <script setup lang="ts" generic="GenericOption extends Option<OptionValue>, OptionValue = string">
 import type { HTMLAttributes } from "vue";
+import type { ModelValue } from "./types/model";
 import type { Option } from "./types/option";
 import type { Props } from "./types/props";
 import type { Slots } from "./types/slots";
@@ -50,7 +51,7 @@ const emit = defineEmits<{
 }>();
 
 const slots = defineSlots<Slots<GenericOption, OptionValue>>();
-const selected = defineModel<OptionValue | OptionValue[]>({ required: true });
+const selected = defineModel<ModelValue<OptionValue>>({ required: true });
 
 const attrs = useAttrs();
 const rootClass = computed(() => attrs.class as HTMLAttributes["class"]);
@@ -240,7 +241,7 @@ const removeOption = (option: GenericOption) => {
     }
   }
   else {
-    selected.value = undefined as OptionValue;
+    selected.value = undefined;
     emit("optionDeselected", option);
   }
 };
@@ -251,7 +252,7 @@ const clear = () => {
     emit("optionDeselected", null);
   }
   else {
-    selected.value = undefined as OptionValue;
+    selected.value = undefined;
 
     if (selectedOptions.value[0]) {
       emit("optionDeselected", selectedOptions.value[0]);

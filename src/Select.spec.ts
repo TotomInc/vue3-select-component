@@ -1,9 +1,15 @@
+import type { ComponentPublicInstance } from "vue";
+import type { ComponentExposed, ComponentProps } from "vue-component-type-helpers";
 import type { Option } from "./types/option";
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { h } from "vue";
 
 import VueSelect from "./Select.vue";
+
+type SelectProps = ComponentProps<typeof VueSelect>;
+type SelectExposed = ComponentExposed<typeof VueSelect>;
+type SelectInstance = ComponentPublicInstance<SelectProps> & SelectExposed;
 
 const options = [
   { label: "France", value: "FR" },
@@ -688,7 +694,7 @@ describe("tag-content slot", () => {
 });
 
 describe("menu autofocus behavior", () => {
-  it.each([
+  it.each<{ name: string; props: SelectProps }>([
     { name: "single-select", props: { modelValue: null, options } },
     { name: "multi-select", props: { modelValue: [], isMulti: true, options } },
   ])("should autofocus first option in $name mode", async ({ props }) => {
@@ -1086,11 +1092,11 @@ describe("accessibility focus management", () => {
     await w.get(".clear-button").trigger("click");
   };
   const clearViaMethod = async (w: ReturnType<typeof mount>) => {
-    w.vm.clear();
+    (w.vm as SelectInstance).clear();
     await w.vm.$nextTick();
   };
 
-  it.each([
+  it.each<{ name: string; props: SelectProps; action: (w: ReturnType<typeof mount>) => Promise<void> }>([
     { name: "click in single-select", props: { modelValue: null, options }, action: selectViaClick },
     { name: "keyboard in single-select", props: { modelValue: null, options }, action: selectViaKeyboard },
     { name: "click in multi-select", props: { modelValue: [], isMulti: true, options }, action: selectViaClick },
@@ -1106,7 +1112,7 @@ describe("accessibility focus management", () => {
     wrapper.unmount();
   });
 
-  it.each([
+  it.each<{ name: string; props: SelectProps; action: (w: ReturnType<typeof mount>) => Promise<void> }>([
     { name: "clear button in single-select", props: { modelValue: "FR", options, isClearable: true }, action: clearViaButton },
     { name: "clear button in multi-select", props: { modelValue: ["FR"], isMulti: true, options, isClearable: true }, action: clearViaButton },
     { name: "exposed clear method", props: { modelValue: "FR", options }, action: clearViaMethod },

@@ -215,13 +215,13 @@ watch(currentSourceUrl, loadSource, { immediate: true });
     <header class="border-b border-neutral-800/80 bg-[var(--playground-panel)]/80">
       <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
         <div class="space-y-2">
-          <p class="text-xs font-semibold text-neutral-500">
-            Vue 3 Select Component
-          </p>
-
           <h1 class="text-2xl font-semibold text-neutral-100">
             Playground
           </h1>
+
+          <p class="text-xs font-semibold text-neutral-500">
+            Development environment when building the component.
+          </p>
         </div>
         <div class="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
           <a

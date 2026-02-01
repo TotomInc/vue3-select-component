@@ -1,10 +1,11 @@
+/// <reference types="vite/client" />
+
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import ControlledMenu from "./demos/ControlledMenu.vue";
 import CustomOptionLabelValue from "./demos/CustomOptionLabelValue.vue";
 import CustomPlaceholder from "./demos/CustomPlaceholder.vue";
-import CustomSearchFilter from "./demos/CustomSearchFilter.vue";
 import CustomTagContent from "./demos/CustomTagContent.vue";
 import ExtraOptionProperties from "./demos/ExtraOptionProperties.vue";
 import KeyboardNavigation from "./demos/KeyboardNavigation.vue";
@@ -18,10 +19,13 @@ import SelectIsLoading from "./demos/SelectIsLoading.vue";
 import SingleSelect from "./demos/SingleSelect.vue";
 import TaggableNoOptionsSlot from "./demos/TaggableNoOptionsSlot.vue";
 import PlaygroundLayout from "./PlaygroundLayout.vue";
+import "./styles.css";
 import "vue3-select-component/styles";
 
+const base = import.meta.env.MODE === "production:playground" ? "/playground" : "/";
+
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(base),
   routes: [
     { path: "/", redirect: "/single-select" },
     { path: "/single-select", component: SingleSelect },
@@ -31,7 +35,6 @@ const router = createRouter({
     { path: "/custom-tag-content", component: CustomTagContent },
     { path: "/extra-option-properties", component: ExtraOptionProperties },
     { path: "/custom-option-label-value", component: CustomOptionLabelValue },
-    { path: "/custom-search-filter", component: CustomSearchFilter },
     { path: "/select-is-loading", component: SelectIsLoading },
     { path: "/no-select-on-blur", component: NoSelectOnBlur },
     { path: "/taggable-no-options-slot", component: TaggableNoOptionsSlot },

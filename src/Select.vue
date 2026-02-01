@@ -196,13 +196,21 @@ const setOption = (option: GenericOption) => {
 
   if (props.isMulti) {
     if (Array.isArray(selected.value)) {
-      const isAlreadyPresent = selected.value.find((v) => v === option.value);
+      const isAlreadySelected = !!selected.value.find((v) => v === option.value);
+      const indexInMenu = availableOptions.value.findIndex((v) => v.value === option.value);
+      const isLastIndexInMenu = indexInMenu >= availableOptions.value.length - 1;
 
-      if (!isAlreadyPresent) {
+      if (!isAlreadySelected) {
         selected.value = [...selected.value, option.value];
       }
       else {
         selected.value = selected.value.filter((v) => v !== option.value);
+      }
+
+      // When selecting the last option, reset focused option to the second last option.
+      // Avoids an issue where no focused option is available when clicking on the last option.
+      if (isLastIndexInMenu) {
+        focusedOption.value = availableOptions.value.length - 2;
       }
     }
     else {

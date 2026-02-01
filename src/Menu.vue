@@ -142,11 +142,14 @@ const handleNavigation = (e: KeyboardEvent) => {
 };
 
 const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as Node;
+  const target = event.target as HTMLElement;
   const isInsideContainer = sharedData.containerRef.value && sharedData.containerRef.value.contains(target);
   const isInsideMenu = menuRef.value && menuRef.value.contains(target);
+  // This function is called right after clicking on an option. DOM node of the
+  // option is already removed from the DOM, which falsify the check.
+  const isOption = target?.getAttribute?.("role") === "option";
 
-  if (!isInsideContainer && !isInsideMenu) {
+  if (!isInsideContainer && !isInsideMenu && !isOption) {
     sharedData.closeMenu();
   }
 };

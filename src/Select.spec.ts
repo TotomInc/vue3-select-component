@@ -280,6 +280,23 @@ describe("multi-select options", () => {
     expect(wrapper.findAll(".menu-option").length).toBe(options.length);
     expect(wrapper.findAll(".multi-value").length).toBe(0);
   });
+
+  it("should focus second-to-last option when selecting the last option (multi-select)", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: [], isMulti: true, options, closeOnSelect: false } });
+
+    await openMenu(wrapper);
+
+    const lastOption = wrapper.findAll("div[role='option']")[options.length - 1];
+
+    if (!lastOption) {
+      throw new Error("Last option not found.");
+    }
+
+    await lastOption.trigger("click");
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
+  });
 });
 
 describe("option-deselected event", () => {
@@ -827,6 +844,35 @@ describe("menu closing behavior", () => {
     // Clicking input while typing should keep menu open
     await wrapper.get("input").trigger("mousedown");
     expect(wrapper.findAll("div[role='option']").length).toBe(2);
+  });
+
+  it("should not close menu when click target is an option node no longer in DOM (isMulti=true + closeOnSelect=false)", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: [], isMulti: true, options, closeOnSelect: false, hideSelectedOptions: true },
+      attachTo: document.body,
+    });
+
+    await openMenu(wrapper);
+    expect(wrapper.findAll("div[role='option']").length).toBe(options.length);
+
+    const lastOption = wrapper.findAll("div[role='option']")[options.length - 1];
+    if (!lastOption?.element) {
+      throw new Error("Last option element not found.");
+    }
+
+    lastOption.trigger("click");
+    await wrapper.vm.$nextTick();
+
+    const optionOutsideSelect = document.createElement("div");
+    optionOutsideSelect.setAttribute("role", "option");
+    document.body.appendChild(optionOutsideSelect);
+    optionOutsideSelect.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find(".menu").exists()).toBe(true);
+
+    document.body.removeChild(optionOutsideSelect);
+    wrapper.unmount();
   });
 });
 

@@ -23,7 +23,9 @@ defineProps<Props>();
       v-if="description || $slots.description"
       class="max-w-3xl text-sm leading-6 text-[color:var(--playground-muted)]"
     >
-      <slot name="description">{{ description }}</slot>
+      <slot name="description">
+        {{ description }}
+      </slot>
     </p>
   </header>
 </template>

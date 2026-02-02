@@ -297,6 +297,28 @@ describe("multi-select options", () => {
 
     expect(wrapper.get(".focused[role='option']").text()).toBe(options[1]?.label);
   });
+
+  it("should not double-select option when clicking with selectOnBlur=true and closeOnSelect=false", async () => {
+    const wrapper = mount(VueSelect, {
+      props: { modelValue: [], isMulti: true, options, closeOnSelect: false, selectOnBlur: true },
+      attachTo: document.body,
+    });
+
+    await openMenu(wrapper);
+    const input = wrapper.get("input");
+    const firstOption = wrapper.get("div[role='option']");
+
+    await firstOption.trigger("pointerdown");
+    await input.trigger("blur");
+    await firstOption.trigger("pointerup");
+    await firstOption.trigger("click");
+
+    const updateModelValueEvents = wrapper.emitted("update:modelValue") ?? [];
+    expect(updateModelValueEvents.length).toBe(1);
+    expect(updateModelValueEvents[0]).toStrictEqual([[options[0]?.value]]);
+
+    wrapper.unmount();
+  });
 });
 
 describe("option-deselected event", () => {

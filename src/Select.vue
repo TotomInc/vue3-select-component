@@ -63,6 +63,9 @@ const indicatorsRef = useTemplateRef("indicators");
 const search = ref("");
 const menuOpen = ref(false);
 const focusedOption = ref(-1);
+// Used to fix an issue where input blur is triggered when clicking on an option.
+// Resulting in double-selecting an option with selectOnBlur=true and closeOnSelect=false.
+const isPointerDownInMenu = ref(false);
 
 const availableOptions = computed<GenericOption[]>(() => {
   const rawOptions = (props.displayedOptions || props.options);
@@ -155,6 +158,7 @@ function closeMenu() {
   menuOpen.value = false;
   search.value = "";
   focusedOption.value = -1;
+  isPointerDownInMenu.value = false;
   emit("menuClosed");
 };
 
@@ -303,6 +307,10 @@ const handleInputKeydown = (e: KeyboardEvent) => {
 };
 
 const handleInputBlur = () => {
+  if (isPointerDownInMenu.value) {
+    return;
+  }
+
   if (props.selectOnBlur && menuOpen.value && focusedOption.value >= 0) {
     const focusedOptionData = availableOptions.value[focusedOption.value];
 
@@ -330,6 +338,7 @@ provide(DATA_KEY, {
   removeOption,
   createOption,
   setFocusedOption,
+  isPointerDownInMenu,
 });
 
 // Expose useful refs and methods for external component control

@@ -25,6 +25,7 @@ export type DataInjection<GenericOption extends Option<OptionValue>, OptionValue
   focusedOption: Ref<number>;
   containerRef: Readonly<ShallowRef<HTMLDivElement | null>>;
   search: Ref<string>;
+  isPointerDownInMenu: Ref<boolean>;
   openMenu: () => void;
   closeMenu: () => void;
   toggleMenu: () => void;

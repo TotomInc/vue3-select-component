@@ -154,14 +154,26 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
+const handleMenuPointerDown = () => {
+  sharedData.isPointerDownInMenu.value = true;
+};
+
+const handleMenuPointerUp = () => {
+  sharedData.isPointerDownInMenu.value = false;
+};
+
 onMounted(() => {
   document.addEventListener("keydown", handleNavigation);
   document.addEventListener("click", handleClickOutside);
+  document.addEventListener("pointerup", handleMenuPointerUp);
+  document.addEventListener("pointercancel", handleMenuPointerUp);
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("keydown", handleNavigation);
   document.removeEventListener("click", handleClickOutside);
+  document.removeEventListener("pointerup", handleMenuPointerUp);
+  document.removeEventListener("pointercancel", handleMenuPointerUp);
 });
 </script>
 
@@ -178,6 +190,7 @@ onBeforeUnmount(() => {
     :style="{
       ...floatingStyles,
     }"
+    @pointerdown="handleMenuPointerDown"
   >
     <component :is="props.slots['menu-header']" v-if="props.slots['menu-header']" />
 

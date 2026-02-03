@@ -424,22 +424,22 @@ describe("search emit", () => {
     expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
   });
 
-  it("should emit the search event when clearing the input", async () => {
+  it("should not emit search event when clearing the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await inputSearch(wrapper, "United");
     await inputSearch(wrapper, "");
 
-    expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
+    expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
   });
 
-  it("should emit an empty string for the search when the menu is closed", async () => {
+  it("should not emit search event when the menu closes and clears the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await inputSearch(wrapper, "United");
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Escape" }));
 
-    expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
+    expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
   });
 });
 
@@ -866,6 +866,22 @@ describe("menu closing behavior", () => {
     // Clicking input while typing should keep menu open
     await wrapper.get("input").trigger("mousedown");
     expect(wrapper.findAll("div[role='option']").length).toBe(2);
+  });
+
+  it("should not instantly reopen menu when closing clears the search value", async () => {
+    const wrapper = mount(VueSelect, { props: { modelValue: null, options, closeOnSelect: true }, attachTo: document.body });
+
+    await openMenu(wrapper);
+    await inputSearch(wrapper, "United");
+
+    // Selecting an option closes the menu and clears search.
+    await wrapper.get("div[role='option']").trigger("click");
+    await wrapper.vm.$nextTick();
+
+    // Regression: clearing search used to trigger the search watcher to re-open the menu.
+    expect(wrapper.findAll("div[role='option']").length).toBe(0);
+
+    wrapper.unmount();
   });
 
   it("should not close menu when click target is an option node no longer in DOM (isMulti=true + closeOnSelect=false)", async () => {

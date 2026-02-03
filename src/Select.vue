@@ -159,6 +159,7 @@ function closeMenu() {
   search.value = "";
   focusedOption.value = -1;
   isPointerDownInMenu.value = false;
+
   emit("menuClosed");
 };
 
@@ -231,10 +232,11 @@ const setOption = (option: GenericOption) => {
 
   emit("optionSelected", option);
 
-  search.value = "";
-
   if (props.closeOnSelect) {
     closeMenu();
+  }
+  else {
+    search.value = "";
   }
 };
 
@@ -355,7 +357,7 @@ defineExpose({
 watch(
   () => search.value,
   (newSearch, oldSearch) => {
-    if (props.isSearchable && newSearch !== oldSearch) {
+    if (props.isSearchable && newSearch !== oldSearch && newSearch.length) {
       emit("search", search.value);
       focusedOption.value = -1;
 

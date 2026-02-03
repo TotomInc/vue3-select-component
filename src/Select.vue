@@ -34,7 +34,7 @@ const props = withDefaults(
     aria: undefined,
     disableInvalidVModelWarn: false,
     inputAttrs: undefined,
-    selectOnBlur: true,
+    selectOnBlur: false,
     filterBy: (option: GenericOption, label: string, search: string) => label.toLowerCase().includes(search.toLowerCase()),
     getOptionValue: (option: GenericOption) => option.value,
     getOptionLabel: (option: GenericOption) => option.label,

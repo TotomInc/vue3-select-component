@@ -165,15 +165,17 @@ When `isSearchable` is enabled:
 
 ### Focus on Blur
 
-By default, when the component loses focus with the menu open, the focused option is automatically selected. You can disable this behavior with the `selectOnBlur` prop:
+When `selectOnBlur` is enabled, if the component loses focus while the menu is open, the focused option is automatically selected:
 
 ```vue
 <VueSelect
   v-model="selected"
   :options="options"
-  :select-on-blur="false"
+  :select-on-blur="true"
 />
 ```
+
+This is recommended for WAI-ARIA compliance, as it allows users to navigate the menu with keyboard and then confirm their selection by clicking outside the component.
 
 ## Focus Management
 

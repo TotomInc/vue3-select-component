@@ -344,9 +344,9 @@ This function can be used if you don't want to use the standard `option.value` a
 
 **Type**: `boolean`
 
-**Default**: `true`
+**Default**: `false`
 
-When set to `true`, the focused option will be automatically selected when the component loses focus. This behavior is useful for WAI-ARIA compliance and provides a better user experience for keyboard navigation.
+When set to `true`, the focused option will be automatically selected when the component loses focus. This behavior can be useful for WAI-ARIA compliance and provides a better experience for some keyboard navigation flows.
 
 When set to `false`, the component will not select any option when losing focus, requiring users to explicitly select options using Enter, Space, or mouse clicks.
 

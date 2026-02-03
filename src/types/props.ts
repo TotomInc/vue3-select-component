@@ -158,7 +158,7 @@ export type Props<GenericOption, OptionValue> = {
 
   /**
    * When set to true, selecting the focused option when the component loses focus.
-   * This is useful for WAI-ARIA compliance. Defaults to true.
+   * This is useful for WAI-ARIA compliance. Defaults to false.
    */
   selectOnBlur?: boolean;
 };

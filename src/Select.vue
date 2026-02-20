@@ -357,7 +357,12 @@ defineExpose({
 watch(
   () => search.value,
   (newSearch, oldSearch) => {
-    if (props.isSearchable && newSearch !== oldSearch && newSearch.length) {
+    const shouldEmitSearch
+      = props.isSearchable
+        && newSearch !== oldSearch
+        && (newSearch.length || oldSearch.length);
+
+    if (shouldEmitSearch) {
       emit("search", search.value);
       focusedOption.value = -1;
 

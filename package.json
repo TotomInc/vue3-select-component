@@ -23,7 +23,8 @@
     "./styles": {
       "import": "./dist/styles.css",
       "require": "./dist/styles.css"
-    }
+    },
+    "./dist/styles.css": "./dist/styles.css"
   },
   "main": "dist/index.umd.js",
   "module": "dist/index.es.js",

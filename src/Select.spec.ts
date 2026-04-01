@@ -424,22 +424,22 @@ describe("search emit", () => {
     expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
   });
 
-  it("should not emit search event when clearing the input", async () => {
+  it("should emit search event when clearing the input (including the last character)", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await inputSearch(wrapper, "United");
     await inputSearch(wrapper, "");
 
-    expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
+    expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
   });
 
-  it("should not emit search event when the menu closes and clears the input", async () => {
+  it("should emit search with an empty string when the menu closes and clears the input", async () => {
     const wrapper = mount(VueSelect, { props: { modelValue: null, options } });
 
     await inputSearch(wrapper, "United");
     await dispatchEvent(wrapper, new KeyboardEvent("keydown", { key: "Escape" }));
 
-    expect(wrapper.emitted("search")).toStrictEqual([["United"]]);
+    expect(wrapper.emitted("search")).toStrictEqual([["United"], [""]]);
   });
 });
 

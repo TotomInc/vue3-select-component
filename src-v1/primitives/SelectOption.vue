@@ -50,6 +50,7 @@ onUnmounted(() => {
 <template>
   <div
     v-if="isVisible"
+    :id="optionId"
     role="option"
     data-v1-select-option
     :data-value="String(value)"

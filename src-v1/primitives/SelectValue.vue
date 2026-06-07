@@ -1,33 +1,40 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="OptionValue extends string | number = string">
 import type { SelectValueProps } from "@v1/types/primitives";
 
 import { injectSelectContext } from "@v1/lib/context";
 import { computed } from "vue";
 
+import SelectTag from "./SelectTag.vue";
+
 defineProps<SelectValueProps>();
 
-const context = injectSelectContext();
+const context = injectSelectContext<OptionValue>();
 
-const displayValue = computed(() => {
-  const { modelValue, multiple } = context;
-
-  if (multiple.value) {
-    const values = Array.isArray(modelValue.value) ? modelValue.value : [];
-    return values.length > 0 ? String(values.length) : null;
-  }
-
-  return modelValue.value != null ? String(modelValue.value) : null;
-});
+const isMultiple = computed(() => context.multiple.value);
+const selectedOptions = computed(() => context.selectedOptions.value);
 </script>
 
 <template>
   <span data-v1-select-value>
-    <slot :value="displayValue">
-      <template v-if="displayValue != null">
-        {{ displayValue }}
+    <slot :selected-options="selectedOptions">
+      <template v-if="isMultiple">
+        <SelectTag
+          v-for="option in selectedOptions"
+          :key="String(option.value)"
+          :value="option.value"
+          :label="option.label"
+        />
+        <template v-if="selectedOptions.length === 0 && placeholder">
+          {{ placeholder }}
+        </template>
       </template>
-      <template v-else-if="placeholder">
-        {{ placeholder }}
+      <template v-else>
+        <template v-if="selectedOptions[0]">
+          {{ selectedOptions[0].label }}
+        </template>
+        <template v-else-if="placeholder">
+          {{ placeholder }}
+        </template>
       </template>
     </slot>
   </span>

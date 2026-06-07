@@ -7,6 +7,7 @@ import type { useSelectCollection } from "./useSelectCollection";
 
 import { findNextEnabledOption, getEnabledOptions } from "@v1/composables/useSelectCollection";
 import { defaultSelectFilterBy, filterOptions } from "@v1/lib/filter";
+import { createSelectInstanceId } from "@v1/lib/ids";
 import { computed, ref, shallowRef, watch } from "vue";
 
 import { useSelectKeyboard } from "./useSelectKeyboard";
@@ -39,6 +40,10 @@ function normalizeSelectedValues<OptionValue>(
 }
 
 export function useSelectState<OptionValue extends string | number>(params: UseSelectStateParams<OptionValue>) {
+  const instanceId = createSelectInstanceId();
+  const triggerId = `${instanceId}-trigger`;
+  const listboxId = `${instanceId}-listbox`;
+
   const isOpen = ref(false);
   const searchValue = ref("");
   const activeOptionValue = shallowRef<OptionValue | null>(null);
@@ -62,6 +67,18 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     return selectedValues
       .map((value) => optionsByValue.get(value))
       .filter((option): option is NonNullable<typeof option> => option != null);
+  });
+
+  const activeOptionElementId = computed(() => {
+    if (activeOptionValue.value == null) {
+      return undefined;
+    }
+
+    const activeOption = params.collection.allOptions.value.find(
+      (option) => option.value === activeOptionValue.value,
+    );
+
+    return activeOption?.id;
   });
 
   const syncActiveOptionWithFilter = () => {
@@ -197,6 +214,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     clearable: params.clearable,
     loading: params.loading,
     activeOptionValue: activeOptionValue as Ref<OptionValue | null>,
+    triggerId,
+    listboxId,
+    activeOptionElementId,
     allOptions: params.collection.allOptions,
     filteredOptions,
     selectedOptions,

@@ -37,6 +37,7 @@ const model = defineModel<SelectModelValue<OptionValue>>({ default: null });
 <template>
   <SelectRoot
     v-model="model"
+    :options="options"
     :multiple="multiple"
     :searchable="searchable"
     :clearable="clearable"

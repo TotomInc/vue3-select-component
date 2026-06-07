@@ -13,9 +13,11 @@ function onListboxKeydown(event: KeyboardEvent) {
 
 <template>
   <div
+    :id="context.listboxId"
     role="listbox"
     data-v1-select-listbox
     :aria-multiselectable="isMultiple"
+    tabindex="-1"
     @keydown="onListboxKeydown"
   >
     <slot />

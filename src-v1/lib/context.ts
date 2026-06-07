@@ -14,6 +14,9 @@ export type SelectContext<OptionValue = string> = {
   clearable: Ref<boolean>;
   loading: Ref<boolean>;
   activeOptionValue: Ref<OptionValue | null>;
+  triggerId: string;
+  listboxId: string;
+  activeOptionElementId: ComputedRef<string | undefined>;
   allOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
   filteredOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
   selectedOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;

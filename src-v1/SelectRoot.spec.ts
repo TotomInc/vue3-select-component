@@ -92,6 +92,76 @@ describe("v1 SelectRoot foundation", () => {
     expect(wrapper.get("[data-v1-select-value]").text()).toBe("Pick a language");
   });
 
+  it("closes the menu when clicking outside the select", async () => {
+    const { wrapper } = mountPrimitiveSelect();
+    const outside = document.createElement("button");
+
+    document.body.append(outside);
+
+    await wrapper.get("[data-v1-select-trigger]").trigger("click");
+    expect(wrapper.get("[data-v1-select-popover]").attributes("aria-hidden")).toBe("false");
+
+    outside.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get("[data-v1-select-popover]").attributes("aria-hidden")).toBe("true");
+
+    outside.remove();
+  });
+
+  it("closes a teleported menu when clicking outside", async () => {
+    const teleportTarget = document.createElement("div");
+    teleportTarget.id = "v1-dismiss-teleport-target";
+    document.body.append(teleportTarget);
+
+    const outside = document.createElement("button");
+    document.body.append(outside);
+
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, { teleport: "#v1-dismiss-teleport-target" }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => basicOptions.map((option) =>
+                  h(SelectOption, {
+                    value: option.value,
+                    label: option.label,
+                  }),
+                ),
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-v1-select-trigger]").trigger("click");
+
+    const teleportedPopover = teleportTarget.querySelector("[data-v1-select-popover]");
+    expect(teleportedPopover?.getAttribute("aria-hidden")).toBe("false");
+
+    outside.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+
+    expect(teleportedPopover?.getAttribute("aria-hidden")).toBe("true");
+
+    outside.remove();
+    teleportTarget.remove();
+  });
+
   it("toggles menu open state from the trigger", async () => {
     const { wrapper } = mountPrimitiveSelect();
 

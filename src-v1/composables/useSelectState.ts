@@ -10,6 +10,7 @@ import { defaultSelectFilterBy, filterOptions } from "@v1/lib/filter";
 import { createSelectInstanceId } from "@v1/lib/ids";
 import { computed, ref, shallowRef, watch } from "vue";
 
+import { useSelectDismiss } from "./useSelectDismiss";
 import { useSelectKeyboard } from "./useSelectKeyboard";
 
 type UseSelectStateParams<OptionValue extends string | number> = {
@@ -204,6 +205,15 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   const isOptionVisible = (value: OptionValue) =>
     filteredOptions.value.some((option) => option.value === value);
 
+  const {
+    registerRootElement,
+    registerTriggerElement,
+    registerPopoverElement,
+  } = useSelectDismiss({
+    isOpen,
+    close,
+  });
+
   const context: SelectContext<OptionValue> = {
     modelValue: params.modelValue,
     isOpen,
@@ -235,6 +245,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     focusFirstOption,
     isOptionVisible,
     handleKeydown: () => {},
+    registerRootElement,
+    registerTriggerElement,
+    registerPopoverElement,
   };
 
   const { handleKeydown } = useSelectKeyboard({ context });

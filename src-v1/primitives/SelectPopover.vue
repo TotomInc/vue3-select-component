@@ -2,6 +2,7 @@
 import type { SelectPopoverProps } from "@v1/types/primitives";
 
 import { injectSelectContext } from "@v1/lib/context";
+import { resolveHTMLElement } from "@v1/lib/dom";
 import { computed } from "vue";
 
 const props = withDefaults(defineProps<SelectPopoverProps>(), {
@@ -23,6 +24,10 @@ const teleportTarget = computed(() => {
 
   return null;
 });
+
+function onPopoverElement(element: Parameters<typeof resolveHTMLElement>[0]) {
+  context.registerPopoverElement(resolveHTMLElement(element));
+}
 </script>
 
 <template>
@@ -32,6 +37,7 @@ const teleportTarget = computed(() => {
   >
     <div
       v-show="isOpen"
+      :ref="onPopoverElement"
       data-v1-select-popover
       :aria-hidden="!isOpen"
     >
@@ -41,6 +47,7 @@ const teleportTarget = computed(() => {
   <div
     v-else
     v-show="isOpen"
+    :ref="onPopoverElement"
     data-v1-select-popover
     :aria-hidden="!isOpen"
   >

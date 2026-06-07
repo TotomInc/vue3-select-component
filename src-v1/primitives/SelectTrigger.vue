@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { injectSelectContext } from "@v1/lib/context";
+import { resolveHTMLElement } from "@v1/lib/dom";
 import { computed } from "vue";
 
 const context = injectSelectContext();
@@ -23,11 +24,16 @@ function onTriggerClick() {
 function onTriggerKeydown(event: KeyboardEvent) {
   context.handleKeydown(event);
 }
+
+function onTriggerElement(element: Parameters<typeof resolveHTMLElement>[0]) {
+  context.registerTriggerElement(resolveHTMLElement(element));
+}
 </script>
 
 <template>
   <button
     :id="context.triggerId"
+    :ref="onTriggerElement"
     type="button"
     data-v1-select-trigger
     :aria-expanded="isOpen"

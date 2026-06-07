@@ -5,6 +5,7 @@ import type { SelectRootProps } from "@v1/types/root";
 import { useSelectCollection } from "@v1/composables/useSelectCollection";
 import { useSelectState } from "@v1/composables/useSelectState";
 import { provideSelectContext } from "@v1/lib/context";
+import { resolveHTMLElement } from "@v1/lib/dom";
 import { defaultSelectFilterBy } from "@v1/lib/filter";
 import { computed, toRef } from "vue";
 
@@ -45,10 +46,17 @@ const { context } = useSelectState({
 });
 
 provideSelectContext(context);
+
+function onRootElement(element: Parameters<typeof resolveHTMLElement>[0]) {
+  context.registerRootElement(resolveHTMLElement(element));
+}
 </script>
 
 <template>
-  <div data-v1-select-root>
+  <div
+    :ref="onRootElement"
+    data-v1-select-root
+  >
     <slot />
   </div>
 </template>

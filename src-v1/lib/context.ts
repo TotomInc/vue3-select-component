@@ -35,6 +35,9 @@ export type SelectContext<OptionValue = string> = {
   focusFirstOption: () => void;
   isOptionVisible: (value: OptionValue) => boolean;
   handleKeydown: (event: KeyboardEvent) => void;
+  registerRootElement: (element: HTMLElement | null) => void;
+  registerTriggerElement: (element: HTMLElement | null) => void;
+  registerPopoverElement: (element: HTMLElement | null) => void;
 };
 
 const SELECT_CONTEXT_KEY: InjectionKey<SelectContext<unknown>> = Symbol("select-context");

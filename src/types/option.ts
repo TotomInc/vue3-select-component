@@ -1,6 +1,5 @@
-export type Option<T> = {
+export type SelectOption<Value = string> = {
   label: string;
-  value: T;
+  value: Value;
   disabled?: boolean;
-  [key: string]: unknown;
 };

@@ -1,25 +1,30 @@
-import type { Option } from "./index";
-import { describe, expect, it } from "vitest";
-import DefaultExport from "./index";
-import VueSelect from "./Select.vue";
+import type { SelectModelValue, SelectOptionData } from "./index";
 
-describe("index.ts exports", () => {
-  it("should export VueSelect as the default export", () => {
-    // Verify that the default export from index.ts is the same as importing VueSelect directly
-    expect(DefaultExport).toBe(VueSelect);
+import { describe, expect, it } from "vitest";
+import {
+  Select,
+
+  SelectOption,
+
+  SelectRoot,
+} from "./index";
+
+describe("src internal exports", () => {
+  it("exports the assembled Select and primitive components", () => {
+    expect(Select).toBeTruthy();
+    expect(SelectRoot).toBeTruthy();
+    expect(SelectOption).toBeTruthy();
   });
 
-  it("should export the Option type", () => {
-    // Create an object that matches the Option type to verify the type is exported correctly
-    const option: Option<string> = {
-      label: "Test Option",
-      value: "test",
-      disabled: false,
+  it("exports v1 option and model types", () => {
+    const option: SelectOptionData<string> = {
+      label: "TypeScript",
+      value: "ts",
     };
 
-    // If this compiles, it confirms the Option type is exported correctly
-    expect(option.label).toBe("Test Option");
-    expect(option.value).toBe("test");
-    expect(option.disabled).toBe(false);
+    const model: SelectModelValue<string> = option.value;
+
+    expect(option.label).toBe("TypeScript");
+    expect(model).toBe("ts");
   });
 });

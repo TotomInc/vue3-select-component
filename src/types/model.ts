@@ -1,1 +1,1 @@
-export type ModelValue<OptionValue> = OptionValue | OptionValue[] | null | undefined;
+export type SelectModelValue<Value> = Value | Value[] | null;

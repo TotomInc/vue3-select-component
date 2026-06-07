@@ -2,7 +2,6 @@ import type { UserConfig } from "vite";
 
 import { resolve as pathResolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
-import tailwindcss from "@tailwindcss/vite";
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
@@ -17,38 +16,9 @@ export default defineConfig((configEnv) => {
     resolve: {
       alias: {
         "@": pathResolve(__dirname, "./src"),
-        "@v1": pathResolve(__dirname, "./src-v1"),
       },
     },
   };
-
-  if (configEnv.mode === "development:playground") {
-    config.root = resolve("./playground");
-    config.plugins!.push(tailwindcss());
-  }
-
-  if (configEnv.mode === "development:v1-playground") {
-    config.root = resolve("./playground-v1");
-    config.plugins!.push(tailwindcss());
-  }
-
-  if (configEnv.mode === "production:playground") {
-    return {
-      ...config,
-
-      plugins: [
-        ...config.plugins!,
-        tailwindcss(),
-      ],
-
-      root: resolve("./playground"),
-      base: "/playground/",
-      build: {
-        outDir: resolve("./docs/.vitepress/dist/playground"),
-        emptyOutDir: false,
-      },
-    };
-  }
 
   // Build library when in production mode (npm run build).
   if (configEnv.mode === "production") {

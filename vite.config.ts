@@ -17,6 +17,7 @@ export default defineConfig((configEnv) => {
     resolve: {
       alias: {
         "@": pathResolve(__dirname, "./src"),
+        "@v1": pathResolve(__dirname, "./src-v1"),
       },
     },
   };

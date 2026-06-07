@@ -4,9 +4,10 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@v1/*": ["./src-v1/*"]
     }
   },
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*", "src-v1/**/*"],
   "exclude": ["src/**/__tests__/*"]
 }

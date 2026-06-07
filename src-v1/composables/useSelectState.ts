@@ -13,6 +13,14 @@ import { computed, ref, shallowRef, watch } from "vue";
 import { useSelectDismiss } from "./useSelectDismiss";
 import { useSelectKeyboard } from "./useSelectKeyboard";
 
+type SelectStateEvents<OptionValue> = {
+  onMenuOpened?: () => void;
+  onMenuClosed?: () => void;
+  onSearch?: (value: string) => void;
+  onOptionSelected?: (value: OptionValue) => void;
+  onOptionDeselected?: (value: OptionValue | null) => void;
+};
+
 type UseSelectStateParams<OptionValue extends string | number> = {
   modelValue: Ref<SelectModelValue<OptionValue>>;
   multiple: Ref<boolean>;
@@ -23,6 +31,7 @@ type UseSelectStateParams<OptionValue extends string | number> = {
   propOptions: Ref<readonly SelectOption<OptionValue>[]>;
   filterBy: Ref<FilterByFn<OptionValue>>;
   collection: ReturnType<typeof useSelectCollection<OptionValue>>;
+  events?: SelectStateEvents<OptionValue>;
 };
 
 function normalizeSelectedValues<OptionValue>(
@@ -116,14 +125,24 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
       return;
     }
 
+    const wasOpen = isOpen.value;
     isOpen.value = true;
     focusFirstOption();
+
+    if (!wasOpen) {
+      params.events?.onMenuOpened?.();
+    }
   };
 
   const close = () => {
+    const wasOpen = isOpen.value;
     isOpen.value = false;
     searchValue.value = "";
     activeOptionValue.value = null;
+
+    if (wasOpen) {
+      params.events?.onMenuClosed?.();
+    }
   };
 
   const toggle = () => {
@@ -150,14 +169,19 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
       const current = Array.isArray(params.modelValue.value) ? params.modelValue.value : [];
       const isAlreadySelected = current.includes(value);
 
-      params.modelValue.value = isAlreadySelected
-        ? current.filter((item) => item !== value)
-        : [...current, value];
+      if (isAlreadySelected) {
+        params.modelValue.value = current.filter((item) => item !== value);
+        params.events?.onOptionDeselected?.(value);
+        return;
+      }
 
+      params.modelValue.value = [...current, value];
+      params.events?.onOptionSelected?.(value);
       return;
     }
 
     params.modelValue.value = value;
+    params.events?.onOptionSelected?.(value);
     close();
   };
 
@@ -177,6 +201,7 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     const current = Array.isArray(params.modelValue.value) ? params.modelValue.value : [];
 
     params.modelValue.value = current.filter((item) => item !== value);
+    params.events?.onOptionDeselected?.(value);
   };
 
   const deselectLast = () => {
@@ -199,7 +224,18 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
       return;
     }
 
-    params.modelValue.value = params.multiple.value ? [] : null;
+    if (params.multiple.value) {
+      params.modelValue.value = [];
+      params.events?.onOptionDeselected?.(null);
+      return;
+    }
+
+    const previousValue = params.modelValue.value;
+    params.modelValue.value = null;
+
+    if (previousValue != null) {
+      params.events?.onOptionDeselected?.(previousValue as OptionValue);
+    }
   };
 
   const isOptionVisible = (value: OptionValue) =>
@@ -254,7 +290,17 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
 
   context.handleKeydown = handleKeydown;
 
-  watch(searchValue, syncActiveOptionWithFilter, { flush: "sync" });
+  watch(searchValue, (newSearch, oldSearch) => {
+    syncActiveOptionWithFilter();
+
+    const shouldEmitSearch = params.searchable.value
+      && newSearch !== oldSearch
+      && (newSearch.length > 0 || oldSearch.length > 0);
+
+    if (shouldEmitSearch) {
+      params.events?.onSearch?.(newSearch);
+    }
+  }, { flush: "sync" });
 
   watch(
     () => [isOpen.value, navigableOptions.value] as const,

@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="OptionValue extends string | number = string">
 import type { SelectModelValue } from "@v1/types/model";
-import type { SelectRootProps } from "@v1/types/root";
+import type { SelectRootEmits, SelectRootProps } from "@v1/types/root";
 
 import { useSelectCollection } from "@v1/composables/useSelectCollection";
 import { useSelectState } from "@v1/composables/useSelectState";
@@ -18,6 +18,8 @@ const props = withDefaults(defineProps<SelectRootProps<OptionValue>>(), {
   options: () => [],
   filterBy: defaultSelectFilterBy,
 });
+
+const emit = defineEmits<SelectRootEmits<OptionValue>>();
 
 const model = defineModel<SelectModelValue<OptionValue>>({ default: null });
 
@@ -43,6 +45,13 @@ const { context } = useSelectState({
   propOptions,
   filterBy,
   collection,
+  events: {
+    onMenuOpened: () => emit("menuOpened"),
+    onMenuClosed: () => emit("menuClosed"),
+    onSearch: (value) => emit("search", value),
+    onOptionSelected: (value) => emit("optionSelected", value),
+    onOptionDeselected: (value) => emit("optionDeselected", value),
+  },
 });
 
 provideSelectContext(context);

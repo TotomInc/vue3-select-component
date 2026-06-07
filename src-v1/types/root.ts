@@ -14,4 +14,9 @@ export type SelectRootProps<OptionValue = string> = {
 
 export type SelectRootEmits<OptionValue = string> = {
   "update:modelValue": [value: SelectModelValue<OptionValue>];
+  "menuOpened": [];
+  "menuClosed": [];
+  "search": [value: string];
+  "optionSelected": [value: OptionValue];
+  "optionDeselected": [value: OptionValue | null];
 };

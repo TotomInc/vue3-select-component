@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { effectScope, ref } from "vue";
 
 import { useSelectCollection } from "./useSelectCollection";
@@ -100,6 +100,56 @@ describe("useSelectState", () => {
 
       expect(modelValue.value).toEqual(["ts"]);
       expect(context.isOpen.value).toBe(true);
+    });
+  });
+
+  it("emits lifecycle and selection events", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const onMenuOpened = vi.fn();
+      const onMenuClosed = vi.fn();
+      const onOptionSelected = vi.fn();
+      const onOptionDeselected = vi.fn();
+      const onSearch = vi.fn();
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(true),
+        loading: ref(false),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+        events: {
+          onMenuOpened,
+          onMenuClosed,
+          onOptionSelected,
+          onOptionDeselected,
+          onSearch,
+        },
+      });
+
+      context.open();
+      expect(onMenuOpened).toHaveBeenCalledTimes(1);
+
+      context.searchValue.value = "type";
+      expect(onSearch).toHaveBeenCalledWith("type");
+
+      context.select("ts");
+      expect(onOptionSelected).toHaveBeenCalledWith("ts");
+      expect(onMenuClosed).toHaveBeenCalledTimes(1);
+
+      context.open();
+      context.clear();
+      expect(onOptionDeselected).toHaveBeenCalledWith("ts");
     });
   });
 });

@@ -13,7 +13,7 @@ import DemoSection from "../playground/components/DemoSection.vue";
 import DemoValue from "../playground/components/DemoValue.vue";
 
 type BooleanControl = {
-  key: "multiple" | "searchable" | "clearable" | "disabled" | "loading";
+  key: "multiple" | "searchable" | "clearable" | "disabled" | "loading" | "teleport";
   label: string;
   description: string;
 };
@@ -24,6 +24,7 @@ const booleanControls: BooleanControl[] = [
   { key: "clearable", label: "Clearable", description: "Show a clear button when a value is set." },
   { key: "disabled", label: "Disabled", description: "Prevent all interaction." },
   { key: "loading", label: "Loading", description: "Show a loading indicator on the trigger." },
+  { key: "teleport", label: "Teleport", description: "Portal the menu to document.body." },
 ];
 
 const options = ref<SelectOption<string>[]>([
@@ -40,7 +41,9 @@ const searchable = ref(false);
 const clearable = ref(false);
 const disabled = ref(false);
 const loading = ref(false);
+const teleport = ref(false);
 const placeholder = ref("Pick a framework");
+const eventLog = ref<string[]>([]);
 
 const modelDisplay = computed(() => JSON.stringify(model.value, null, 2));
 
@@ -50,6 +53,7 @@ const controlValues = computed(() => ({
   clearable: clearable.value,
   disabled: disabled.value,
   loading: loading.value,
+  teleport: teleport.value,
 }));
 
 const emptyModel = (): SelectModelValue<string> => (multiple.value ? [] : null);
@@ -59,8 +63,12 @@ watch(multiple, () => {
 });
 
 function toggleBooleanControl(key: BooleanControl["key"]) {
-  const refs = { multiple, searchable, clearable, disabled, loading } as const;
+  const refs = { multiple, searchable, clearable, disabled, loading, teleport } as const;
   refs[key].value = !refs[key].value;
+}
+
+function logEvent(message: string) {
+  eventLog.value = [message, ...eventLog.value].slice(0, 8);
 }
 
 function toggleOptionDisabled(value: string) {
@@ -183,11 +191,25 @@ function toggleOptionDisabled(value: string) {
             :clearable="clearable"
             :disabled="disabled"
             :loading="loading"
+            :teleport="teleport || undefined"
             :placeholder="placeholder"
+            @menu-opened="logEvent('menuOpened')"
+            @menu-closed="logEvent('menuClosed')"
+            @search="logEvent(`search: ${$event}`)"
+            @option-selected="logEvent(`optionSelected: ${$event.label}`)"
+            @option-deselected="logEvent(`optionDeselected: ${$event?.label ?? 'null'}`)"
           />
 
           <DemoValue label="modelValue">
             <code class="font-mono text-xs">{{ modelDisplay }}</code>
+          </DemoValue>
+
+          <DemoValue v-if="eventLog.length" label="Recent events">
+            <ul class="space-y-1 font-mono text-xs text-neutral-400">
+              <li v-for="entry in eventLog" :key="entry">
+                {{ entry }}
+              </li>
+            </ul>
           </DemoValue>
         </DemoPanel>
 

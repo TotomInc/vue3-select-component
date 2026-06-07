@@ -5,6 +5,8 @@
   "packageManager": "pnpm@11.5.2",
   "scripts": {
     "build": "pnpm -r run build",
+    "docs:dev": "pnpm --filter @vue3-select-component/docs run dev",
+    "docs:build": "pnpm --filter @vue3-select-component/docs run build",
     "test": "pnpm --filter vue3-select-component run test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

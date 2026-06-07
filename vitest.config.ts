@@ -6,7 +6,7 @@ export default defineConfig((configEnv) => mergeConfig(
   viteConfig(configEnv),
   defineConfig({
     test: {
-      environment: "jsdom",
+      environment: "happy-dom",
       coverage: {
         provider: "v8",
         include: ["src/**/*.vue", "src/**/*.ts"],

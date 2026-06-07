@@ -27,6 +27,11 @@ export default defineConfig((configEnv) => {
     config.plugins!.push(tailwindcss());
   }
 
+  if (configEnv.mode === "development:v1-playground") {
+    config.root = resolve("./playground-v1");
+    config.plugins!.push(tailwindcss());
+  }
+
   if (configEnv.mode === "production:playground") {
     return {
       ...config,

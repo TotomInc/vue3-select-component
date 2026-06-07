@@ -34,6 +34,7 @@
   ],
   "scripts": {
     "dev:playground": "vite --mode development:playground",
+    "dev:v1-playground": "vite --mode development:v1-playground",
     "test": "vitest --coverage",
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",

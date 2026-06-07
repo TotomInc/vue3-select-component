@@ -1,8 +1,23 @@
+packages:
+  - src
+  - docs
+
 allowBuilds:
+  "@parcel/watcher": false
+  better-sqlite3: true
   esbuild: true
+  sharp: false
   vue-demi: true
 blockExoticSubdeps: true
+ignoredBuiltDependencies:
+  - "@parcel/watcher"
+  - sharp
 minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - "@comark/*"
+  - comark
+onlyBuiltDependencies:
+  - better-sqlite3
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 10080

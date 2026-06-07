@@ -2,16 +2,15 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./*"]
     }
   },
-  "include": ["env.d.ts", "src/**/*"],
+  "include": ["env.d.ts", "**/*"],
   "exclude": [
-    "src/**/__tests__/*",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/test-utils/**"
+    "**/__tests__/*",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "test-utils/**"
   ]
 }

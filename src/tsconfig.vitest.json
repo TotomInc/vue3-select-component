@@ -5,10 +5,10 @@
     "types": ["node"]
   },
   "include": [
-    "src/**/__tests__/*",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/test-utils/*",
+    "**/__tests__/*",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "test-utils/*",
     "env.d.ts"
   ],
   "exclude": []

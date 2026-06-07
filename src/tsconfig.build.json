@@ -6,7 +6,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./*"]
     },
     "strict": true,
     "declaration": false,
@@ -16,13 +16,12 @@
   },
   "include": [
     "env.d.ts",
-    "src/**/*",
-    "src/**/*.ts",
-    "src/**/*.vue"
+    "**/*.ts",
+    "**/*.vue"
   ],
   "exclude": [
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/test-utils/**"
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "test-utils/**"
   ]
 }

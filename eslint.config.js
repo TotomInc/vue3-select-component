@@ -4,6 +4,15 @@ export default antfu({
   vue: true,
   typescript: true,
 
+  ignores: [
+    "docs/.data",
+    "docs/.nuxt",
+    "docs/.output",
+    "docs/content",
+    "pnpm-workspace.yaml",
+    "src/dist",
+  ],
+
   stylistic: {
     indent: 2,
     jsx: false,

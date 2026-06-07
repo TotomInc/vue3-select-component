@@ -28,12 +28,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm run build
+        run: pnpm --filter vue3-select-component run build
 
       - name: Test
-        run: pnpm run test
+        run: pnpm --filter vue3-select-component run test
 
       - name: Publish to npm
-        run: pnpm publish --no-git-checks
+        run: pnpm --filter vue3-select-component publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

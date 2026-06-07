@@ -9,7 +9,8 @@ export default mergeConfig(
       environment: "happy-dom",
       coverage: {
         provider: "v8",
-        include: ["src/**/*.vue", "src/**/*.ts"],
+        include: ["**/*.vue", "**/*.ts"],
+        exclude: ["test-utils/**", "**/*.spec.ts", "**/*.test.ts"],
       },
     },
   }),

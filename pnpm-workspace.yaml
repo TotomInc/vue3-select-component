@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: true
+  vue-demi: true
+blockExoticSubdeps: true
+minimumReleaseAge: 1440
+shellEmulator: true
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 10080
+verifyDepsBeforeRun: install

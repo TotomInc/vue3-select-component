@@ -2,6 +2,7 @@
   "name": "vue3-select-component",
   "type": "module",
   "version": "0.16.2",
+  "packageManager": "pnpm@11.5.2",
   "description": "A flexible & modern select-input control for Vue 3.",
   "author": "Thomas Cazade <cazade.thomas@gmail.com>",
   "license": "MIT",
@@ -39,20 +40,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "vue-tsc --build",
-    "bumpp": "bumpp package.json package-lock.json"
+    "bumpp": "bumpp package.json pnpm-lock.yaml"
   },
   "peerDependencies": {
     "vue": "^3.5.0"
   },
-  "dependencies": {
-    "@floating-ui/vue": "1.1.10"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.57.1"
-  },
   "devDependencies": {
     "@antfu/eslint-config": "7.2.0",
-    "@tailwindcss/vite": "4.1.18",
     "@tsconfig/node24": "24.0.4",
     "@types/jsdom": "27.0.0",
     "@types/node": "24.10.11",
@@ -66,17 +60,12 @@
     "jsdom": "28.0.0",
     "lucide-vue-next": "0.563.0",
     "npm-run-all2": "8.0.4",
-    "postcss": "8.5.6",
-    "shiki": "3.22.0",
-    "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
     "vite": "7.3.1",
     "vite-plugin-dts": "4.5.4",
-    "vitepress": "1.6.4",
     "vitest": "4.0.18",
     "vue": "3.5.27",
     "vue-component-type-helpers": "3.2.4",
-    "vue-router": "5.0.2",
     "vue-tsc": "3.2.4"
   }
 }

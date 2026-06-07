@@ -124,9 +124,9 @@ const userOptions: UserOption[] = [
 ### Getting Started
 
 1. Clone the repository
-2. Install dependencies: `npm install`
-3. Start the playground: `npm run dev:playground`
-4. Run tests: `npm run test`
+2. Install dependencies: `pnpm install`
+3. Start the playground: `pnpm run dev:playground`
+4. Run tests: `pnpm run test`
 
 ### Contributing
 

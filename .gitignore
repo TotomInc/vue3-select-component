@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+package-lock.json
 .DS_Store
 dist
 dist-ssr
@@ -26,7 +27,3 @@ coverage
 *.sw?
 
 *.tsbuildinfo
-
-# VitePress
-docs/.vitepress/dist
-docs/.vitepress/cache

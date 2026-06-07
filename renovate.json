@@ -6,7 +6,7 @@
   "groupName": "all dependencies",
   "groupSlug": "all",
   "lockFileMaintenance": {
-    "enabled": false
+    "enabled": true
   },
   "packageRules": [
     {

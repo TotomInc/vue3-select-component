@@ -12,6 +12,10 @@ const searchValue = computed({
     context.searchValue.value = value;
   },
 });
+
+function onInputKeydown(event: KeyboardEvent) {
+  context.handleKeydown(event);
+}
 </script>
 
 <template>
@@ -22,5 +26,6 @@ const searchValue = computed({
     data-v1-select-input
     autocomplete="off"
     :disabled="isDisabled"
+    @keydown="onInputKeydown"
   >
 </template>

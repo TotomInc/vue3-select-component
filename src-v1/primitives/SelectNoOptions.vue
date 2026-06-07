@@ -4,7 +4,7 @@ import { computed } from "vue";
 
 const context = injectSelectContext();
 
-const isVisible = computed(() => context.registeredOptions.value.length === 0);
+const isVisible = computed(() => context.filteredOptions.value.length === 0);
 </script>
 
 <template>

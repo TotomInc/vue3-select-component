@@ -5,7 +5,8 @@ import type { SelectRootProps } from "@v1/types/root";
 import { useSelectCollection } from "@v1/composables/useSelectCollection";
 import { useSelectState } from "@v1/composables/useSelectState";
 import { provideSelectContext } from "@v1/lib/context";
-import { toRef } from "vue";
+import { defaultSelectFilterBy } from "@v1/lib/filter";
+import { computed, toRef } from "vue";
 
 const props = withDefaults(defineProps<SelectRootProps<OptionValue>>(), {
   multiple: false,
@@ -14,6 +15,7 @@ const props = withDefaults(defineProps<SelectRootProps<OptionValue>>(), {
   clearable: false,
   loading: false,
   options: () => [],
+  filterBy: defaultSelectFilterBy,
 });
 
 const model = defineModel<SelectModelValue<OptionValue>>({ default: null });
@@ -23,8 +25,13 @@ const disabled = toRef(() => props.disabled);
 const searchable = toRef(() => props.searchable);
 const clearable = toRef(() => props.clearable);
 const loading = toRef(() => props.loading);
+const propOptions = toRef(() => props.options);
+const filterBy = computed(() => props.filterBy);
 
-const collection = useSelectCollection<OptionValue>();
+const collection = useSelectCollection<OptionValue>({
+  propOptions: () => propOptions.value,
+});
+
 const { context } = useSelectState({
   modelValue: model,
   multiple,
@@ -32,6 +39,8 @@ const { context } = useSelectState({
   searchable,
   clearable,
   loading,
+  propOptions,
+  filterBy,
   collection,
 });
 

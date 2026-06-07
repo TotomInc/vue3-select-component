@@ -10,6 +10,10 @@ const isDisabled = computed(() => context.disabled.value);
 function onTriggerClick() {
   context.toggle();
 }
+
+function onTriggerKeydown(event: KeyboardEvent) {
+  context.handleKeydown(event);
+}
 </script>
 
 <template>
@@ -19,6 +23,7 @@ function onTriggerClick() {
     :aria-expanded="isOpen"
     :disabled="isDisabled"
     @click="onTriggerClick"
+    @keydown="onTriggerKeydown"
   >
     <slot />
   </button>

@@ -21,6 +21,10 @@ const isSelected = computed(() => {
   return modelValue.value === props.value;
 });
 
+const isActive = computed(() => context.activeOptionValue.value === props.value);
+
+const isVisible = computed(() => context.isOptionVisible(props.value));
+
 function onOptionClick() {
   if (props.disabled) {
     return;
@@ -45,9 +49,11 @@ onUnmounted(() => {
 
 <template>
   <div
+    v-if="isVisible"
     role="option"
     data-v1-select-option
     :data-value="String(value)"
+    :data-active="isActive"
     :aria-selected="isSelected"
     :aria-disabled="disabled"
     @click="onOptionClick"

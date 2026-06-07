@@ -1,3 +1,4 @@
+import type { FilterByFn } from "../lib/filter";
 import type { SelectModelValue } from "./model";
 import type { SelectOption } from "./option";
 
@@ -8,6 +9,7 @@ export type SelectRootProps<OptionValue = string> = {
   clearable?: boolean;
   loading?: boolean;
   options?: SelectOption<OptionValue>[];
+  filterBy?: FilterByFn<OptionValue>;
 };
 
 export type SelectRootEmits<OptionValue = string> = {

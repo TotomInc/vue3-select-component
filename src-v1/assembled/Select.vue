@@ -42,7 +42,6 @@ const model = defineModel<SelectModelValue<OptionValue>>({ default: null });
     :clearable="clearable"
     :disabled="disabled"
     :loading="loading"
-    :options="options"
     data-v1-assembled-select
   >
     <SelectTrigger>

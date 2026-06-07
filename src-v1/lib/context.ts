@@ -13,17 +13,25 @@ export type SelectContext<OptionValue = string> = {
   searchable: Ref<boolean>;
   clearable: Ref<boolean>;
   loading: Ref<boolean>;
-  activeOptionId: Ref<string | null>;
-  registeredOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
+  activeOptionValue: Ref<OptionValue | null>;
+  allOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
+  filteredOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
+  selectedOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
   open: () => void;
   close: () => void;
   toggle: () => void;
   select: (value: OptionValue) => void;
+  selectActiveOption: () => void;
   deselect: (value: OptionValue) => void;
+  deselectLast: () => void;
   clear: () => void;
   registerOption: (option: RegisteredOption<OptionValue>) => void;
   unregisterOption: (id: string) => void;
-  setActiveOptionId: (id: string | null) => void;
+  setActiveOptionValue: (value: OptionValue | null) => void;
+  moveActiveOption: (direction: 1 | -1) => void;
+  focusFirstOption: () => void;
+  isOptionVisible: (value: OptionValue) => boolean;
+  handleKeydown: (event: KeyboardEvent) => void;
 };
 
 const SELECT_CONTEXT_KEY: InjectionKey<SelectContext<unknown>> = Symbol("select-context");

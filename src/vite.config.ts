@@ -27,9 +27,12 @@ export default defineConfig({
     target: "es2022",
     lib: {
       name: "vue3-select-component",
-      entry: resolve("./index.ts"),
+      entry: {
+        index: resolve("./index.ts"),
+        primitives: resolve("./primitives/index.ts"),
+      },
       formats: ["es"],
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format, entryName) => entryName === "index" ? `index.${format}.js` : `${entryName}.js`,
     },
   },
 });

@@ -1,7 +1,3 @@
-/**
- * Internal v1 entry point — not yet exposed via package exports.
- * Wire `vue3-select-component/primitives` once the API stabilizes.
- */
 export { default as Select } from "./assembled/Select.vue";
 
 export {

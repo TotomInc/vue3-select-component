@@ -5,12 +5,13 @@
   "packageManager": "pnpm@11.5.2",
   "scripts": {
     "build": "pnpm -r run build",
-    "docs:dev": "pnpm --filter @vue3-select-component/docs run dev",
-    "docs:build": "pnpm --filter @vue3-select-component/docs run build",
+    "dev:lib": "pnpm --filter vue3-select-component run dev",
+    "dev:docs": "pnpm --filter @vue3-select-component/docs run dev",
+    "docs:dev": "pnpm --parallel --filter vue3-select-component --filter @vue3-select-component/docs dev",
+    "docs:build": "pnpm --filter vue3-select-component run build && pnpm --filter @vue3-select-component/docs run generate",
     "test": "pnpm --filter vue3-select-component run test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "dev:docs": "pnpm --filter @vue3-select-component/docs run dev",
     "bumpp": "pnpm --filter vue3-select-component run bumpp"
   },
   "devDependencies": {

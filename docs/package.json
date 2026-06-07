@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "nuxt dev",
-    "build": "nuxt build"
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview"
   },
   "dependencies": {
     "@comark/nuxt": "0.4.0",

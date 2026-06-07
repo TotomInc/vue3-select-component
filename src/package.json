@@ -18,6 +18,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.es.js"
+    },
+    "./primitives": {
+      "types": "./dist/primitives/index.d.ts",
+      "import": "./dist/primitives.js"
     }
   },
   "module": "dist/index.es.js",
@@ -26,6 +30,8 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "pnpm run build",
+    "dev": "vite build --watch",
     "test": "vitest --coverage",
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",

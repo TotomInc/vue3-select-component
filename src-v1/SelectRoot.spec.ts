@@ -4,7 +4,6 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { defineComponent, h, ref } from "vue";
 
-import SelectClear from "./primitives/SelectClear.vue";
 import SelectIndicator from "./primitives/SelectIndicator.vue";
 import SelectInput from "./primitives/SelectInput.vue";
 import SelectListbox from "./primitives/SelectListbox.vue";
@@ -15,73 +14,11 @@ import SelectRoot from "./primitives/SelectRoot.vue";
 import SelectTag from "./primitives/SelectTag.vue";
 import SelectTrigger from "./primitives/SelectTrigger.vue";
 import SelectValue from "./primitives/SelectValue.vue";
-
-const basicOptions = [
-  { label: "JavaScript", value: "js" },
-  { label: "TypeScript", value: "ts" },
-] as const;
-
-const optionsWithDisabled = [
-  { label: "JavaScript", value: "js" },
-  { label: "Spain", value: "es", disabled: true },
-  { label: "TypeScript", value: "ts" },
-] as const;
-
-function mountPrimitiveSelect(props: {
-  modelValue?: string | string[] | null;
-  clearable?: boolean;
-  multiple?: boolean;
-  searchable?: boolean;
-  usePropOptions?: boolean;
-  selectOptions?: typeof basicOptions | typeof optionsWithDisabled;
-} = {}) {
-  const selectOptions = props.selectOptions ?? basicOptions;
-  const model = ref<SelectModelValue<string>>(props.modelValue ?? null);
-
-  const wrapper = mount(SelectRoot<string>, {
-    props: {
-      "modelValue": props.modelValue ?? null,
-      "clearable": props.clearable ?? false,
-      "multiple": props.multiple ?? false,
-      "searchable": props.searchable ?? false,
-      "options": props.usePropOptions ? [...selectOptions] : [],
-      "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-        model.value = value;
-        wrapper.setProps({ modelValue: value });
-      },
-    },
-    slots: {
-      default: () => [
-        h(SelectTrigger, null, {
-          default: () => [
-            h(SelectValue, { placeholder: "Pick a language" }),
-            h(SelectIndicator),
-            h(SelectClear),
-          ],
-        }),
-        h(SelectPopover, null, {
-          default: () => [
-            h(SelectInput),
-            h(SelectListbox, null, {
-              default: () => [
-                h(SelectNoOptions),
-                ...selectOptions.map((option) =>
-                  h(SelectOption, {
-                    value: option.value,
-                    label: option.label,
-                    disabled: "disabled" in option ? option.disabled : false,
-                  }),
-                ),
-              ],
-            }),
-          ],
-        }),
-      ],
-    },
-  });
-
-  return { wrapper, model };
-}
+import {
+  basicOptions,
+  mountPrimitiveSelect,
+  optionsWithDisabled,
+} from "./test-utils/mount-primitive-select";
 
 describe("v1 SelectRoot foundation", () => {
   it("renders the root shell and provides context to child primitives", () => {

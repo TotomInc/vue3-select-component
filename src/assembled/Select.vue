@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, Optio
   clearable: undefined,
   disabled: undefined,
   loading: undefined,
+  closeOnSelect: null,
   isMulti: undefined,
   isSearchable: undefined,
   isClearable: undefined,
@@ -99,6 +100,7 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
     :clearable="resolvedBooleanProps.clearable"
     :disabled="resolvedBooleanProps.disabled"
     :loading="resolvedBooleanProps.loading"
+    :close-on-select="closeOnSelect"
     :filter-by="adaptedFilterBy"
     data-assembled-select
     @menu-opened="emit('menuOpened')"

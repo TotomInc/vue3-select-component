@@ -328,6 +328,150 @@ describe("v1 primitive composition", () => {
     expect(wrapper.get("[data-select-indicator]").attributes("data-loading")).toBe("true");
   });
 
+  it("renders a default chevron in the indicator primitive", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectIndicator),
+          }),
+        ],
+      },
+    });
+
+    const indicator = wrapper.get("[data-select-indicator]");
+
+    expect(indicator.get("svg").exists()).toBe(true);
+    expect(indicator.attributes("data-open")).toBe("false");
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    expect(indicator.attributes("data-open")).toBe("true");
+  });
+
+  it("renders a default remove icon in SelectTag", () => {
+    const model = ref<SelectModelValue<string>>(["js"]);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": ["js"],
+        "multiple": true,
+        "options": [...basicOptions],
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectTag, { value: "js", label: "JavaScript" }),
+          }),
+        ],
+      },
+    });
+
+    expect(wrapper.get("[data-select-tag-remove] svg").exists()).toBe(true);
+  });
+
+  it("defaults closeOnSelect to null for auto mode behavior", () => {
+    const { wrapper } = mountPrimitiveSelect();
+
+    expect(wrapper.props("closeOnSelect")).toBeNull();
+  });
+
+  it("keeps the menu open on single-select when closeOnSelect is false", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "closeOnSelect": false,
+        "options": [...basicOptions],
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => basicOptions.map((option) =>
+                  h(SelectOption, {
+                    value: option.value,
+                    label: option.label,
+                  }),
+                ),
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+
+    expect(model.value).toBe("js");
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+  });
+
+  it("closes the menu on multi-select when closeOnSelect is enabled", async () => {
+    const model = ref<SelectModelValue<string>>([]);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": [],
+        "multiple": true,
+        "closeOnSelect": true,
+        "options": [...basicOptions],
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => basicOptions.map((option) =>
+                  h(SelectOption, {
+                    value: option.value,
+                    label: option.label,
+                  }),
+                ),
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+
+    expect(model.value).toEqual(["js"]);
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+  });
+
   it("wires trigger and listbox ids for aria-activedescendant", async () => {
     const { wrapper } = mountPrimitiveSelect();
 

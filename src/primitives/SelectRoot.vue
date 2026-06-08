@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<SelectRootProps<OptionValue>>(), {
   disabled: false,
   clearable: false,
   loading: false,
+  closeOnSelect: null,
   options: () => [],
   filterBy: defaultSelectFilterBy,
 });
@@ -28,6 +29,7 @@ const disabled = toRef(() => props.disabled);
 const searchable = toRef(() => props.searchable);
 const clearable = toRef(() => props.clearable);
 const loading = toRef(() => props.loading);
+const closeOnSelect = toRef(() => props.closeOnSelect);
 const propOptions = toRef(() => props.options);
 const filterBy = computed(() => props.filterBy);
 
@@ -42,6 +44,7 @@ const { context } = useSelectState({
   searchable,
   clearable,
   loading,
+  closeOnSelect,
   propOptions,
   filterBy,
   collection,

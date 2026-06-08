@@ -36,6 +36,7 @@ h1 {
 }
 
 [data-select-trigger] {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -72,4 +73,41 @@ h1 {
 
 [data-select-option][aria-selected="true"] {
   background: #93c5fd;
+}
+
+[data-select-option]:hover {
+  background: #f0f0f0;
+}
+
+[data-select-tag] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  margin-right: 0.25rem;
+  border-radius: 0.25rem;
+  background: #f0f0f0;
+  font-size: 0.75rem;
+}
+
+[data-select-tag-remove] {
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 1;
+  color: inherit;
+}
+
+[data-select-indicator] {
+  position: absolute;
+  right: 0.5rem;
+  display: inline-flex;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+[data-select-indicator][data-open="true"] {
+  transform: rotate(180deg);
 }

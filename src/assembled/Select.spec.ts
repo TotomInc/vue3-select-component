@@ -60,6 +60,102 @@ describe("v1 assembled Select", () => {
 
     expect(model.value).toEqual(["js", "ts"]);
     expect(wrapper.findAll("[data-select-tag]")).toHaveLength(2);
+    expect(wrapper.get("[data-select-tag-remove] svg").exists()).toBe(true);
+  });
+
+  it("closes the menu after single selection by default", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(Select<string, (typeof options)[number]>, {
+      props: {
+        "options": [...options],
+        "teleport": false,
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+
+    expect(model.value).toBe("js");
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+  });
+
+  it("closes the menu on multi-select when closeOnSelect is true", async () => {
+    const model = ref<SelectModelValue<string>>([]);
+
+    const wrapper = mount(Select<string, (typeof options)[number]>, {
+      props: {
+        "options": [...options],
+        "multiple": true,
+        "closeOnSelect": true,
+        "teleport": false,
+        "modelValue": [],
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+
+    expect(model.value).toEqual(["js"]);
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+  });
+
+  it("keeps the menu open on multi-select when closeOnSelect is false", async () => {
+    const model = ref<SelectModelValue<string>>([]);
+
+    const wrapper = mount(Select<string, (typeof options)[number]>, {
+      props: {
+        "options": [...options],
+        "multiple": true,
+        "closeOnSelect": false,
+        "teleport": false,
+        "modelValue": [],
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+
+    expect(model.value).toEqual(["js"]);
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+  });
+
+  it("renders a chevron indicator that reflects open state", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(Select<string, (typeof options)[number]>, {
+      props: {
+        "options": [...options],
+        "teleport": false,
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+    });
+
+    const indicator = wrapper.get("[data-select-indicator]");
+
+    expect(indicator.get("svg").exists()).toBe(true);
+    expect(indicator.attributes("data-open")).toBe("false");
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    expect(indicator.attributes("data-open")).toBe("true");
   });
 
   it("accepts v0 boolean prop aliases", async () => {

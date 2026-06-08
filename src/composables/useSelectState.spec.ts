@@ -31,6 +31,7 @@ describe("useSelectState", () => {
         searchable: ref(false),
         clearable: ref(false),
         loading: ref(false),
+        closeOnSelect: ref(true),
         propOptions: ref([]),
         filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
         collection,
@@ -57,6 +58,7 @@ describe("useSelectState", () => {
         searchable: ref(true),
         clearable: ref(false),
         loading: ref(false),
+        closeOnSelect: ref(true),
         propOptions: ref([]),
         filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
         collection,
@@ -88,6 +90,7 @@ describe("useSelectState", () => {
         searchable: ref(false),
         clearable: ref(false),
         loading: ref(false),
+        closeOnSelect: ref(false),
         propOptions: ref([]),
         filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
         collection,
@@ -99,6 +102,130 @@ describe("useSelectState", () => {
       context.select("js");
 
       expect(modelValue.value).toEqual(["ts"]);
+      expect(context.isOpen.value).toBe(true);
+    });
+  });
+
+  it("closes on single-select by default when closeOnSelect is null", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(false),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(null),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.select("js");
+
+      expect(modelValue.value).toBe("js");
+      expect(context.isOpen.value).toBe(false);
+    });
+  });
+
+  it("stays open on multi-select by default when closeOnSelect is null", () => {
+    runInScope(() => {
+      const modelValue = ref<string[]>([]);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(true),
+        disabled: ref(false),
+        searchable: ref(false),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(null),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.select("js");
+
+      expect(modelValue.value).toEqual(["js"]);
+      expect(context.isOpen.value).toBe(true);
+    });
+  });
+
+  it("closes the menu on multi-select when closeOnSelect is enabled", () => {
+    runInScope(() => {
+      const modelValue = ref<string[]>([]);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(true),
+        disabled: ref(false),
+        searchable: ref(false),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(true),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.select("js");
+
+      expect(modelValue.value).toEqual(["js"]);
+      expect(context.isOpen.value).toBe(false);
+    });
+  });
+
+  it("keeps the menu open on single-select when closeOnSelect is disabled", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(false),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(false),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.select("js");
+
+      expect(modelValue.value).toBe("js");
       expect(context.isOpen.value).toBe(true);
     });
   });
@@ -125,6 +252,7 @@ describe("useSelectState", () => {
         searchable: ref(true),
         clearable: ref(true),
         loading: ref(false),
+        closeOnSelect: ref(true),
         propOptions: ref([]),
         filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
         collection,

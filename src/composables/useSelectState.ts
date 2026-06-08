@@ -28,6 +28,7 @@ type UseSelectStateParams<OptionValue extends string | number> = {
   searchable: Ref<boolean>;
   clearable: Ref<boolean>;
   loading: Ref<boolean>;
+  closeOnSelect?: Ref<boolean | null | undefined>;
   propOptions: Ref<readonly SelectOption<OptionValue>[]>;
   filterBy: Ref<FilterByFn<OptionValue>>;
   collection: ReturnType<typeof useSelectCollection<OptionValue>>;
@@ -154,6 +155,16 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     open();
   };
 
+  const shouldCloseOnSelect = () => {
+    const configured = params.closeOnSelect?.value;
+
+    if (configured != null) {
+      return configured;
+    }
+
+    return !params.multiple.value;
+  };
+
   const select = (value: OptionValue) => {
     if (params.disabled.value) {
       return;
@@ -177,12 +188,20 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
 
       params.modelValue.value = [...current, value];
       params.events?.onOptionSelected?.(value);
+
+      if (shouldCloseOnSelect()) {
+        close();
+      }
+
       return;
     }
 
     params.modelValue.value = value;
     params.events?.onOptionSelected?.(value);
-    close();
+
+    if (shouldCloseOnSelect()) {
+      close();
+    }
   };
 
   const selectActiveOption = () => {

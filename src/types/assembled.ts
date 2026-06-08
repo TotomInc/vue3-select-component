@@ -24,6 +24,7 @@ export type AssembledSelectProps<
   options: GenericOption[];
   placeholder?: string;
   teleport?: boolean | string | HTMLElement;
+  closeOnSelect?: boolean | null;
   filterBy?: GenericFilterByFn<GenericOption>;
   getOptionValue?: OptionMapper<GenericOption, OptionValue>["getOptionValue"];
   getOptionLabel?: OptionMapper<GenericOption, OptionValue>["getOptionLabel"];

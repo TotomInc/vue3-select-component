@@ -8,6 +8,7 @@ export type SelectRootProps<OptionValue = string> = {
   disabled?: boolean;
   clearable?: boolean;
   loading?: boolean;
+  closeOnSelect?: boolean | null;
   options?: SelectOption<OptionValue>[];
   filterBy?: FilterByFn<OptionValue>;
 };

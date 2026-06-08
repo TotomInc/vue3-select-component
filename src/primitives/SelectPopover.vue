@@ -6,14 +6,20 @@ import { injectSelectContext } from "@/lib/context";
 import { resolveHTMLElement } from "@/lib/dom";
 
 const props = withDefaults(defineProps<SelectPopoverProps>(), {
-  teleport: false,
+  teleport: true,
 });
 
 const context = injectSelectContext();
 
 const isOpen = computed(() => context.isOpen.value);
 
+const isTeleportEnabled = computed(() => props.teleport !== false);
+
 const teleportTarget = computed(() => {
+  if (props.teleport === false) {
+    return "body";
+  }
+
   if (props.teleport === true) {
     return "body";
   }
@@ -22,7 +28,11 @@ const teleportTarget = computed(() => {
     return props.teleport;
   }
 
-  return null;
+  if (props.teleport instanceof HTMLElement) {
+    return props.teleport;
+  }
+
+  return "body";
 });
 
 function onPopoverElement(element: Parameters<typeof resolveHTMLElement>[0]) {
@@ -32,8 +42,8 @@ function onPopoverElement(element: Parameters<typeof resolveHTMLElement>[0]) {
 
 <template>
   <Teleport
-    v-if="teleportTarget"
     :to="teleportTarget"
+    :disabled="!isTeleportEnabled"
   >
     <div
       v-show="isOpen"
@@ -44,13 +54,4 @@ function onPopoverElement(element: Parameters<typeof resolveHTMLElement>[0]) {
       <slot />
     </div>
   </Teleport>
-  <div
-    v-else
-    v-show="isOpen"
-    :ref="onPopoverElement"
-    data-select-popover
-    :aria-hidden="!isOpen"
-  >
-    <slot />
-  </div>
 </template>

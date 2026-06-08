@@ -70,7 +70,7 @@ export function mountPrimitiveSelect(props: MountPrimitiveSelectOptions = {}) {
             h(SelectClear),
           ],
         }),
-        h(SelectPopover, null, {
+        h(SelectPopover, { teleport: false }, {
           default: () => [
             h(SelectInput),
             h(SelectListbox, null, {

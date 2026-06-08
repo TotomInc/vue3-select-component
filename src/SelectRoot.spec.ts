@@ -242,7 +242,7 @@ describe("v1 SelectRoot core module", () => {
           h(SelectTrigger, null, {
             default: () => h(SelectValue, { placeholder: "Pick a language" }),
           }),
-          h(SelectPopover, null, {
+          h(SelectPopover, { teleport: false }, {
             default: () => [
               h(SelectInput),
               h(SelectListbox, null, {
@@ -341,7 +341,60 @@ describe("v1 primitive composition", () => {
     expect(trigger.attributes("aria-activedescendant")).toBe(activeOption.attributes("id"));
   });
 
-  it("teleports the popover when teleport is enabled", async () => {
+  it("teleports the popover to body by default", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, null, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => basicOptions.map((option) =>
+                  h(SelectOption, {
+                    value: option.value,
+                    label: option.label,
+                  }),
+                ),
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    const teleportedPopover = document.body.querySelector("[data-select-popover]");
+
+    expect(teleportedPopover).not.toBeNull();
+    expect(teleportedPopover?.getAttribute("aria-hidden")).toBe("false");
+    expect(wrapper.find("[data-select-popover]").exists()).toBe(false);
+
+    wrapper.unmount();
+    teleportedPopover?.remove();
+  });
+
+  it("renders the popover inline when teleport is false", async () => {
+    const { wrapper } = mountPrimitiveSelect();
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    expect(document.body.querySelector("[data-select-popover]")).toBeNull();
+  });
+
+  it("teleports the popover to a custom target when a selector is provided", async () => {
     const teleportTarget = document.createElement("div");
     teleportTarget.id = "v1-teleport-target";
     document.body.appendChild(teleportTarget);

@@ -31,6 +31,7 @@ export function mountAssembledSelect<
     props: {
       "options": [...basicOptions] as GenericOption[],
       "placeholder": "Pick a language",
+      "teleport": false,
       ...restProps,
       "modelValue": modelValue,
       "onUpdate:modelValue": (value: SelectModelValue<OptionValue>) => {

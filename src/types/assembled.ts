@@ -23,7 +23,7 @@ export type AssembledSelectProps<
 > = V1SelectBooleanProps & V0SelectBooleanPropAliases & {
   options: GenericOption[];
   placeholder?: string;
-  teleport?: boolean | string;
+  teleport?: boolean | string | HTMLElement;
   filterBy?: GenericFilterByFn<GenericOption>;
   getOptionValue?: OptionMapper<GenericOption, OptionValue>["getOptionValue"];
   getOptionLabel?: OptionMapper<GenericOption, OptionValue>["getOptionLabel"];

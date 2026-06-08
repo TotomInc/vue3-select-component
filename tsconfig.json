@@ -1,7 +1,8 @@
 {
   "references": [
     { "path": "./src" },
-    { "path": "./docs" }
+    { "path": "./docs" },
+    { "path": "./playground" }
   ],
   "files": []
 }

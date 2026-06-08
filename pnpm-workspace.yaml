@@ -1,6 +1,7 @@
 packages:
   - src
   - docs
+  - playground
 
 allowBuilds:
   "@parcel/watcher": false

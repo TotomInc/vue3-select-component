@@ -14,6 +14,11 @@ export type SelectValueProps = {
   placeholder?: string;
 };
 
+export type SelectInputProps = {
+  id?: string;
+  placeholder?: string;
+};
+
 export type SelectPopoverTeleportTarget = boolean | string | HTMLElement;
 
 /**

@@ -17,11 +17,10 @@ function onSearch(query: string) {
 <template>
   <DemoSection
     title="Search event"
-    description="The search event fires as the user types in searchable mode."
+    description="The search event fires as the user types in the trigger."
   >
     <Select
       v-model="value"
-      searchable
       :options="countryOptions"
       placeholder="Type to search"
       @search="onSearch"

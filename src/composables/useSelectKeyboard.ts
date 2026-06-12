@@ -14,6 +14,8 @@ export function useSelectKeyboard<OptionValue extends string | number>(params: U
 
     const isMenuOpen = context.isOpen.value;
     const hasSearchQuery = context.searchValue.value.length > 0;
+    const isSearchInputEvent = event.target instanceof HTMLInputElement
+      && event.target.dataset.selectInput != null;
 
     if (event.key === "Tab") {
       if (isMenuOpen) {
@@ -30,7 +32,7 @@ export function useSelectKeyboard<OptionValue extends string | number>(params: U
         return;
       }
 
-      if (event.code === "Space" && !hasSearchQuery) {
+      if (event.code === "Space" && !hasSearchQuery && !isSearchInputEvent) {
         event.preventDefault();
         context.open();
       }
@@ -56,7 +58,7 @@ export function useSelectKeyboard<OptionValue extends string | number>(params: U
       return;
     }
 
-    if (event.code === "Space" && !hasSearchQuery) {
+    if (event.code === "Space" && !hasSearchQuery && !isSearchInputEvent) {
       event.preventDefault();
       context.selectActiveOption();
       return;

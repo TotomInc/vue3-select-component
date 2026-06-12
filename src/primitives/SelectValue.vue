@@ -13,14 +13,22 @@ const context = injectSelectContext<OptionValue>();
 const isMultiple = computed(() => context.multiple.value);
 const selectedOptions = computed(() => context.selectedOptions.value);
 const isEmpty = computed(() => selectedOptions.value.length === 0);
+const isSearching = computed(() =>
+  context.searchable.value
+  && context.searchValue.value.length > 0,
+);
 </script>
 
 <template>
   <span
     data-select-value
     :data-empty="isEmpty"
+    :data-searching="isSearching"
   >
-    <slot :selected-options="selectedOptions">
+    <slot
+      v-if="!isSearching"
+      :selected-options="selectedOptions"
+    >
       <template v-if="isMultiple">
         <SelectTag
           v-for="option in selectedOptions"

@@ -12,11 +12,10 @@ const value = ref<string | null>(null);
 <template>
   <DemoSection
     title="Searchable"
-    description="Filter options by typing in the popover search input."
+    description="Filter options by typing directly in the trigger."
   >
     <Select
       v-model="value"
-      searchable
       :options="countryOptions"
       placeholder="Search countries"
     />

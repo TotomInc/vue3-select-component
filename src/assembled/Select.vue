@@ -3,7 +3,7 @@ import type { AssembledSelectEmits, AssembledSelectProps } from "@/types/assembl
 import type { SelectModelValue } from "@/types/model";
 import type { SelectOption as SelectOptionData } from "@/types/option";
 
-import { computed, toRef } from "vue";
+import { computed, toRef, useAttrs } from "vue";
 import {
   createGenericFilterByAdapter,
   createOptionMappers,
@@ -22,10 +22,14 @@ import SelectTrailingIcon from "@/primitives/SelectTrailingIcon.vue";
 import SelectTrigger from "@/primitives/SelectTrigger.vue";
 import SelectValue from "@/primitives/SelectValue.vue";
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, OptionValue>>(), {
   teleport: true,
   multiple: false,
-  searchable: false,
+  searchable: true,
   clearable: false,
   disabled: false,
   loading: false,
@@ -36,8 +40,35 @@ const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, Optio
 const emit = defineEmits<AssembledSelectEmits<GenericOption>>();
 
 const model = defineModel<SelectModelValue<OptionValue>>({ default: null });
+const attrs = useAttrs();
 
 const sourceOptions = toRef(() => props.options);
+const controlAttributeNames = new Set([
+  "id",
+  "name",
+  "form",
+  "required",
+  "aria-label",
+  "aria-labelledby",
+  "aria-describedby",
+  "aria-invalid",
+  "aria-required",
+]);
+
+const rootAttrs = computed(() =>
+  Object.fromEntries(
+    Object.entries(attrs).filter(([name]) => !controlAttributeNames.has(name)),
+  ),
+);
+
+const controlAttrs = computed(() =>
+  Object.fromEntries(
+    Object.entries(attrs).filter(([name]) => controlAttributeNames.has(name)),
+  ),
+);
+
+const triggerAttrs = computed(() => props.searchable ? {} : controlAttrs.value);
+const inputAttrs = computed(() => props.searchable ? controlAttrs.value : {});
 
 const optionMappers = computed(() => createOptionMappers<GenericOption, OptionValue>({
   getOptionValue: props.getOptionValue,
@@ -119,13 +150,14 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
     :hide-selected="hideSelected"
     :filter-by="adaptedFilterBy"
     data-assembled-select
+    v-bind="rootAttrs"
     @menu-opened="emit('menuOpened')"
     @menu-closed="emit('menuClosed')"
     @search="emit('search', $event)"
     @option-selected="emitSourceOptionSelected"
     @option-deselected="emitSourceOptionDeselected"
   >
-    <SelectTrigger>
+    <SelectTrigger v-bind="triggerAttrs">
       <SelectIcon v-if="$slots.icon">
         <slot name="icon" />
       </SelectIcon>
@@ -134,6 +166,7 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
           <slot name="tag-remove" v-bind="tagRemoveSlotProps" />
         </template>
       </SelectValue>
+      <SelectInput v-bind="inputAttrs" />
       <SelectTrailingIcon>
         <template v-if="$slots['trailing-icon']" #default="trailingIconSlotProps">
           <slot name="trailing-icon" v-bind="trailingIconSlotProps" />
@@ -147,7 +180,6 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
     </SelectTrigger>
 
     <SelectPopover v-bind="popoverProps">
-      <SelectInput />
       <SelectListbox>
         <SelectNoOptions>
           <template v-if="$slots['no-options']" #default="noOptionsSlotProps">

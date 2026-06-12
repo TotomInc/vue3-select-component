@@ -25,7 +25,6 @@ function getOptionValue(option: CountryRecord) {
   >
     <Select
       v-model="value"
-      searchable
       :options="countryRecords"
       :get-option-label="getOptionLabel"
       :get-option-value="getOptionValue"

@@ -24,6 +24,31 @@ describe("assembled Select", () => {
     expect(wrapper.get("[data-select-value]").text()).toBe("Select a country");
   });
 
+  it("renders trigger search by default", () => {
+    const { wrapper, getInput, getListbox } = mountAssembledSelect({ options });
+
+    expect(wrapper.get("[data-select-trigger]").attributes("role")).toBeUndefined();
+    expect(getInput().attributes("role")).toBe("combobox");
+    expect(getInput().attributes("aria-haspopup")).toBe("listbox");
+    expect(getInput().attributes("aria-controls")).toBe(getListbox().attributes("id"));
+    expect(getListbox().attributes("aria-labelledby")).toBe(getInput().attributes("id"));
+    expect(getInput().attributes("data-select-input")).toBeDefined();
+  });
+
+  it("forwards control labelling attributes to the searchable input", () => {
+    const { wrapper, getInput } = mountAssembledSelect({
+      options,
+      attrs: {
+        "id": "country-select",
+        "aria-label": "Country",
+      },
+    });
+
+    expect(wrapper.get("[data-select-root]").attributes("id")).toBeUndefined();
+    expect(getInput().attributes("id")).toBe("country-select");
+    expect(getInput().attributes("aria-label")).toBe("Country");
+  });
+
   it("teleports the menu to body by default", async () => {
     const { wrapper, getTeleportedPopoverElement, getPopoverAriaHidden } = mountAssembledSelect({
       options,
@@ -54,19 +79,21 @@ describe("assembled Select", () => {
   });
 
   it("does not open the menu when disabled", async () => {
-    const { wrapper, getPopoverAriaHidden } = mountAssembledSelect({
+    const { wrapper, getInput, getPopoverAriaHidden } = mountAssembledSelect({
       options,
       disabled: true,
     });
 
     const trigger = wrapper.get("[data-select-trigger]");
+    const input = getInput();
 
-    expect(trigger.attributes("disabled")).toBeDefined();
-    expect(trigger.attributes("aria-expanded")).toBe("false");
+    expect(trigger.attributes("aria-disabled")).toBe("true");
+    expect(input.attributes("disabled")).toBeDefined();
+    expect(input.attributes("aria-expanded")).toBe("false");
 
     await trigger.trigger("click");
 
-    expect(trigger.attributes("aria-expanded")).toBe("false");
+    expect(input.attributes("aria-expanded")).toBe("false");
     expect(getPopoverAriaHidden()).toBe("true");
   });
 
@@ -138,11 +165,10 @@ describe("assembled Select", () => {
     expect(wrapper.get("[data-select-value]").text()).toBe("Pick a language");
   });
 
-  it("emits search when typing in searchable mode", async () => {
+  it("emits search when typing in the trigger input", async () => {
     const onSearch = vi.fn();
     const { wrapper, getInput, findVisibleOptions } = mountAssembledSelect({
       options,
-      searchable: true,
       onSearch,
     });
 

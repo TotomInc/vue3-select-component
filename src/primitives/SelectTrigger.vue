@@ -8,16 +8,13 @@ const context = injectSelectContext();
 const isOpen = computed(() => context.isOpen.value);
 const isDisabled = computed(() => context.disabled.value);
 const isSearchable = computed(() => context.searchable.value);
-
-const ariaActivedescendant = computed(() => {
-  if (!isOpen.value) {
-    return undefined;
-  }
-
-  return context.activeOptionElementId.value;
-});
+const triggerTag = computed(() => isSearchable.value ? "div" : "button");
 
 function onTriggerClick() {
+  if (isDisabled.value) {
+    return;
+  }
+
   context.toggle();
 }
 
@@ -31,20 +28,20 @@ function onTriggerElement(element: Parameters<typeof resolveHTMLElement>[0]) {
 </script>
 
 <template>
-  <button
+  <component
+    :is="triggerTag"
     :id="context.triggerId"
     :ref="onTriggerElement"
-    type="button"
+    :type="isSearchable ? undefined : 'button'"
     data-select-trigger
-    :aria-expanded="isOpen"
-    aria-haspopup="listbox"
-    :aria-controls="context.listboxId"
-    :aria-activedescendant="ariaActivedescendant"
-    :role="isSearchable ? 'combobox' : undefined"
-    :disabled="isDisabled"
+    :aria-expanded="isSearchable ? undefined : isOpen"
+    :aria-haspopup="isSearchable ? undefined : 'listbox'"
+    :aria-controls="isSearchable ? undefined : context.listboxId"
+    :disabled="isSearchable ? undefined : isDisabled"
+    :aria-disabled="isSearchable ? isDisabled : undefined"
     @click="onTriggerClick"
     @keydown="onTriggerKeydown"
   >
     <slot />
-  </button>
+  </component>
 </template>

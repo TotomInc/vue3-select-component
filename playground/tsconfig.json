@@ -21,6 +21,7 @@
     "demos/**/*.vue",
     "components/**/*.vue",
     "PlaygroundLayout.vue",
+    "demo-routes.ts",
     "data/**/*.ts"
   ]
 }

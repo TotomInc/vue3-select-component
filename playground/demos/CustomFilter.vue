@@ -36,7 +36,6 @@ function filterByRegion(option: CountryRecord, _label: string, search: string) {
   >
     <Select
       v-model="value"
-      searchable
       :options="countryRecords"
       :get-option-label="getOptionLabel"
       :get-option-value="getOptionValue"

@@ -54,11 +54,13 @@ function normalizeSelectedValues<OptionValue>(
 export function useSelectState<OptionValue extends string | number>(params: UseSelectStateParams<OptionValue>) {
   const instanceId = createSelectInstanceId();
   const triggerId = `${instanceId}-trigger`;
+  const inputId = `${instanceId}-input`;
   const listboxId = `${instanceId}-listbox`;
 
   const isOpen = ref(false);
   const searchValue = ref("");
   const activeOptionValue = shallowRef<OptionValue | null>(null);
+  const inputElement = ref<HTMLInputElement | null>(null);
 
   const filteredOptions = computed(() => {
     const searchable = params.searchable.value;
@@ -121,6 +123,14 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     activeOptionValue.value = navigableOptions.value[0]?.value ?? null;
   };
 
+  const focusSearchInput = () => {
+    if (!params.searchable.value) {
+      return;
+    }
+
+    inputElement.value?.focus();
+  };
+
   const moveActiveOption = (direction: 1 | -1) => {
     const nextOption = findNextEnabledOption(
       filteredOptions.value,
@@ -139,6 +149,7 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     const wasOpen = isOpen.value;
     isOpen.value = true;
     focusFirstOption();
+    focusSearchInput();
 
     if (!wasOpen) {
       params.events?.onMenuOpened?.();
@@ -270,6 +281,10 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   const isOptionVisible = (value: OptionValue) =>
     filteredOptions.value.some((option) => option.value === value);
 
+  const registerInputElement = (element: HTMLInputElement | null) => {
+    inputElement.value = element;
+  };
+
   const {
     registerRootElement,
     registerTriggerElement,
@@ -293,6 +308,7 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     loading: params.loading,
     activeOptionValue: activeOptionValue as Ref<OptionValue | null>,
     triggerId,
+    inputId,
     listboxId,
     activeOptionElementId,
     allOptions: params.collection.allOptions,
@@ -315,9 +331,11 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     handleKeydown: () => {},
     registerRootElement,
     registerTriggerElement,
+    registerInputElement,
     registerPopoverElement,
     rootElement,
     triggerElement,
+    inputElement,
     popoverElement,
   };
 

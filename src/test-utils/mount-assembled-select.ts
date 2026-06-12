@@ -17,6 +17,7 @@ export type MountAssembledSelectOptions<
   GenericOption = SelectOption<OptionValue>,
 > = Partial<AssembledSelectProps<GenericOption, OptionValue>> & {
   modelValue?: SelectModelValue<OptionValue>;
+  attrs?: Record<string, unknown>;
   onSearch?: (value: string) => void;
   onMenuOpened?: () => void;
   onMenuClosed?: () => void;
@@ -29,7 +30,7 @@ export function mountAssembledSelect<
   OptionValue extends string | number = string,
   GenericOption = SelectOption<OptionValue>,
 >(props: MountAssembledSelectOptions<OptionValue, GenericOption> = {}) {
-  const { modelValue = null, slots, ...restProps } = props;
+  const { modelValue = null, attrs, slots, ...restProps } = props;
   const model = ref<SelectModelValue<OptionValue>>(modelValue);
 
   const wrapper = mount(Select<OptionValue, GenericOption>, {
@@ -43,6 +44,7 @@ export function mountAssembledSelect<
         wrapper.setProps({ modelValue: value });
       },
     },
+    attrs,
     slots,
   });
 

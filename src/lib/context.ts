@@ -15,6 +15,7 @@ export type SelectContext<OptionValue = string> = {
   loading: Ref<boolean>;
   activeOptionValue: Ref<OptionValue | null>;
   triggerId: string;
+  inputId: string;
   listboxId: string;
   activeOptionElementId: ComputedRef<string | undefined>;
   allOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
@@ -37,9 +38,11 @@ export type SelectContext<OptionValue = string> = {
   handleKeydown: (event: KeyboardEvent) => void;
   registerRootElement: (element: HTMLElement | null) => void;
   registerTriggerElement: (element: HTMLElement | null) => void;
+  registerInputElement: (element: HTMLInputElement | null) => void;
   registerPopoverElement: (element: HTMLElement | null) => void;
   rootElement: Ref<HTMLElement | null>;
   triggerElement: Ref<HTMLElement | null>;
+  inputElement: Ref<HTMLInputElement | null>;
   popoverElement: Ref<HTMLElement | null>;
 };
 

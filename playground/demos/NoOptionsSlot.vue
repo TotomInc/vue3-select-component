@@ -16,7 +16,6 @@ const value = ref<string | null>(null);
   >
     <Select
       v-model="value"
-      searchable
       :options="countryOptions"
       placeholder="Search countries"
     >

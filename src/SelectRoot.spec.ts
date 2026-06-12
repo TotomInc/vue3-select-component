@@ -273,6 +273,42 @@ describe("v1 SelectRoot core module", () => {
     expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
   });
 
+  it("moves one option per arrow key press from the search input", async () => {
+    const { wrapper } = mountPrimitiveSelect({
+      searchable: true,
+      selectOptions: [
+        { label: "Alpha", value: "alpha" },
+        { label: "Beta", value: "beta" },
+        { label: "Gamma", value: "gamma" },
+      ],
+    });
+
+    await wrapper.get("[data-select-input]").trigger("focus");
+    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowDown" });
+
+    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("beta");
+
+    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowUp" });
+
+    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("alpha");
+  });
+
+  it("wraps upward from the first option to the last option from the search input", async () => {
+    const { wrapper } = mountPrimitiveSelect({
+      searchable: true,
+      selectOptions: [
+        { label: "Alpha", value: "alpha" },
+        { label: "Beta", value: "beta" },
+        { label: "Gamma", value: "gamma" },
+      ],
+    });
+
+    await wrapper.get("[data-select-input]").trigger("focus");
+    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowUp" });
+
+    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("gamma");
+  });
+
   it("filters options and keeps the active option in the filtered set", async () => {
     const { wrapper } = mountPrimitiveSelect({ searchable: true });
 
@@ -311,11 +347,13 @@ describe("v1 SelectRoot core module", () => {
       slots: {
         default: () => [
           h(SelectTrigger, null, {
-            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+            default: () => [
+              h(SelectValue, { placeholder: "Pick a language" }),
+              h(SelectInput),
+            ],
           }),
           h(SelectPopover, { teleport: false }, {
             default: () => [
-              h(SelectInput),
               h(SelectListbox, null, {
                 default: () => [
                   h(SelectNoOptions, null, {
@@ -357,11 +395,13 @@ describe("v1 SelectRoot core module", () => {
       slots: {
         default: () => [
           h(SelectTrigger, null, {
-            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+            default: () => [
+              h(SelectValue, { placeholder: "Pick a language" }),
+              h(SelectInput),
+            ],
           }),
           h(SelectPopover, { teleport: false }, {
             default: () => [
-              h(SelectInput),
               h(SelectListbox, null, {
                 default: () => [
                   h(SelectNoOptions),
@@ -617,17 +657,20 @@ describe("v1 primitive composition", () => {
     expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
   });
 
-  it("wires trigger and listbox ids for aria-activedescendant", async () => {
-    const { wrapper } = mountPrimitiveSelect();
+  it("wires the searchable input and listbox ids for aria-activedescendant", async () => {
+    const { wrapper } = mountPrimitiveSelect({ searchable: true });
 
     await wrapper.get("[data-select-trigger]").trigger("click");
     await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
 
-    const trigger = wrapper.get("[data-select-trigger]");
+    const input = wrapper.get("[data-select-input]");
+    const listbox = wrapper.get("[data-select-listbox]");
     const activeOption = wrapper.get("[data-select-option][data-active='true']");
 
-    expect(trigger.attributes("aria-controls")).toBe(wrapper.get("[data-select-listbox]").attributes("id"));
-    expect(trigger.attributes("aria-activedescendant")).toBe(activeOption.attributes("id"));
+    expect(input.attributes("role")).toBe("combobox");
+    expect(input.attributes("aria-controls")).toBe(listbox.attributes("id"));
+    expect(input.attributes("aria-activedescendant")).toBe(activeOption.attributes("id"));
+    expect(listbox.attributes("aria-labelledby")).toBe(input.attributes("id"));
   });
 
   it("teleports the popover to body by default", async () => {

@@ -47,7 +47,6 @@ function onOptionDeselected(option: (typeof countryOptions)[number] | null) {
     <Select
       v-model="value"
       clearable
-      searchable
       :options="countryOptions"
       placeholder="Interact to log events"
       @menu-opened="onMenuOpened"

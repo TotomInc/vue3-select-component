@@ -68,13 +68,13 @@ export function mountPrimitiveSelect(props: MountPrimitiveSelectOptions = {}) {
         h(SelectTrigger, null, {
           default: () => [
             h(SelectValue, { placeholder: props.placeholder ?? "Pick a language" }),
+            h(SelectInput),
             h(SelectTrailingIcon),
             h(SelectClear),
           ],
         }),
         h(SelectPopover, { teleport: false }, {
           default: () => [
-            h(SelectInput),
             h(SelectListbox, null, {
               default: () => [
                 h(SelectNoOptions),

@@ -127,13 +127,13 @@ For important related links, use frontmatter `links` array:
 ```yaml
 ---
 links:
-  - label: "API Reference"
-    icon: "i-lucide-book"
-    to: "/api/reference"
-  - label: "GitHub Repository"
-    icon: "i-simple-icons-github"
+  - label: API Reference
+    icon: i-lucide-book
+    to: /api/reference
+  - label: GitHub Repository
+    icon: i-simple-icons-github
     to: "https://github.com/..."
-    target: "_blank"
+    target: _blank
 ---
 ```
 

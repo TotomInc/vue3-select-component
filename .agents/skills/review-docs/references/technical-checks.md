@@ -23,7 +23,7 @@ title: Page Title
 description: Page description
 navigation:
   icon: i-lucide-icon-name
-  title: Custom Sidebar Label  # Optional override
+  title: Custom Sidebar Label # Optional override
 seo:
   title: SEO-Optimized Title
   description: SEO-Optimized Description
@@ -88,7 +88,7 @@ title: My Page
 ```yaml
 ---
 navigation:
-  icon: lucide-house  # ERROR: must start with 'i-'
+  icon: lucide-house # ERROR: must start with 'i-'
 ---
 ```
 
@@ -96,7 +96,7 @@ navigation:
 ```yaml
 ---
 links:
-  - "https://example.com"  # ERROR: must be object with label and to
+  - "https://example.com" # ERROR: must be object with label and to
 ---
 ```
 
@@ -374,7 +374,6 @@ Use `::code-preview` to show rendered output alongside source code. This is idea
 **When NOT to use `::code-preview`:**
 - API/TypeScript code examples (no visual preview)
 - Component examples with unregistered custom components
-
 
 ## File and Directory Naming
 

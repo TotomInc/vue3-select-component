@@ -276,7 +276,7 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     registerPopoverElement,
     rootElement,
     triggerElement,
-    popoverElement
+    popoverElement,
   } = useSelectDismiss({
     isOpen,
     close,

@@ -11,6 +11,7 @@ export default antfu({
     "docs/content",
     "pnpm-workspace.yaml",
     "src/dist",
+    ".agents/*",
   ],
 
   stylistic: {

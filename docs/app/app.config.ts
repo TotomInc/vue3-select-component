@@ -13,4 +13,4 @@ export default defineAppConfig({
   socials: {
     x: "https://x.com/tcaweb",
   },
-})
+});

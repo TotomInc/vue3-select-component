@@ -139,7 +139,7 @@ export default defineNuxtConfig({})
 ```
 
 ```ts [app.config.ts]
-export default defineAppConfig({})
+export default defineAppConfig({});
 ```
 ::
 ```

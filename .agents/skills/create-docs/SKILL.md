@@ -180,15 +180,15 @@ Check if project needs multi-language docs:
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/i18n'],
+  modules: ["@nuxtjs/i18n"],
   i18n: {
     locales: [
-      { code: 'en', language: 'en-US', name: 'English' },
-      { code: 'fr', language: 'fr-FR', name: 'Français' }
+      { code: "en", language: "en-US", name: "English" },
+      { code: "fr", language: "fr-FR", name: "Français" }
     ],
-    defaultLocale: 'en'
+    defaultLocale: "en"
   }
-})
+});
 ```
 
 ### Create .gitignore
@@ -209,8 +209,8 @@ dist
 
 ```yaml [pnpm-workspace.yaml]
 packages:
-  - 'apps/*'
-  - 'docs'
+  - "apps/*"
+  - docs
 
 onlyBuiltDependencies:
   - better-sqlite3
@@ -317,14 +317,14 @@ This documentation includes AI integration with MCP server and automatic `llms.t
 ```ts [app/app.config.ts]
 export default defineAppConfig({
   docus: {
-    name: '[Project Name]',
-    description: '[Project description]',
-    url: 'https://[docs-url]',
+    name: "[Project Name]",
+    description: "[Project description]",
+    url: "https://[docs-url]",
     socials: {
-      github: '[org]/[repo]'
+      github: "[org]/[repo]"
     }
   }
-})
+});
 ```
 
 ### Optional: Theme Customization
@@ -358,27 +358,27 @@ Create `app/assets/css/main.css`:
 ```ts [app/app.config.ts]
 export default defineAppConfig({
   docus: {
-    name: '[Project Name]',
-    description: '[Project description]',
-    url: 'https://[docs-url]',
+    name: "[Project Name]",
+    description: "[Project description]",
+    url: "https://[docs-url]",
     socials: {
-      github: '[org]/[repo]',
-      x: '@[handle]'
+      github: "[org]/[repo]",
+      x: "@[handle]"
     }
   },
   // Customize UI components
   ui: {
     colors: {
-      primary: 'emerald',
-      neutral: 'zinc',
+      primary: "emerald",
+      neutral: "zinc",
     },
     pageHero: {
       slots: {
-        title: 'font-semibold sm:text-6xl'
+        title: "font-semibold sm:text-6xl"
       }
     }
   }
-})
+});
 ```
 
 ---

@@ -72,7 +72,7 @@ export function createAssembledSelectHelpers(wrapper: VueWrapper) {
     findOptions: () => wrapper.findAllComponents(SelectOption),
     findVisibleOptions: () => wrapper
       .findAllComponents(SelectOption)
-      .filter(option => option.isVisible()),
+      .filter((option) => option.isVisible()),
     findRenderedOptionElements: () => findRenderedOptionElements(wrapper),
     getPopoverAriaHidden: () => getPopoverAriaHidden(wrapper),
     getTeleportedPopoverElement,

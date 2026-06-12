@@ -76,7 +76,7 @@ Always add file path labels to code blocks:
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   // ...
-})
+});
 ```
 
 ### Multi-Package Manager Examples

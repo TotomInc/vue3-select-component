@@ -7,6 +7,8 @@ const libStyles = fileURLToPath(new URL("../src/styles.css", import.meta.url));
 export default defineNuxtConfig({
   extends: ["docus"],
 
+  modules: ['@vercel/analytics'],
+
   runtimeConfig: {
     public: {
       packageVersion: libPackage.version,

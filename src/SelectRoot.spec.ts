@@ -350,7 +350,7 @@ describe("v1 primitive composition", () => {
 
     const indicator = wrapper.get("[data-select-indicator]");
 
-    expect(indicator.get("svg").exists()).toBe(true);
+    expect(indicator.find("svg").exists()).toBe(true);
     expect(indicator.attributes("data-open")).toBe("false");
 
     await wrapper.get("[data-select-trigger]").trigger("click");
@@ -380,7 +380,7 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    expect(wrapper.get("[data-select-tag-remove] svg").exists()).toBe(true);
+    expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(true);
   });
 
   it("defaults closeOnSelect to null for auto mode behavior", () => {

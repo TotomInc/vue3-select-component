@@ -60,7 +60,7 @@ describe("v1 assembled Select", () => {
 
     expect(model.value).toEqual(["js", "ts"]);
     expect(wrapper.findAll("[data-select-tag]")).toHaveLength(2);
-    expect(wrapper.get("[data-select-tag-remove] svg").exists()).toBe(true);
+    expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(true);
   });
 
   it("closes the menu after single selection by default", async () => {
@@ -150,7 +150,7 @@ describe("v1 assembled Select", () => {
 
     const indicator = wrapper.get("[data-select-indicator]");
 
-    expect(indicator.get("svg").exists()).toBe(true);
+    expect(indicator.find("svg").exists()).toBe(true);
     expect(indicator.attributes("data-open")).toBe("false");
 
     await wrapper.get("[data-select-trigger]").trigger("click");

@@ -350,6 +350,24 @@ describe("assembled Select", () => {
     expect(noOptions?.textContent).toBe("Nothing for \"zzzz\"");
   });
 
+  it("removes a selected value when clicking a tag remove button in searchable multi mode", async () => {
+    const { wrapper, model } = mountAssembledSelect({
+      options,
+      multiple: true,
+      searchable: true,
+      modelValue: ["FR", "GB"],
+    });
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.findAll("[data-select-tag]")).toHaveLength(2);
+
+    await wrapper.get("[data-select-tag-remove]").trigger("click");
+
+    expect(model.value).toEqual(["GB"]);
+    expect(wrapper.findAll("[data-select-tag]")).toHaveLength(1);
+  });
+
   it("renders a custom tag remove icon from the tag-remove slot", () => {
     const { wrapper } = mountAssembledSelect({
       options,

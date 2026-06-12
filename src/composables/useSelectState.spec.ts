@@ -230,6 +230,34 @@ describe("useSelectState", () => {
     });
   });
 
+  it("filters selected options when hideSelected is enabled in multi-select mode", () => {
+    runInScope(() => {
+      const modelValue = ref<string[]>(["js"]);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(true),
+        disabled: ref(false),
+        searchable: ref(false),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(false),
+        hideSelected: ref(true),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      expect(context.filteredOptions.value.map((option) => option.value)).toEqual(["ts"]);
+    });
+  });
+
   it("emits lifecycle and selection events", () => {
     runInScope(() => {
       const modelValue = ref<string | null>(null);

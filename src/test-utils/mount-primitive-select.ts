@@ -38,6 +38,7 @@ export type MountPrimitiveSelectOptions = {
   searchable?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  hideSelected?: boolean;
   usePropOptions?: boolean;
   selectOptions?: readonly PrimitiveSelectOption[];
   placeholder?: string;
@@ -55,6 +56,7 @@ export function mountPrimitiveSelect(props: MountPrimitiveSelectOptions = {}) {
       "searchable": props.searchable ?? false,
       "disabled": props.disabled ?? false,
       "loading": props.loading ?? false,
+      "hideSelected": props.hideSelected ?? false,
       "options": props.usePropOptions ? [...selectOptions] : [],
       "onUpdate:modelValue": (value: SelectModelValue<string>) => {
         model.value = value;

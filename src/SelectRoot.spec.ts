@@ -183,6 +183,32 @@ describe("v1 SelectRoot core module", () => {
     expect(model.value).toEqual(["ts"]);
   });
 
+  it("shows a checkmark on selected options in multi-select mode", async () => {
+    const { wrapper } = mountPrimitiveSelect({ multiple: true });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+
+    const selectedOption = wrapper.get("[data-select-option][data-value='js']");
+    const unselectedOption = wrapper.get("[data-select-option][data-value='ts']");
+
+    expect(selectedOption.find("[data-select-option-checkmark] svg").exists()).toBe(true);
+    expect(unselectedOption.find("[data-select-option-checkmark]").exists()).toBe(false);
+  });
+
+  it("hides selected options from the dropdown when hideSelected is enabled", async () => {
+    const { wrapper } = mountPrimitiveSelect({
+      multiple: true,
+      hideSelected: true,
+      modelValue: ["js"],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    expect(wrapper.find("[data-select-option][data-value='js']").exists()).toBe(false);
+    expect(wrapper.find("[data-select-option][data-value='ts']").exists()).toBe(true);
+  });
+
   it("navigates with arrow keys and skips disabled options", async () => {
     const { wrapper } = mountPrimitiveSelect({ selectOptions: optionsWithDisabled });
 

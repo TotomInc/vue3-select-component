@@ -29,6 +29,7 @@ type UseSelectStateParams<OptionValue extends string | number> = {
   clearable: Ref<boolean>;
   loading: Ref<boolean>;
   closeOnSelect?: Ref<boolean | null | undefined>;
+  hideSelected?: Ref<boolean>;
   propOptions: Ref<readonly SelectOption<OptionValue>[]>;
   filterBy: Ref<FilterByFn<OptionValue>>;
   collection: ReturnType<typeof useSelectCollection<OptionValue>>;
@@ -64,7 +65,16 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     const search = searchable ? searchValue.value : "";
     const filterBy = params.filterBy.value ?? defaultSelectFilterBy;
 
-    return filterOptions(params.collection.allOptions.value, search, filterBy);
+    let options = filterOptions(params.collection.allOptions.value, search, filterBy);
+
+    if (params.hideSelected?.value && params.multiple.value) {
+      const selectedValues = normalizeSelectedValues(params.modelValue.value, true);
+      const selectedSet = new Set(selectedValues);
+
+      options = options.filter((option) => !selectedSet.has(option.value));
+    }
+
+    return options;
   });
 
   const navigableOptions = computed(() => getEnabledOptions(filteredOptions.value));

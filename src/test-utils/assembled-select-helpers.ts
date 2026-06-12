@@ -35,6 +35,32 @@ export function cleanupTeleportedSelectContent() {
 }
 
 /**
+ * Returns the popover element whether it is rendered inline or teleported.
+ */
+export function getPopoverElement(wrapper: VueWrapper) {
+  const inlinePopover = wrapper.find("[data-select-popover]");
+
+  if (inlinePopover.exists()) {
+    return inlinePopover.element;
+  }
+
+  return getTeleportedPopoverElement();
+}
+
+/**
+ * Returns rendered option elements from the open popover.
+ */
+export function findRenderedOptionElements(wrapper: VueWrapper) {
+  const popover = getPopoverElement(wrapper);
+
+  if (!popover) {
+    return [];
+  }
+
+  return Array.from(popover.querySelectorAll<HTMLElement>("[data-select-option]"));
+}
+
+/**
  * Helpers for interacting with assembled Select content teleported outside the wrapper.
  * Vue Test Utils can still resolve child components through the virtual DOM.
  */
@@ -47,6 +73,7 @@ export function createAssembledSelectHelpers(wrapper: VueWrapper) {
     findVisibleOptions: () => wrapper
       .findAllComponents(SelectOption)
       .filter(option => option.isVisible()),
+    findRenderedOptionElements: () => findRenderedOptionElements(wrapper),
     getPopoverAriaHidden: () => getPopoverAriaHidden(wrapper),
     getTeleportedPopoverElement,
     async openMenu() {

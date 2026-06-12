@@ -202,6 +202,57 @@ describe("assembled Select", () => {
     expect(wrapper.get("[data-select-indicator]").attributes("data-loading")).toBe("true");
   });
 
+  it("shows a checkmark on selected options in multi-select mode", async () => {
+    const { wrapper, findRenderedOptionElements } = mountAssembledSelect({
+      options,
+      multiple: true,
+      modelValue: ["FR"],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    const selectedOption = findRenderedOptionElements().find(
+      option => option.dataset.value === "FR",
+    );
+    const unselectedOption = findRenderedOptionElements().find(
+      option => option.dataset.value === "GB",
+    );
+
+    expect(selectedOption?.querySelector("[data-select-option-checkmark] svg")).not.toBeNull();
+    expect(unselectedOption?.querySelector("[data-select-option-checkmark]")).toBeNull();
+  });
+
+  it("hides selected options from the dropdown when hideSelected is enabled", async () => {
+    const { wrapper, findRenderedOptionElements } = mountAssembledSelect({
+      options,
+      multiple: true,
+      hideSelected: true,
+      modelValue: ["FR"],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    const visibleValues = findRenderedOptionElements().map(option => option.dataset.value);
+
+    expect(visibleValues).not.toContain("FR");
+    expect(visibleValues).toContain("GB");
+  });
+
+  it("keeps selected options visible in the dropdown by default", async () => {
+    const { wrapper, findRenderedOptionElements } = mountAssembledSelect({
+      options,
+      multiple: true,
+      modelValue: ["FR"],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    const visibleValues = findRenderedOptionElements().map(option => option.dataset.value);
+
+    expect(visibleValues).toContain("FR");
+    expect(visibleValues).toContain("GB");
+  });
+
   it("forwards popover props to SelectPopover", () => {
     const { getPopoverComponent } = mountAssembledSelect({
       options,

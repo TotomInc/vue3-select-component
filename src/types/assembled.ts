@@ -14,6 +14,7 @@ export type AssembledSelectBehaviorProps<
   options: GenericOption[];
   placeholder?: string;
   closeOnSelect?: boolean | null;
+  hideSelected?: boolean;
   filterBy?: GenericFilterByFn<GenericOption>;
   getOptionValue?: OptionMapper<GenericOption, OptionValue>["getOptionValue"];
   getOptionLabel?: OptionMapper<GenericOption, OptionValue>["getOptionLabel"];

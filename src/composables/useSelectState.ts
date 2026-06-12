@@ -264,6 +264,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     registerRootElement,
     registerTriggerElement,
     registerPopoverElement,
+    rootElement,
+    triggerElement,
+    popoverElement
   } = useSelectDismiss({
     isOpen,
     close,
@@ -303,6 +306,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     registerRootElement,
     registerTriggerElement,
     registerPopoverElement,
+    rootElement,
+    triggerElement,
+    popoverElement,
   };
 
   const { handleKeydown } = useSelectKeyboard({ context });

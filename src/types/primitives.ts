@@ -1,3 +1,5 @@
+import type { PopoverContentProps } from "reka-ui";
+
 export type SelectOptionProps<OptionValue = string> = {
   value: OptionValue;
   label: string;
@@ -10,7 +12,25 @@ export type SelectValueProps = {
 
 export type SelectPopoverTeleportTarget = boolean | string | HTMLElement;
 
-export type SelectPopoverProps = {
+type SelectPopoverPositionProps = Pick<
+  PopoverContentProps,
+  | "side"
+  | "sideOffset"
+  | "sideFlip"
+  | "align"
+  | "alignOffset"
+  | "alignFlip"
+  | "avoidCollisions"
+  | "collisionBoundary"
+  | "collisionPadding"
+  | "positionStrategy"
+  | "updatePositionStrategy"
+  | "sticky"
+  | "hideWhenDetached"
+  | "prioritizePosition"
+>;
+
+export type SelectPopoverProps = SelectPopoverPositionProps & {
   /**
    * Teleport the popover out of the component DOM tree.
    * `true` (default) teleports to `body`. Pass a CSS selector or `HTMLElement` for a custom target.

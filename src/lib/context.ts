@@ -38,6 +38,9 @@ export type SelectContext<OptionValue = string> = {
   registerRootElement: (element: HTMLElement | null) => void;
   registerTriggerElement: (element: HTMLElement | null) => void;
   registerPopoverElement: (element: HTMLElement | null) => void;
+  rootElement: Ref<HTMLElement | null>;
+  triggerElement: Ref<HTMLElement | null>;
+  popoverElement: Ref<HTMLElement | null>;
 };
 
 const SELECT_CONTEXT_KEY: InjectionKey<SelectContext<unknown>> = Symbol("select-context");

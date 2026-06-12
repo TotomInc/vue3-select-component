@@ -114,6 +114,19 @@ describe("v1 SelectRoot foundation", () => {
     expect(wrapper.findAll("[data-select-option]")).toHaveLength(2);
   });
 
+  it("closes the menu when clicking the trigger again without reopening", async () => {
+    const { wrapper } = mountPrimitiveSelect();
+    const trigger = wrapper.get("[data-select-trigger]");
+
+    await trigger.trigger("click");
+    expect(trigger.attributes("aria-expanded")).toBe("true");
+
+    await trigger.trigger("click");
+
+    expect(trigger.attributes("aria-expanded")).toBe("false");
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+  });
+
   it("updates v-model on single selection and closes the menu", async () => {
     const { wrapper, model } = mountPrimitiveSelect();
 

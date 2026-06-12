@@ -23,6 +23,7 @@ import SelectValue from "@/primitives/SelectValue.vue";
 import { resolveAssembledBooleanProps } from "@/types/assembled";
 
 const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, OptionValue>>(), {
+  teleport: true,
   multiple: undefined,
   searchable: undefined,
   clearable: undefined,

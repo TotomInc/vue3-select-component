@@ -39,6 +39,9 @@ function createKeyboardContext(overrides: Partial<SelectContext<string>> = {}): 
     registerRootElement: vi.fn(),
     registerTriggerElement: vi.fn(),
     registerPopoverElement: vi.fn(),
+    rootElement: ref(null),
+    triggerElement: ref(null),
+    popoverElement: ref(null),
     ...overrides,
   };
 }

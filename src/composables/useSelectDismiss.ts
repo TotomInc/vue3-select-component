@@ -97,5 +97,8 @@ export function useSelectDismiss(params: UseSelectDismissParams) {
     registerRootElement,
     registerTriggerElement,
     registerPopoverElement,
+    rootElement,
+    triggerElement,
+    popoverElement,
   };
 }

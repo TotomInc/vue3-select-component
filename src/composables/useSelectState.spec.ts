@@ -299,6 +299,10 @@ describe("useSelectState", () => {
       context.searchValue.value = "type";
       expect(onSearch).toHaveBeenCalledWith("type");
 
+      onSearch.mockClear();
+      context.searchValue.value = "";
+      expect(onSearch).toHaveBeenCalledWith("");
+
       context.select("ts");
       expect(onOptionSelected).toHaveBeenCalledWith("ts");
       expect(onMenuClosed).toHaveBeenCalledTimes(1);

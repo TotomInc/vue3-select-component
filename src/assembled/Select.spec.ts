@@ -179,6 +179,22 @@ describe("assembled Select", () => {
     expect(findVisibleOptions()).toHaveLength(1);
   });
 
+  it("emits search when deleting the last letter", async () => {
+    const onSearch = vi.fn();
+    const { wrapper, getInput } = mountAssembledSelect({
+      options,
+      onSearch,
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    const input = getInput().get("input");
+    await input.setValue("U");
+    onSearch.mockClear();
+    await input.setValue("");
+
+    expect(onSearch).toHaveBeenCalledWith("");
+  });
+
   it("emits optionDeselected when clearing a single selection", async () => {
     const onOptionDeselected = vi.fn();
     const { wrapper } = mountAssembledSelect({

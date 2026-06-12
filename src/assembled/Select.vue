@@ -53,6 +53,25 @@ const adaptedFilterBy = computed(() =>
   ),
 );
 
+const popoverProps = computed(() => {
+  const {
+    multiple: _multiple,
+    searchable: _searchable,
+    clearable: _clearable,
+    disabled: _disabled,
+    loading: _loading,
+    options: _options,
+    placeholder: _placeholder,
+    closeOnSelect: _closeOnSelect,
+    filterBy: _filterBy,
+    getOptionValue: _getOptionValue,
+    getOptionLabel: _getOptionLabel,
+    ...rest
+  } = props;
+
+  return rest;
+});
+
 function emitSourceOptionSelected(value: OptionValue) {
   const sourceOption = findSourceOptionByValue(
     sourceOptions.value,
@@ -107,7 +126,7 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
       <SelectClear />
     </SelectTrigger>
 
-    <SelectPopover :teleport="teleport">
+    <SelectPopover v-bind="popoverProps">
       <SelectInput />
       <SelectListbox>
         <SelectNoOptions />

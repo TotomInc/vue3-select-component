@@ -598,6 +598,52 @@ describe("v1 primitive composition", () => {
     teleportTarget.remove();
   });
 
+  it("forwards reka-ui popover content props to SelectPopover", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, {
+            teleport: false,
+            side: "top",
+            align: "end",
+            sideOffset: 12,
+            modal: true,
+          }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => basicOptions.map((option) =>
+                  h(SelectOption, {
+                    value: option.value,
+                    label: option.label,
+                  }),
+                ),
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    const popover = wrapper.getComponent(SelectPopover);
+
+    expect(popover.props("side")).toBe("top");
+    expect(popover.props("align")).toBe("end");
+    expect(popover.props("sideOffset")).toBe(12);
+    expect(popover.props("modal")).toBe(true);
+  });
+
   it("renders a standalone SelectTag when composed manually", async () => {
     const model = ref<SelectModelValue<string>>(["js"]);
 

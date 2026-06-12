@@ -52,13 +52,27 @@ const teleportTarget = computed(() => {
   return "body";
 });
 
+const rootProps = computed(() => {
+  const { modal } = props;
+
+  return { modal };
+});
+
+const portalProps = computed(() => {
+  const { defer } = props;
+
+  return { defer };
+});
+
 const contentProps = computed(() => {
-  const { teleport: _teleport, ...rest } = props;
+  const { teleport: _teleport, modal: _modal, defer: _defer, ...rest } = props;
 
   return rest;
 });
 
-const forwarded = useForwardPropsEmits(contentProps, emits);
+const forwardedRootProps = useForwardPropsEmits(rootProps);
+const forwardedPortalProps = useForwardPropsEmits(portalProps);
+const forwardedContentProps = useForwardPropsEmits(contentProps, emits);
 
 function onOpenChange(open: boolean) {
   if (open) {
@@ -77,6 +91,7 @@ function onPopoverElement(element: Parameters<typeof resolveHTMLElement>[0]) {
 <template>
   <PopoverRoot
     :open="isOpen"
+    v-bind="forwardedRootProps"
     @update:open="onOpenChange"
   >
     <SelectPopoverTriggerSync />
@@ -84,10 +99,11 @@ function onPopoverElement(element: Parameters<typeof resolveHTMLElement>[0]) {
     <PopoverPortal
       :to="teleportTarget"
       :disabled="!isTeleportEnabled"
+      v-bind="forwardedPortalProps"
       force-mount
     >
       <PopoverContent
-        v-bind="{ ...forwarded, ...$attrs }"
+        v-bind="{ ...forwardedContentProps, ...$attrs }"
         force-mount
         as-child
         @open-auto-focus.prevent

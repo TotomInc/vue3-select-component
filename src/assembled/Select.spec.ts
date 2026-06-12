@@ -201,4 +201,22 @@ describe("assembled Select", () => {
 
     expect(wrapper.get("[data-select-indicator]").attributes("data-loading")).toBe("true");
   });
+
+  it("forwards popover props to SelectPopover", () => {
+    const { getPopoverComponent } = mountAssembledSelect({
+      options,
+      teleport: false,
+      side: "top",
+      align: "end",
+      sideOffset: 10,
+      modal: true,
+    });
+
+    const popover = getPopoverComponent();
+
+    expect(popover.props("side")).toBe("top");
+    expect(popover.props("align")).toBe("end");
+    expect(popover.props("sideOffset")).toBe(10);
+    expect(popover.props("modal")).toBe(true);
+  });
 });

@@ -66,7 +66,8 @@
   --vs-multi-value-label-line-height: var(--vs-multi-value-line-height);
   --vs-multi-value-label-text-color: var(--vs-multi-value-text-color);
 
-  --vs-multi-value-delete-padding: 0 3px;
+  --vs-multi-value-tag-gap: 4px;
+  --vs-multi-value-delete-size: 16px;
   --vs-multi-value-delete-hover-background-color: #ff6467;
   --vs-multi-value-xmark-size: 16px;
   --vs-multi-value-xmark-cursor: pointer;
@@ -301,6 +302,7 @@
   z-index: 2;
   display: inline-flex;
   align-items: center;
+  gap: var(--vs-multi-value-tag-gap);
   min-width: 0;
   margin: var(--vs-multi-value-margin);
   pointer-events: auto;
@@ -316,9 +318,13 @@
 
 [data-assembled-select] [data-select-tag-remove] {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
+  justify-content: center;
+  width: var(--vs-multi-value-delete-size);
+  height: var(--vs-multi-value-delete-size);
   margin: 0;
-  padding: var(--vs-multi-value-delete-padding);
+  padding: 0;
   border: none;
   border-radius: var(--vs-multi-value-border-radius);
   color: inherit;

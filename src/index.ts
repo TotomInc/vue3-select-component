@@ -17,4 +17,10 @@ export {
 export type { AssembledSelectEmits, AssembledSelectProps } from "./types/assembled";
 export type { SelectModelValue } from "./types/model";
 export type { SelectOption as SelectOptionData } from "./types/option";
+export type {
+  SelectPopoverContentProps,
+  SelectPopoverPortalProps,
+  SelectPopoverProps,
+  SelectPopoverRootProps,
+} from "./types/primitives";
 export type { SelectRootEmits, SelectRootProps } from "./types/root";

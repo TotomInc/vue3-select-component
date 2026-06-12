@@ -1,7 +1,8 @@
 import type { GenericFilterByFn, OptionMapper } from "../lib/normalize-options";
 import type { SelectOption } from "./option";
+import type { SelectPopoverProps } from "./primitives";
 
-export type AssembledSelectProps<
+export type AssembledSelectBehaviorProps<
   GenericOption = SelectOption<string>,
   OptionValue extends string | number = string,
 > = {
@@ -12,12 +13,16 @@ export type AssembledSelectProps<
   loading?: boolean;
   options: GenericOption[];
   placeholder?: string;
-  teleport?: boolean | string | HTMLElement;
   closeOnSelect?: boolean | null;
   filterBy?: GenericFilterByFn<GenericOption>;
   getOptionValue?: OptionMapper<GenericOption, OptionValue>["getOptionValue"];
   getOptionLabel?: OptionMapper<GenericOption, OptionValue>["getOptionLabel"];
 };
+
+export type AssembledSelectProps<
+  GenericOption = SelectOption<string>,
+  OptionValue extends string | number = string,
+> = AssembledSelectBehaviorProps<GenericOption, OptionValue> & SelectPopoverProps;
 
 export type AssembledSelectEmits<GenericOption> = {
   optionSelected: [option: GenericOption];

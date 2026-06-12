@@ -4,6 +4,8 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { ref } from "vue";
 
+import SelectPopover from "@/primitives/SelectPopover.vue";
+
 import Select from "./Select.vue";
 
 const options = [
@@ -105,5 +107,25 @@ describe("v1 assembled Select", () => {
     await wrapper.get("[data-select-trigger]").trigger("click");
 
     expect(indicator.attributes("data-open")).toBe("true");
+  });
+
+  it("forwards popover props to SelectPopover", () => {
+    const wrapper = mount(Select<string, (typeof options)[number]>, {
+      props: {
+        options: [...options],
+        teleport: false,
+        side: "top",
+        align: "end",
+        sideOffset: 10,
+        modal: true,
+      },
+    });
+
+    const popover = wrapper.getComponent(SelectPopover);
+
+    expect(popover.props("side")).toBe("top");
+    expect(popover.props("align")).toBe("end");
+    expect(popover.props("sideOffset")).toBe(10);
+    expect(popover.props("modal")).toBe(true);
   });
 });

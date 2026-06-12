@@ -1,4 +1,8 @@
-import type { PopoverContentProps } from "reka-ui";
+import type {
+  PopoverContentProps,
+  PopoverPortalProps,
+  PopoverRootProps,
+} from "reka-ui";
 
 export type SelectOptionProps<OptionValue = string> = {
   value: OptionValue;
@@ -12,29 +16,34 @@ export type SelectValueProps = {
 
 export type SelectPopoverTeleportTarget = boolean | string | HTMLElement;
 
-type SelectPopoverPositionProps = Pick<
+/**
+ * Props forwarded to reka-ui `PopoverContent`.
+ * Open state, anchor reference, `as`/`asChild`, and `forceMount` are managed internally.
+ */
+export type SelectPopoverContentProps = Omit<
   PopoverContentProps,
-  | "side"
-  | "sideOffset"
-  | "sideFlip"
-  | "align"
-  | "alignOffset"
-  | "alignFlip"
-  | "avoidCollisions"
-  | "collisionBoundary"
-  | "collisionPadding"
-  | "positionStrategy"
-  | "updatePositionStrategy"
-  | "sticky"
-  | "hideWhenDetached"
-  | "prioritizePosition"
+  "as" | "asChild" | "forceMount" | "reference"
 >;
 
-export type SelectPopoverProps = SelectPopoverPositionProps & {
-  /**
-   * Teleport the popover out of the component DOM tree.
-   * `true` (default) teleports to `body`. Pass a CSS selector or `HTMLElement` for a custom target.
-   * Set to `false` to render inline (useful for SSR or custom layout constraints).
-   */
-  teleport?: SelectPopoverTeleportTarget;
-};
+/**
+ * Props forwarded to reka-ui `PopoverRoot`.
+ * `open` is controlled by select context.
+ */
+export type SelectPopoverRootProps = Pick<PopoverRootProps, "modal">;
+
+/**
+ * Props forwarded to reka-ui `PopoverPortal`.
+ * `to` and `disabled` are driven by the `teleport` prop.
+ */
+export type SelectPopoverPortalProps = Pick<PopoverPortalProps, "defer">;
+
+export type SelectPopoverProps = SelectPopoverContentProps
+  & SelectPopoverRootProps
+  & SelectPopoverPortalProps & {
+    /**
+     * Teleport the popover out of the component DOM tree.
+     * `true` (default) teleports to `body`. Pass a CSS selector or `HTMLElement` for a custom target.
+     * Set to `false` to render inline (useful for SSR or custom layout constraints).
+     */
+    teleport?: SelectPopoverTeleportTarget;
+  };

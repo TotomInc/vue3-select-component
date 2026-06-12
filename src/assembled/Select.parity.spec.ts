@@ -137,10 +137,10 @@ describe("v1 assembled Select v0 parity", () => {
     expect(model.value).toEqual(["FR"]);
   });
 
-  it("shows the loading indicator when isLoading is enabled", () => {
+  it("shows the loading indicator when loading is enabled", () => {
     const { wrapper } = mountAssembledSelect({
       options,
-      isLoading: true,
+      loading: true,
     });
 
     expect(wrapper.get("[data-select-indicator]").attributes("data-loading")).toBe("true");

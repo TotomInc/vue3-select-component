@@ -20,21 +20,14 @@ import SelectPopover from "@/primitives/SelectPopover.vue";
 import SelectRoot from "@/primitives/SelectRoot.vue";
 import SelectTrigger from "@/primitives/SelectTrigger.vue";
 import SelectValue from "@/primitives/SelectValue.vue";
-import { resolveAssembledBooleanProps } from "@/types/assembled";
-
 const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, OptionValue>>(), {
   teleport: true,
-  multiple: undefined,
-  searchable: undefined,
-  clearable: undefined,
-  disabled: undefined,
-  loading: undefined,
+  multiple: false,
+  searchable: false,
+  clearable: false,
+  disabled: false,
+  loading: false,
   closeOnSelect: null,
-  isMulti: undefined,
-  isSearchable: undefined,
-  isClearable: undefined,
-  isDisabled: undefined,
-  isLoading: undefined,
 });
 
 const emit = defineEmits<AssembledSelectEmits<GenericOption>>();
@@ -51,8 +44,6 @@ const optionMappers = computed(() => createOptionMappers<GenericOption, OptionVa
 const normalizedOptions = computed(() =>
   normalizeSelectOptions(sourceOptions.value, optionMappers.value),
 );
-
-const resolvedBooleanProps = computed(() => resolveAssembledBooleanProps(props));
 
 const adaptedFilterBy = computed(() =>
   createGenericFilterByAdapter(
@@ -96,11 +87,11 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
   <SelectRoot
     v-model="model"
     :options="normalizedOptions"
-    :multiple="resolvedBooleanProps.multiple"
-    :searchable="resolvedBooleanProps.searchable"
-    :clearable="resolvedBooleanProps.clearable"
-    :disabled="resolvedBooleanProps.disabled"
-    :loading="resolvedBooleanProps.loading"
+    :multiple="multiple"
+    :searchable="searchable"
+    :clearable="clearable"
+    :disabled="disabled"
+    :loading="loading"
     :close-on-select="closeOnSelect"
     :filter-by="adaptedFilterBy"
     data-assembled-select

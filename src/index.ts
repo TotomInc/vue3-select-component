@@ -15,7 +15,6 @@ export {
 } from "./primitives";
 
 export type { AssembledSelectEmits, AssembledSelectProps } from "./types/assembled";
-export { V0_TO_V1_PROP_MIGRATION } from "./types/assembled";
 export type { SelectModelValue } from "./types/model";
 export type { SelectOption as SelectOptionData } from "./types/option";
 export type { SelectRootEmits, SelectRootProps } from "./types/root";

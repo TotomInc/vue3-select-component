@@ -128,10 +128,10 @@ ui:
   to: /guide/migration
   ---
   #title
-  v0 migration path
+  v0 migration guide
 
   #description
-  Familiar prop aliases on assembled Select. Clear upgrade guide for v1.
+  Step-by-step upgrade path from v0 to v1. Rename props, restyle, and adopt primitives.
   :::
 ::
 

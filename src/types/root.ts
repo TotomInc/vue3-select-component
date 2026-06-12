@@ -9,6 +9,8 @@ export type SelectRootProps<OptionValue = string> = {
   clearable?: boolean;
   loading?: boolean;
   closeOnSelect?: boolean | null;
+  resetSearchOnBlur?: boolean;
+  resetSearchOnSelect?: boolean;
   hideSelected?: boolean;
   options?: SelectOption<OptionValue>[];
   filterBy?: FilterByFn<OptionValue>;

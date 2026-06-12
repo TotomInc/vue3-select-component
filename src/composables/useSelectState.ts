@@ -29,6 +29,8 @@ type UseSelectStateParams<OptionValue extends string | number> = {
   clearable: Ref<boolean>;
   loading: Ref<boolean>;
   closeOnSelect?: Ref<boolean | null | undefined>;
+  resetSearchOnBlur?: Ref<boolean>;
+  resetSearchOnSelect?: Ref<boolean>;
   hideSelected?: Ref<boolean>;
   propOptions: Ref<readonly SelectOption<OptionValue>[]>;
   filterBy: Ref<FilterByFn<OptionValue>>;
@@ -156,10 +158,18 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     }
   };
 
+  const clearSearch = () => {
+    searchValue.value = "";
+  };
+
   const close = () => {
     const wasOpen = isOpen.value;
     isOpen.value = false;
-    searchValue.value = "";
+
+    if (params.resetSearchOnBlur?.value ?? true) {
+      clearSearch();
+    }
+
     activeOptionValue.value = null;
 
     if (wasOpen) {
@@ -210,6 +220,10 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
       params.modelValue.value = [...current, value];
       params.events?.onOptionSelected?.(value);
 
+      if (params.resetSearchOnSelect?.value ?? true) {
+        clearSearch();
+      }
+
       if (shouldCloseOnSelect()) {
         close();
       }
@@ -219,6 +233,10 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
 
     params.modelValue.value = value;
     params.events?.onOptionSelected?.(value);
+
+    if (params.resetSearchOnSelect?.value ?? true) {
+      clearSearch();
+    }
 
     if (shouldCloseOnSelect()) {
       close();

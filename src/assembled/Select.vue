@@ -34,6 +34,8 @@ const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, Optio
   disabled: false,
   loading: false,
   closeOnSelect: null,
+  resetSearchOnBlur: true,
+  resetSearchOnSelect: true,
   hideSelected: false,
 });
 
@@ -97,6 +99,8 @@ const popoverProps = computed(() => {
     options: _options,
     placeholder: _placeholder,
     closeOnSelect: _closeOnSelect,
+    resetSearchOnBlur: _resetSearchOnBlur,
+    resetSearchOnSelect: _resetSearchOnSelect,
     hideSelected: _hideSelected,
     filterBy: _filterBy,
     getOptionValue: _getOptionValue,
@@ -147,6 +151,8 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
     :disabled="disabled"
     :loading="loading"
     :close-on-select="closeOnSelect"
+    :reset-search-on-blur="resetSearchOnBlur"
+    :reset-search-on-select="resetSearchOnSelect"
     :hide-selected="hideSelected"
     :filter-by="adaptedFilterBy"
     data-assembled-select

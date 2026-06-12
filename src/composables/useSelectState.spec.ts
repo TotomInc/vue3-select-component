@@ -308,4 +308,132 @@ describe("useSelectState", () => {
       expect(onOptionDeselected).toHaveBeenCalledWith("ts");
     });
   });
+
+  it("clears search on close by default", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(false),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.searchValue.value = "type";
+      context.close();
+
+      expect(context.searchValue.value).toBe("");
+    });
+  });
+
+  it("keeps search on close when resetSearchOnBlur is false", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(false),
+        resetSearchOnBlur: ref(false),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.searchValue.value = "type";
+      context.close();
+
+      expect(context.searchValue.value).toBe("type");
+    });
+  });
+
+  it("clears search on select by default when the menu stays open", () => {
+    runInScope(() => {
+      const modelValue = ref<string[]>([]);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(true),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(false),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.searchValue.value = "type";
+      context.select("ts");
+
+      expect(context.searchValue.value).toBe("");
+      expect(context.isOpen.value).toBe(true);
+    });
+  });
+
+  it("keeps search on select when resetSearchOnSelect is false", () => {
+    runInScope(() => {
+      const modelValue = ref<string[]>([]);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(true),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(false),
+        resetSearchOnSelect: ref(false),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.searchValue.value = "type";
+      context.select("ts");
+
+      expect(context.searchValue.value).toBe("type");
+      expect(context.isOpen.value).toBe(true);
+    });
+  });
 });

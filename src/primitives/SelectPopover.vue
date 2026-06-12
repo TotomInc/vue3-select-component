@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PopoverContentEmits } from "reka-ui";
 import type { SelectPopoverProps } from "@/types/primitives";
+import type { SelectDefaultSlots } from "@/types/slots";
 
 import {
   PopoverAnchor,
@@ -23,6 +24,8 @@ const props = withDefaults(defineProps<SelectPopoverProps>(), {
 });
 
 const emits = defineEmits<PopoverContentEmits>();
+
+defineSlots<SelectDefaultSlots>();
 
 const context = injectSelectContext();
 

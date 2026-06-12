@@ -1,11 +1,14 @@
 <script setup lang="ts" generic="OptionValue extends string | number = string">
 import type { SelectOptionProps } from "@/types/primitives";
+import type { SelectOptionSlots } from "@/types/slots";
 
 import { computed, onMounted, onUnmounted } from "vue";
 import { injectSelectContext } from "@/lib/context";
 import { createOptionId } from "@/lib/ids";
 
 const props = defineProps<SelectOptionProps<OptionValue>>();
+
+defineSlots<SelectOptionSlots>();
 
 const context = injectSelectContext<OptionValue>();
 const optionId = createOptionId();

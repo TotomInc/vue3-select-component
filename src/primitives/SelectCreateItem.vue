@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import type { SelectCreateItemSlots } from "@/types/slots";
+
 import { computed } from "vue";
 import { injectSelectContext } from "@/lib/context";
+
+defineSlots<SelectCreateItemSlots>();
 
 const context = injectSelectContext();
 

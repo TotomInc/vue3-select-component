@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { DemoGroup } from "./demo-routes";
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
-import { useRoute } from "vue-router";
 
-import { demoGroups, demoRoutes, type DemoGroup } from "./demo-routes";
+import { useRoute } from "vue-router";
+import { demoGroups, demoRoutes } from "./demo-routes";
 
 const route = useRoute();
 const navRef = useTemplateRef<HTMLElement>("navRef");
@@ -88,7 +89,11 @@ watch(
         </button>
       </div>
 
-      <div id="playground-nav" ref="navRef" class="playground__nav-body">
+      <div
+        id="playground-nav"
+        ref="navRef"
+        class="playground__nav-body"
+      >
         <label class="playground__search">
           <span class="playground__search-label">Filter demos</span>
           <input

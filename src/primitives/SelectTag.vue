@@ -1,10 +1,14 @@
 <script setup lang="ts" generic="OptionValue extends string | number = string">
+import type { SelectTagSlots } from "@/types/slots";
+
 import { injectSelectContext } from "@/lib/context";
 
 const props = defineProps<{
   value: OptionValue;
   label: string;
 }>();
+
+defineSlots<SelectTagSlots>();
 
 const context = injectSelectContext<OptionValue>();
 

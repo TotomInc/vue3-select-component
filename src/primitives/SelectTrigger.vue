@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import type { SelectDefaultSlots } from "@/types/slots";
+
 import { computed } from "vue";
 import { injectSelectContext } from "@/lib/context";
 import { resolveHTMLElement } from "@/lib/dom";
+
+defineSlots<SelectDefaultSlots>();
 
 const context = injectSelectContext();
 

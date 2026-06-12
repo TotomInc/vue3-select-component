@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import type { SelectNoOptionsSlots } from "@/types/slots";
+
 import { computed } from "vue";
 import { injectSelectContext } from "@/lib/context";
+
+defineSlots<SelectNoOptionsSlots>();
 
 const context = injectSelectContext();
 

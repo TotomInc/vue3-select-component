@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="OptionValue extends string | number = string">
 import type { SelectModelValue } from "@/types/model";
 import type { SelectRootEmits, SelectRootProps } from "@/types/root";
+import type { SelectDefaultSlots } from "@/types/slots";
 
 import { computed, toRef } from "vue";
 import { useSelectCollection } from "@/composables/useSelectCollection";
@@ -24,6 +25,8 @@ const props = withDefaults(defineProps<SelectRootProps<OptionValue>>(), {
 });
 
 const emit = defineEmits<SelectRootEmits<OptionValue>>();
+
+defineSlots<SelectDefaultSlots>();
 
 const model = defineModel<SelectModelValue<OptionValue>>({ default: null });
 

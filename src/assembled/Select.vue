@@ -2,6 +2,7 @@
 import type { AssembledSelectEmits, AssembledSelectProps } from "@/types/assembled";
 import type { SelectModelValue } from "@/types/model";
 import type { SelectOption as SelectOptionData } from "@/types/option";
+import type { AssembledSelectSlots } from "@/types/slots";
 
 import { computed, toRef, useAttrs } from "vue";
 import {
@@ -41,6 +42,8 @@ const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, Optio
 });
 
 const emit = defineEmits<AssembledSelectEmits<GenericOption>>();
+
+defineSlots<AssembledSelectSlots>();
 
 const model = defineModel<SelectModelValue<OptionValue>>({ default: null });
 const attrs = useAttrs();

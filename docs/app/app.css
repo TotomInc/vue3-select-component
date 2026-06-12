@@ -12,6 +12,32 @@
   margin-block: 1.5rem;
 }
 
+.select-demo--stacked {
+  max-width: 32rem;
+}
+
+.select-demo__field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.select-demo__field-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ui-text-muted);
+}
+
+.select-demo__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ui-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
 .select-demo__value {
   display: grid;
   gap: 0.25rem;

@@ -1,9 +1,17 @@
 import { fileURLToPath } from "node:url";
 
+import libPackage from "../src/package.json";
+
 const libStyles = fileURLToPath(new URL("../src/styles.css", import.meta.url));
 
 export default defineNuxtConfig({
   extends: ["docus"],
+
+  runtimeConfig: {
+    public: {
+      packageVersion: libPackage.version,
+    },
+  },
 
   vite: {
     resolve: {

@@ -7,7 +7,13 @@ export default defineAppConfig({
   },
 
   header: {
-    title: "Vue 3 Select Component",
+    title: "Vue3-Select-Component",
+    logo: {
+      light: "/logo.png",
+      dark: "/logo.png",
+      alt: "Vue3-Select-Component",
+      favicon: "/favicon.ico",
+    },
   },
 
   socials: {

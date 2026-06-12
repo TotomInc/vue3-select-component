@@ -1,109 +1,204 @@
-import type { SelectModelValue } from "@/types/model";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
-import { ref } from "vue";
-
-import Select from "./Select.vue";
+import SelectListbox from "../primitives/SelectListbox.vue";
+import { cleanupTeleportedSelectContent } from "../test-utils/assembled-select-helpers";
+import { mountAssembledSelect } from "../test-utils/mount-assembled-select";
 
 const options = [
-  { label: "JavaScript", value: "js" },
-  { label: "TypeScript", value: "ts" },
-] as const;
+  { label: "France", value: "FR" },
+  { label: "Spain", value: "ES", disabled: true },
+  { label: "United Kingdom", value: "GB" },
+];
 
-describe("v1 assembled Select", () => {
-  it("closes the menu after single selection by default", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(Select<string, (typeof options)[number]>, {
-      props: {
-        "options": [...options],
-        "teleport": false,
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
-    });
-
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
-
-    expect(model.value).toBe("js");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+describe("assembled Select", () => {
+  afterEach(() => {
+    cleanupTeleportedSelectContent();
   });
 
-  it("closes the menu on multi-select when closeOnSelect is true", async () => {
-    const model = ref<SelectModelValue<string>>([]);
+  it("shows the placeholder when no option is selected", () => {
+    const { wrapper } = mountAssembledSelect({
+      options,
+      placeholder: "Select a country",
+    });
 
-    const wrapper = mount(Select<string, (typeof options)[number]>, {
-      props: {
-        "options": [...options],
-        "multiple": true,
-        "closeOnSelect": true,
-        "teleport": false,
-        "modelValue": [],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    expect(wrapper.get("[data-select-value]").text()).toBe("Select a country");
+  });
+
+  it("teleports the menu to body by default", async () => {
+    const { wrapper, getTeleportedPopoverElement, getPopoverAriaHidden } = mountAssembledSelect({
+      options,
+    });
+
+    expect(wrapper.find("[data-select-popover]").exists()).toBe(false);
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    const teleportedPopover = getTeleportedPopoverElement();
+
+    expect(teleportedPopover).not.toBeNull();
+    expect(getPopoverAriaHidden()).toBe("false");
+    expect(wrapper.getComponent(SelectListbox).attributes("role")).toBe("listbox");
+  });
+
+  it("selects an option with click and closes the menu", async () => {
+    const { wrapper, model, findOptions, getPopoverAriaHidden } = mountAssembledSelect({
+      options,
     });
 
     await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+    await findOptions()[0]!.trigger("click");
+
+    expect(model.value).toBe("FR");
+    expect(wrapper.get("[data-select-value]").text()).toBe("France");
+    expect(getPopoverAriaHidden()).toBe("true");
+  });
+
+  it("does not open the menu when disabled", async () => {
+    const { wrapper, getPopoverAriaHidden } = mountAssembledSelect({
+      options,
+      disabled: true,
+    });
+
+    const trigger = wrapper.get("[data-select-trigger]");
+
+    expect(trigger.attributes("disabled")).toBeDefined();
+    expect(trigger.attributes("aria-expanded")).toBe("false");
+
+    await trigger.trigger("click");
+
+    expect(trigger.attributes("aria-expanded")).toBe("false");
+    expect(getPopoverAriaHidden()).toBe("true");
+  });
+
+  it("cannot select a disabled option", async () => {
+    const { wrapper, model, findOptions } = mountAssembledSelect({
+      options: [{ label: "Spain", value: "ES", disabled: true }],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await findOptions()[0]!.trigger("click");
+
+    expect(model.value).toBeNull();
+  });
+
+  it("selects the active option with Enter", async () => {
+    const { wrapper, model, getListbox } = mountAssembledSelect({ options });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getListbox().trigger("keydown", { key: "Enter" });
+
+    expect(model.value).toBe("FR");
+    expect(wrapper.get("[data-select-value]").text()).toBe("France");
+  });
+
+  it("closes the menu on Escape", async () => {
+    const { wrapper, getListbox, getPopoverAriaHidden } = mountAssembledSelect({ options });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    expect(getPopoverAriaHidden()).toBe("false");
+
+    await getListbox().trigger("keydown", { key: "Escape" });
+
+    expect(getPopoverAriaHidden()).toBe("true");
+  });
+
+  it("clears the selected option from the clear button", async () => {
+    const { wrapper, model } = mountAssembledSelect({
+      options,
+      clearable: true,
+      modelValue: "FR",
+    });
+
+    await wrapper.get("[data-select-clear]").trigger("click");
+
+    expect(model.value).toBeNull();
+    expect(wrapper.get("[data-select-value]").text()).toBe("Pick a language");
+  });
+
+  it("emits search when typing in searchable mode", async () => {
+    const onSearch = vi.fn();
+    const { wrapper, getInput, findVisibleOptions } = mountAssembledSelect({
+      options,
+      searchable: true,
+      onSearch,
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getInput().get("input").setValue("United");
+
+    expect(onSearch).toHaveBeenCalledWith("United");
+    expect(findVisibleOptions()).toHaveLength(1);
+  });
+
+  it("emits optionDeselected when clearing a single selection", async () => {
+    const onOptionDeselected = vi.fn();
+    const { wrapper } = mountAssembledSelect({
+      options,
+      clearable: true,
+      modelValue: "FR",
+      onOptionDeselected,
+    });
+
+    await wrapper.get("[data-select-clear]").trigger("click");
+
+    expect(onOptionDeselected).toHaveBeenCalledWith({ label: "France", value: "FR" });
+  });
+
+  it("removes the last selected value on Backspace in multi-select mode", async () => {
+    const { wrapper, model, getListbox } = mountAssembledSelect({
+      options,
+      multiple: true,
+      modelValue: ["FR", "GB"],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getListbox().trigger("keydown", { key: "Backspace" });
+
+    expect(model.value).toEqual(["FR"]);
+  });
+
+  it("closes the menu after multi-select when closeOnSelect is true", async () => {
+    const { wrapper, model, findOptions, getPopoverAriaHidden } = mountAssembledSelect({
+      options: [
+        { label: "JavaScript", value: "js" },
+        { label: "TypeScript", value: "ts" },
+      ],
+      multiple: true,
+      closeOnSelect: true,
+      modelValue: [],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await findOptions()[0]!.trigger("click");
 
     expect(model.value).toEqual(["js"]);
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("keeps the menu open on multi-select when closeOnSelect is false", async () => {
-    const model = ref<SelectModelValue<string>>([]);
-
-    const wrapper = mount(Select<string, (typeof options)[number]>, {
-      props: {
-        "options": [...options],
-        "multiple": true,
-        "closeOnSelect": false,
-        "teleport": false,
-        "modelValue": [],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    const { wrapper, model, findOptions, getPopoverAriaHidden } = mountAssembledSelect({
+      options: [
+        { label: "JavaScript", value: "js" },
+        { label: "TypeScript", value: "ts" },
+      ],
+      multiple: true,
+      closeOnSelect: false,
+      modelValue: [],
     });
 
     await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+    await findOptions()[0]!.trigger("click");
 
     expect(model.value).toEqual(["js"]);
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    expect(getPopoverAriaHidden()).toBe("false");
   });
 
-  it("renders a chevron indicator that reflects open state", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(Select<string, (typeof options)[number]>, {
-      props: {
-        "options": [...options],
-        "teleport": false,
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+  it("shows the loading indicator when loading is enabled", () => {
+    const { wrapper } = mountAssembledSelect({
+      options,
+      loading: true,
     });
 
-    const indicator = wrapper.get("[data-select-indicator]");
-
-    expect(indicator.find("svg").exists()).toBe(true);
-    expect(indicator.attributes("data-open")).toBe("false");
-
-    await wrapper.get("[data-select-trigger]").trigger("click");
-
-    expect(indicator.attributes("data-open")).toBe("true");
+    expect(wrapper.get("[data-select-indicator]").attributes("data-loading")).toBe("true");
   });
 });

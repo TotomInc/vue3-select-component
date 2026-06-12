@@ -6,6 +6,10 @@ import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 
 import Select from "../assembled/Select.vue";
+import {
+  cleanupTeleportedSelectContent,
+  createAssembledSelectHelpers,
+} from "./assembled-select-helpers";
 import { basicOptions } from "./mount-primitive-select";
 
 export type MountAssembledSelectOptions<
@@ -31,7 +35,6 @@ export function mountAssembledSelect<
     props: {
       "options": [...basicOptions] as GenericOption[],
       "placeholder": "Pick a language",
-      "teleport": false,
       ...restProps,
       "modelValue": modelValue,
       "onUpdate:modelValue": (value: SelectModelValue<OptionValue>) => {
@@ -41,5 +44,15 @@ export function mountAssembledSelect<
     },
   });
 
-  return { wrapper, model };
+  const helpers = createAssembledSelectHelpers(wrapper);
+
+  return {
+    wrapper,
+    model,
+    ...helpers,
+    unmount() {
+      wrapper.unmount();
+      cleanupTeleportedSelectContent();
+    },
+  };
 }

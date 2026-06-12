@@ -4,6 +4,13 @@ export default defineAppConfig({
       primary: "sky",
       neutral: "neutral",
     },
+
+    contentNavigation: {
+      defaultVariants: {
+        variant: 'pill',
+        highlight: false
+      }
+    }
   },
 
   header: {

@@ -14,15 +14,27 @@
     "select",
     "dropdown"
   ],
+  "sideEffects": [
+    "**/*.css",
+    "dist/**/*.css"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.es.js"
+      "import": "./dist/index.es.js",
+      "default": "./dist/index.es.js"
     },
     "./primitives": {
       "types": "./dist/primitives/index.d.ts",
-      "import": "./dist/primitives.js"
-    }
+      "import": "./dist/primitives.js",
+      "default": "./dist/primitives.js"
+    },
+    "./styles": {
+      "style": "./dist/styles.css",
+      "import": "./dist/styles.css",
+      "default": "./dist/styles.css"
+    },
+    "./styles.css": "./dist/styles.css"
   },
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
@@ -31,15 +43,23 @@
   ],
   "scripts": {
     "prepare": "pnpm run build",
-    "dev": "vite build --watch",
+    "dev": "run-s build-only dev:watch",
+    "dev:watch": "run-p watch:lib watch:styles",
+    "watch:lib": "vite build --watch",
+    "watch:styles": "vite build --config vite.styles.config.ts --watch",
     "test": "vitest --coverage",
     "build": "run-p type-check \"build-only {@}\" --",
-    "build-only": "vite build",
+    "build-only": "run-s build:lib build:styles",
+    "build:lib": "vite build",
+    "build:styles": "vite build --config vite.styles.config.ts",
     "type-check": "vue-tsc --build",
     "bumpp": "bumpp package.json ../pnpm-lock.yaml"
   },
   "peerDependencies": {
     "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "reka-ui": "2.9.10"
   },
   "devDependencies": {
     "@tsconfig/node24": "24.0.4",
@@ -59,8 +79,5 @@
     "vue": "3.5.35",
     "vue-component-type-helpers": "3.3.3",
     "vue-tsc": "3.3.3"
-  },
-  "dependencies": {
-    "reka-ui": "2.9.10"
   }
 }

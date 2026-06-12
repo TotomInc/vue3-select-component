@@ -11,6 +11,7 @@ export default defineConfig({
     alias: {
       "@": srcDir,
       "vue3-select-component/primitives": `${srcDir}/primitives/index.ts`,
+      "vue3-select-component/styles": `${srcDir}/styles.css`,
       "vue3-select-component": `${srcDir}/index.ts`,
     },
   },

@@ -29,76 +29,69 @@
 </p>
 
 <p align="center">
- <a href="https://vue3-select-component.vercel.app/" target="__blank">Documentation</a> | <a href="https://vue3-select-component.vercel.app/getting-started.html" target="__blank">Getting Started</a> | <a href="https://vue3-select-component.vercel.app/demo/single-select.html" target="__blank">Examples / Demos</a>
+ <a href="https://vue3-select-component.vercel.app/" target="__blank">Documentation</a> | <a href="https://vue3-select-component.vercel.app/getting-started/usage" target="__blank">Getting Started</a> | <a href="https://vue3-select-component.vercel.app/guide/primitives" target="__blank">Primitives</a>
 </p>
 
 **Core features:**
 
 - ⚙️ Data manipulation with `v-model`
-- 🔑 [Typesafe relationship](https://vue3-select-component.vercel.app/typescript.html) between `options` and `v-model`
-- 🎨 Great styling out-of-the-box, customization with CSS variables & Vue `:deep`
+- 🔑 [Typesafe relationship](https://vue3-select-component.vercel.app/guide/typescript) between `options` and `v-model`
+- 🎨 Default styles with `--vs-*` CSS variables, or fully headless primitives
 - ✅ Single & multi-select support
-- 🖌️ Infinite customization with `<slot>`s
+- 🧱 Assembled `Select` or composable primitives
 - 🪄 `<Teleport />` menu where you want
-- 📦 Extremely light, minimal dependencies (17kb gzip)
+- 📦 Light bundle, minimal dependencies
 
 ## Installation
 
-Install the package with npm:
+Install the package with your package manager:
 
 ```bash
 npm i vue3-select-component
 ```
 
-::: info
-The component requires its CSS styles to be imported manually.
-
-```javascript
-import "vue3-select-component/styles";
-```
-:::
-
-Use it in your Vue 3 app:
+Import the assembled component and its default styles:
 
 ```vue
 <script setup lang="ts">
 import { ref } from "vue";
-import VueSelect from "vue3-select-component";
+import Select from "vue3-select-component";
 import "vue3-select-component/styles";
 
-const option = ref("");
+const selected = ref<string | null>(null);
 </script>
 
 <template>
-  <div class="my-app">
-    <VueSelect
-      v-model="option"
-      :options="[
-        { label: 'A Wizard of Earthsea', value: 'wizard_earthsea' },
-        { label: 'Harry Potter and the Philosopher\'s Stone', value: 'harry_potter', disabled: true },
-        { label: 'The Lord of the Rings', value: 'the_lord_of_the_rings' },
-      ]"
-    />
-  </div>
+  <Select
+    v-model="selected"
+    :options="[
+      { label: 'A Wizard of Earthsea', value: 'wizard_earthsea' },
+      { label: 'Harry Potter and the Philosopher\'s Stone', value: 'harry_potter', disabled: true },
+      { label: 'The Lord of the Rings', value: 'the_lord_of_the_rings' },
+    ]"
+    placeholder="Select a book"
+  />
 </template>
 ```
 
+Styles are opt-in and must be imported manually (CSP-friendly). You can also import `vue3-select-component/styles.css` directly.
+
+Primitives ship unstyled. See the [styling guide](https://vue3-select-component.vercel.app/guide/styling).
+
 ## Advanced TypeScript usage
 
-Vue 3 Select Component creates a type-safe relationship between the `option.value` and the `v-model` prop.
-
-It also leverages the power of generics to provide types for additional properties on the options.
+Vue 3 Select Component creates a type-safe relationship between `option.value` and `v-model`.
 
 ```vue
 <script setup lang="ts">
-import type { Option } from "vue3-select-component";
+import type { SelectOptionData } from "vue3-select-component";
 import { ref } from "vue";
-import VueSelect from "vue3-select-component";
+import Select from "vue3-select-component";
 import "vue3-select-component/styles";
 
-type UserOption = Option<number> & { username: string };
+type UserOption = SelectOptionData<number> & { username: string };
 
-const selectedUser = ref<number>();
+const selectedUser = ref<number | null>(null);
 
 const userOptions: UserOption[] = [
   { label: "Alice", value: 1, username: "alice15" },
@@ -108,7 +101,7 @@ const userOptions: UserOption[] = [
 </script>
 
 <template>
-  <VueSelect
+  <Select
     v-model="selectedUser"
     :options="userOptions"
     :get-option-label="(option) => `${option.label} (${option.username})`"
@@ -117,34 +110,53 @@ const userOptions: UserOption[] = [
 </template>
 ```
 
-[There's an entire documentation page](https://vue3-select-component.vercel.app/typescript.html) dedicated to usage with TypeScript.
+[See the TypeScript guide](https://vue3-select-component.vercel.app/guide/typescript) for primitives, model types, and generics.
 
 ## Contributing & Development
 
-### Getting Started
+This repository is a pnpm workspace with three packages:
+
+| Package | Path | Purpose |
+|---------|------|---------|
+| `vue3-select-component` | `src/` | Published library |
+| `@vue3-select-component/playground` | `playground/` | Interactive demos |
+| `@vue3-select-component/docs` | `docs/` | Documentation site |
+
+### Getting started
 
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Start the playground: `pnpm run dev:playground`
-4. Run tests: `pnpm run test`
+3. Start local development: `pnpm run dev`
+
+`pnpm run dev` runs the library watch build and the playground together. The playground resolves component source from `src/` directly, so changes are reflected without publishing.
+
+### Workspace scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm run dev` | Watch-build lib + styles, run playground |
+| `pnpm run dev:lib` | Watch-build lib + styles only |
+| `pnpm run dev:playground` | Playground dev server only |
+| `pnpm run dev:docs` | Documentation dev server |
+| `pnpm run docs:dev` | Watch-build lib + docs dev server |
+| `pnpm run build` | Build all workspace packages |
+| `pnpm run test` | Run library tests |
+| `pnpm run lint` | Lint the monorepo |
+
+### Library build output
+
+The library build produces:
+
+- `dist/index.es.js` — assembled `Select` entry
+- `dist/primitives.js` — headless primitives entry
+- `dist/styles.css` — minified default styles (`vue3-select-component/styles`)
 
 ### Contributing
 
-- 🌿 **Branching strategy** - We use `dev` for integration and `master` for releases
-- 🚀 **Release process** - How to create prereleases and stable releases
-- 📝 **Commit conventions** - We follow conventional commits
-- 🧪 **Testing requirements** - All PRs need tests and type safety
-- 📖 **Documentation** - How to add examples and update docs
-
-### Development documentation
-
-The `dev` branch documentation can be found at:
-
-https://dev-vue3-select-component.vercel.app/
-
-This documentation is automatically generated from the `dev` branch and is updated with each commit.
-
-**Note**: it doesn't reflect the latest stable release.
+- 🌿 **Branching** — `v1-dev` for integration, `master` for releases
+- 📝 **Commits** — Conventional commits
+- 🧪 **Tests** — All PRs need tests and type safety (`pnpm run test`, `pnpm run build`)
+- 📖 **Docs** — Update `docs/` when changing public API or behavior
 
 ## Releases
 

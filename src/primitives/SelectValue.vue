@@ -12,10 +12,14 @@ const context = injectSelectContext<OptionValue>();
 
 const isMultiple = computed(() => context.multiple.value);
 const selectedOptions = computed(() => context.selectedOptions.value);
+const isEmpty = computed(() => selectedOptions.value.length === 0);
 </script>
 
 <template>
-  <span data-select-value>
+  <span
+    data-select-value
+    :data-empty="isEmpty"
+  >
     <slot :selected-options="selectedOptions">
       <template v-if="isMultiple">
         <SelectTag

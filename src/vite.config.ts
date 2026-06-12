@@ -6,6 +6,8 @@ import { defineConfig } from "vite";
 
 const resolve = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 const rootDir = pathResolve(fileURLToPath(new URL(".", import.meta.url)));
+// eslint-disable-next-line node/prefer-global/process
+const isWatchMode = process.argv.includes("--watch");
 
 export default defineConfig({
   plugins: [
@@ -24,6 +26,7 @@ export default defineConfig({
   },
 
   build: {
+    emptyOutDir: !isWatchMode,
     target: "es2022",
     lib: {
       name: "vue3-select-component",
@@ -35,7 +38,7 @@ export default defineConfig({
       fileName: (format, entryName) => entryName === "index" ? `index.${format}.js` : `${entryName}.js`,
     },
     rollupOptions: {
-      external: id => id === "vue" || id.startsWith("vue/") || id.startsWith("@vue/"),
+      external: (id) => id === "vue" || id.startsWith("vue/") || id.startsWith("@vue/"),
     },
   },
 });

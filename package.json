@@ -5,6 +5,7 @@
   "packageManager": "pnpm@11.5.2",
   "scripts": {
     "build": "pnpm -r run build",
+    "dev": "pnpm --parallel --filter vue3-select-component --filter @vue3-select-component/playground dev",
     "dev:lib": "pnpm --filter vue3-select-component run dev",
     "dev:docs": "pnpm --filter @vue3-select-component/docs run dev",
     "dev:playground": "pnpm --filter @vue3-select-component/playground run dev",

@@ -15,5 +15,12 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.vue"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "demos/**/*.vue",
+    "components/**/*.vue",
+    "PlaygroundLayout.vue",
+    "data/**/*.ts"
+  ]
 }

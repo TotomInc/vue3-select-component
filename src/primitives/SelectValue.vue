@@ -27,7 +27,11 @@ const isEmpty = computed(() => selectedOptions.value.length === 0);
           :key="String(option.value)"
           :value="option.value"
           :label="option.label"
-        />
+        >
+          <template v-if="$slots['tag-remove']" #remove="tagRemoveSlotProps">
+            <slot name="tag-remove" v-bind="tagRemoveSlotProps" />
+          </template>
+        </SelectTag>
         <template v-if="selectedOptions.length === 0 && placeholder">
           {{ placeholder }}
         </template>

@@ -22,13 +22,14 @@ export type MountAssembledSelectOptions<
   onMenuClosed?: () => void;
   onOptionSelected?: (option: GenericOption) => void;
   onOptionDeselected?: (option: GenericOption | null) => void;
+  slots?: Record<string, unknown>;
 };
 
 export function mountAssembledSelect<
   OptionValue extends string | number = string,
   GenericOption = SelectOption<OptionValue>,
 >(props: MountAssembledSelectOptions<OptionValue, GenericOption> = {}) {
-  const { modelValue = null, ...restProps } = props;
+  const { modelValue = null, slots, ...restProps } = props;
   const model = ref<SelectModelValue<OptionValue>>(modelValue);
 
   const wrapper = mount(Select<OptionValue, GenericOption>, {
@@ -42,6 +43,7 @@ export function mountAssembledSelect<
         wrapper.setProps({ modelValue: value });
       },
     },
+    slots,
   });
 
   const helpers = createAssembledSelectHelpers(wrapper);

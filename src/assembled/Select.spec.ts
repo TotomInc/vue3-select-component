@@ -102,6 +102,29 @@ describe("assembled Select", () => {
     expect(getPopoverAriaHidden()).toBe("true");
   });
 
+  it("does not render the clear button when clearable is disabled", () => {
+    const { wrapper } = mountAssembledSelect({
+      options,
+      modelValue: "FR",
+    });
+
+    expect(wrapper.find("[data-select-clear]").exists()).toBe(false);
+  });
+
+  it("renders custom clear button content from the clear slot", () => {
+    const { wrapper } = mountAssembledSelect({
+      options,
+      clearable: true,
+      modelValue: "FR",
+      slots: {
+        clear: () => "Reset",
+      },
+    });
+
+    expect(wrapper.get("[data-select-clear]").text()).toBe("Reset");
+    expect(wrapper.find("[data-select-clear] svg").exists()).toBe(false);
+  });
+
   it("clears the selected option from the clear button", async () => {
     const { wrapper, model } = mountAssembledSelect({
       options,
@@ -212,10 +235,10 @@ describe("assembled Select", () => {
     await wrapper.get("[data-select-trigger]").trigger("click");
 
     const selectedOption = findRenderedOptionElements().find(
-      option => option.dataset.value === "FR",
+      (option) => option.dataset.value === "FR",
     );
     const unselectedOption = findRenderedOptionElements().find(
-      option => option.dataset.value === "GB",
+      (option) => option.dataset.value === "GB",
     );
 
     expect(selectedOption?.querySelector("[data-select-option-checkmark] svg")).not.toBeNull();
@@ -232,7 +255,7 @@ describe("assembled Select", () => {
 
     await wrapper.get("[data-select-trigger]").trigger("click");
 
-    const visibleValues = findRenderedOptionElements().map(option => option.dataset.value);
+    const visibleValues = findRenderedOptionElements().map((option) => option.dataset.value);
 
     expect(visibleValues).not.toContain("FR");
     expect(visibleValues).toContain("GB");
@@ -247,10 +270,44 @@ describe("assembled Select", () => {
 
     await wrapper.get("[data-select-trigger]").trigger("click");
 
-    const visibleValues = findRenderedOptionElements().map(option => option.dataset.value);
+    const visibleValues = findRenderedOptionElements().map((option) => option.dataset.value);
 
     expect(visibleValues).toContain("FR");
     expect(visibleValues).toContain("GB");
+  });
+
+  it("renders a custom empty state from the no-options slot when filtering has no results", async () => {
+    const { wrapper, getInput, getTeleportedPopoverElement } = mountAssembledSelect({
+      options,
+      searchable: true,
+      slots: {
+        "no-options": ({ searchValue }: { searchValue: string }) => `Nothing for "${searchValue}"`,
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getInput().get("input").setValue("zzzz");
+
+    const noOptions = getTeleportedPopoverElement()?.querySelector("[data-select-no-options]");
+
+    expect(noOptions?.textContent).toBe("Nothing for \"zzzz\"");
+  });
+
+  it("renders a custom tag remove icon from the tag-remove slot", () => {
+    const { wrapper } = mountAssembledSelect({
+      options,
+      multiple: true,
+      modelValue: ["FR", "GB"],
+      slots: {
+        "tag-remove": () => "×",
+      },
+    });
+
+    const removeButtons = wrapper.findAll("[data-select-tag-remove]");
+
+    expect(removeButtons).toHaveLength(2);
+    expect(removeButtons.every((button) => button.text() === "×")).toBe(true);
+    expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(false);
   });
 
   it("forwards popover props to SelectPopover", () => {

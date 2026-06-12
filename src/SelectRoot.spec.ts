@@ -4,6 +4,7 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { defineComponent, h, ref } from "vue";
 
+import SelectClear from "./primitives/SelectClear.vue";
 import SelectIndicator from "./primitives/SelectIndicator.vue";
 import SelectInput from "./primitives/SelectInput.vue";
 import SelectListbox from "./primitives/SelectListbox.vue";
@@ -158,6 +159,37 @@ describe("v1 SelectRoot foundation", () => {
     expect(wrapper.get("[data-select-value]").text()).toBe("Pick a language");
   });
 
+  it("renders custom clear button content from the SelectClear default slot", () => {
+    const model = ref<SelectModelValue<string>>("js");
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": "js",
+        "clearable": true,
+        "options": [...basicOptions],
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => [
+              h(SelectValue, { placeholder: "Pick a language" }),
+              h(SelectClear, null, {
+                default: () => "Reset",
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    expect(wrapper.get("[data-select-clear]").text()).toBe("Reset");
+    expect(wrapper.find("[data-select-clear] svg").exists()).toBe(false);
+  });
+
   it("throws when a primitive is used outside SelectRoot", () => {
     const OrphanTrigger = defineComponent({
       render: () => h(SelectTrigger),
@@ -261,6 +293,52 @@ describe("v1 SelectRoot core module", () => {
 
     expect(wrapper.find("[data-select-no-options]").exists()).toBe(true);
     expect(wrapper.findAll("[data-select-option]")).toHaveLength(0);
+  });
+
+  it("passes searchValue to the SelectNoOptions default slot", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "options": [...basicOptions],
+        "searchable": true,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectInput),
+              h(SelectListbox, null, {
+                default: () => [
+                  h(SelectNoOptions, null, {
+                    default: ({ searchValue }: { searchValue: string }) => `No match for "${searchValue}"`,
+                  }),
+                  ...basicOptions.map((option) =>
+                    h(SelectOption, {
+                      value: option.value,
+                      label: option.label,
+                    }),
+                  ),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-input]").setValue("zzzz");
+
+    expect(wrapper.get("[data-select-no-options]").text()).toBe("No match for \"zzzz\"");
   });
 
   it("resolves options from the options prop without declarative duplicates", async () => {
@@ -420,6 +498,34 @@ describe("v1 primitive composition", () => {
     });
 
     expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(true);
+  });
+
+  it("forwards a custom remove icon from SelectValue tag-remove slot", () => {
+    const model = ref<SelectModelValue<string>>(["js"]);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": ["js"],
+        "multiple": true,
+        "options": [...basicOptions],
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }, {
+              "tag-remove": ({ label }: { label: string }) => `Remove ${label}`,
+            }),
+          }),
+        ],
+      },
+    });
+
+    expect(wrapper.get("[data-select-tag-remove]").text()).toBe("Remove JavaScript");
+    expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(false);
   });
 
   it("defaults closeOnSelect to null for auto mode behavior", () => {

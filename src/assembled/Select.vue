@@ -20,6 +20,7 @@ import SelectPopover from "@/primitives/SelectPopover.vue";
 import SelectRoot from "@/primitives/SelectRoot.vue";
 import SelectTrigger from "@/primitives/SelectTrigger.vue";
 import SelectValue from "@/primitives/SelectValue.vue";
+
 const props = withDefaults(defineProps<AssembledSelectProps<GenericOption, OptionValue>>(), {
   teleport: true,
   multiple: false,
@@ -124,15 +125,27 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
     @option-deselected="emitSourceOptionDeselected"
   >
     <SelectTrigger>
-      <SelectValue :placeholder="placeholder" />
+      <SelectValue :placeholder="placeholder">
+        <template v-if="$slots['tag-remove']" #tag-remove="tagRemoveSlotProps">
+          <slot name="tag-remove" v-bind="tagRemoveSlotProps" />
+        </template>
+      </SelectValue>
       <SelectIndicator />
-      <SelectClear />
+      <SelectClear v-if="clearable">
+        <template v-if="$slots.clear" #default>
+          <slot name="clear" />
+        </template>
+      </SelectClear>
     </SelectTrigger>
 
     <SelectPopover v-bind="popoverProps">
       <SelectInput />
       <SelectListbox>
-        <SelectNoOptions />
+        <SelectNoOptions>
+          <template v-if="$slots['no-options']" #default="noOptionsSlotProps">
+            <slot name="no-options" v-bind="noOptionsSlotProps" />
+          </template>
+        </SelectNoOptions>
         <SelectOptionItem
           v-for="option in normalizedOptions"
           :key="String(option.value)"

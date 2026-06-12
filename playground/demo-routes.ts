@@ -103,6 +103,12 @@ export const demoRoutes: DemoRoute[] = [
     component: () => import("./demos/NoOptionsSlot.vue"),
   },
   {
+    path: "create-item",
+    label: "Create item",
+    group: "Behavior",
+    component: () => import("./demos/CreateItem.vue"),
+  },
+  {
     path: "tag-remove-slot",
     label: "Tag remove slot",
     group: "Customization",

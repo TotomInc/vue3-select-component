@@ -1,3 +1,4 @@
+import type { CreateItemMode } from "../lib/create-item";
 import type { FilterByFn } from "../lib/filter";
 import type { SelectModelValue } from "./model";
 import type { SelectOption } from "./option";
@@ -12,6 +13,7 @@ export type SelectRootProps<OptionValue = string> = {
   resetSearchOnBlur?: boolean;
   resetSearchOnSelect?: boolean;
   hideSelected?: boolean;
+  createItem?: CreateItemMode;
   options?: SelectOption<OptionValue>[];
   filterBy?: FilterByFn<OptionValue>;
 };
@@ -21,6 +23,7 @@ export type SelectRootEmits<OptionValue = string> = {
   "menuOpened": [];
   "menuClosed": [];
   "search": [value: string];
+  "create": [value: string];
   "optionSelected": [value: OptionValue];
   "optionDeselected": [value: OptionValue | null];
 };

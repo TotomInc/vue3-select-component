@@ -11,6 +11,7 @@ import {
   normalizeSelectOptions,
 } from "@/lib/normalize-options";
 import SelectClear from "@/primitives/SelectClear.vue";
+import SelectCreateItem from "@/primitives/SelectCreateItem.vue";
 import SelectIcon from "@/primitives/SelectIcon.vue";
 import SelectInput from "@/primitives/SelectInput.vue";
 import SelectListbox from "@/primitives/SelectListbox.vue";
@@ -102,6 +103,7 @@ const popoverProps = computed(() => {
     resetSearchOnBlur: _resetSearchOnBlur,
     resetSearchOnSelect: _resetSearchOnSelect,
     hideSelected: _hideSelected,
+    createItem: _createItem,
     filterBy: _filterBy,
     getOptionValue: _getOptionValue,
     getOptionLabel: _getOptionLabel,
@@ -154,12 +156,14 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
     :reset-search-on-blur="resetSearchOnBlur"
     :reset-search-on-select="resetSearchOnSelect"
     :hide-selected="hideSelected"
+    :create-item="createItem"
     :filter-by="adaptedFilterBy"
     data-assembled-select
     v-bind="rootAttrs"
     @menu-opened="emit('menuOpened')"
     @menu-closed="emit('menuClosed')"
     @search="emit('search', $event)"
+    @create="emit('create', $event)"
     @option-selected="emitSourceOptionSelected"
     @option-deselected="emitSourceOptionDeselected"
   >
@@ -199,6 +203,11 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
           :label="option.label"
           :disabled="option.disabled"
         />
+        <SelectCreateItem v-if="createItem">
+          <template v-if="$slots['create-item']" #default="createItemSlotProps">
+            <slot name="create-item" v-bind="createItemSlotProps" />
+          </template>
+        </SelectCreateItem>
       </SelectListbox>
     </SelectPopover>
   </SelectRoot>

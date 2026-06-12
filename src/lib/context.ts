@@ -21,10 +21,15 @@ export type SelectContext<OptionValue = string> = {
   allOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
   filteredOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
   selectedOptions: ComputedRef<readonly RegisteredOption<OptionValue>[]>;
+  showCreateItem: ComputedRef<boolean>;
+  createItemSearchValue: ComputedRef<string>;
+  isCreateItemActive: ComputedRef<boolean>;
+  createItemElementId: string;
   open: () => void;
   close: () => void;
   toggle: () => void;
   select: (value: OptionValue) => void;
+  selectCreateItem: () => void;
   selectActiveOption: () => void;
   deselect: (value: OptionValue) => void;
   deselectLast: () => void;

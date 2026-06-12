@@ -23,6 +23,7 @@ export type MountAssembledSelectOptions<
   onMenuClosed?: () => void;
   onOptionSelected?: (option: GenericOption) => void;
   onOptionDeselected?: (option: GenericOption | null) => void;
+  onCreate?: (value: string) => void;
   slots?: Record<string, unknown>;
 };
 

@@ -1,10 +1,11 @@
 import type { SelectModelValue } from "./types/model";
 
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { defineComponent, h, ref } from "vue";
 
 import SelectClear from "./primitives/SelectClear.vue";
+import SelectCreateItem from "./primitives/SelectCreateItem.vue";
 import SelectInput from "./primitives/SelectInput.vue";
 import SelectListbox from "./primitives/SelectListbox.vue";
 import SelectNoOptions from "./primitives/SelectNoOptions.vue";
@@ -329,6 +330,112 @@ describe("v1 SelectRoot core module", () => {
 
     expect(wrapper.find("[data-select-no-options]").exists()).toBe(true);
     expect(wrapper.findAll("[data-select-option]")).toHaveLength(0);
+  });
+
+  it("shows create item instead of the empty state when create-item is enabled", async () => {
+    const onCreate = vi.fn();
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "options": [...basicOptions],
+        "searchable": true,
+        "createItem": true,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+        "onCreate": onCreate,
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => [
+              h(SelectValue, { placeholder: "Pick a language" }),
+              h(SelectInput),
+            ],
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => [
+                  h(SelectNoOptions),
+                  ...basicOptions.map((option) =>
+                    h(SelectOption, {
+                      value: option.value,
+                      label: option.label,
+                    }),
+                  ),
+                  h(SelectCreateItem),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-input]").setValue("Rust");
+
+    expect(wrapper.find("[data-select-no-options]").exists()).toBe(false);
+    expect(wrapper.get("[data-select-create-item]").text()).toBe("Create \"Rust\"");
+
+    await wrapper.get("[data-select-create-item]").trigger("click");
+
+    expect(onCreate).toHaveBeenCalledWith("Rust");
+  });
+
+  it("selects create item with Enter when it is active", async () => {
+    const onCreate = vi.fn();
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "options": [...basicOptions],
+        "searchable": true,
+        "createItem": true,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+        "onCreate": onCreate,
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => [
+              h(SelectValue, { placeholder: "Pick a language" }),
+              h(SelectInput),
+            ],
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => [
+                  h(SelectNoOptions),
+                  ...basicOptions.map((option) =>
+                    h(SelectOption, {
+                      value: option.value,
+                      label: option.label,
+                    }),
+                  ),
+                  h(SelectCreateItem),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-input]").setValue("Rust");
+    await wrapper.get("[data-select-input]").trigger("keydown", { key: "Enter" });
+
+    expect(onCreate).toHaveBeenCalledWith("Rust");
   });
 
   it("passes searchValue to the SelectNoOptions default slot", async () => {

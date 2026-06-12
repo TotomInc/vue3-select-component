@@ -1,3 +1,4 @@
+import type { CreateItemMode } from "../lib/create-item";
 import type { GenericFilterByFn, OptionMapper } from "../lib/normalize-options";
 import type { SelectOption } from "./option";
 import type { SelectPopoverProps } from "./primitives";
@@ -17,6 +18,7 @@ export type AssembledSelectBehaviorProps<
   resetSearchOnBlur?: boolean;
   resetSearchOnSelect?: boolean;
   hideSelected?: boolean;
+  createItem?: CreateItemMode;
   filterBy?: GenericFilterByFn<GenericOption>;
   getOptionValue?: OptionMapper<GenericOption, OptionValue>["getOptionValue"];
   getOptionLabel?: OptionMapper<GenericOption, OptionValue>["getOptionLabel"];
@@ -33,4 +35,5 @@ export type AssembledSelectEmits<GenericOption> = {
   menuOpened: [];
   menuClosed: [];
   search: [value: string];
+  create: [value: string];
 };

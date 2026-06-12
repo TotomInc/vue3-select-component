@@ -1,4 +1,5 @@
 export { default as SelectClear } from "./SelectClear.vue";
+export { default as SelectCreateItem } from "./SelectCreateItem.vue";
 export { default as SelectIcon } from "./SelectIcon.vue";
 export { default as SelectInput } from "./SelectInput.vue";
 export { default as SelectListbox } from "./SelectListbox.vue";

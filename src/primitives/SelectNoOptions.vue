@@ -4,7 +4,9 @@ import { injectSelectContext } from "@/lib/context";
 
 const context = injectSelectContext();
 
-const isVisible = computed(() => context.filteredOptions.value.length === 0);
+const isVisible = computed(() =>
+  context.filteredOptions.value.length === 0 && !context.showCreateItem.value,
+);
 const searchValue = computed(() => context.searchValue.value);
 </script>
 

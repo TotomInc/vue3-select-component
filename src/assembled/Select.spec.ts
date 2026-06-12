@@ -401,6 +401,46 @@ describe("assembled Select", () => {
     expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(false);
   });
 
+  it("shows create item when search has no matches and emits create on click", async () => {
+    const onCreate = vi.fn();
+    const { wrapper, getInput, getTeleportedPopoverElement } = mountAssembledSelect({
+      options,
+      createItem: true,
+      onCreate,
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getInput().get("input").setValue("Canada");
+
+    const createItem = getTeleportedPopoverElement()?.querySelector("[data-select-create-item]");
+
+    expect(createItem?.textContent?.trim()).toBe("Create \"Canada\"");
+    expect(getTeleportedPopoverElement()?.querySelector("[data-select-no-options]")).toBeNull();
+
+    createItem?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+
+    expect(onCreate).toHaveBeenCalledWith("Canada");
+  });
+
+  it("renders a custom create item slot and keeps it visible in always mode", async () => {
+    const { wrapper, getInput, getTeleportedPopoverElement } = mountAssembledSelect({
+      options,
+      createItem: "always",
+      slots: {
+        "create-item": ({ searchValue }: { searchValue: string }) => `Add "${searchValue}"`,
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getInput().get("input").setValue("Fr");
+
+    const createItem = getTeleportedPopoverElement()?.querySelector("[data-select-create-item]");
+
+    expect(createItem?.textContent).toBe("Add \"Fr\"");
+    expect(getTeleportedPopoverElement()?.querySelectorAll("[data-select-option]").length).toBeGreaterThan(0);
+  });
+
   it("forwards popover props to SelectPopover", () => {
     const { getPopoverComponent } = mountAssembledSelect({
       options,

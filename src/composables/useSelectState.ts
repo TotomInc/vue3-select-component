@@ -1,12 +1,14 @@
 import type { Ref } from "vue";
 import type { SelectContext } from "../lib/context";
+import type { CreateItemMode } from "../lib/create-item";
 import type { FilterByFn } from "../lib/filter";
 import type { SelectModelValue } from "../types/model";
 import type { SelectOption } from "../types/option";
 import type { useSelectCollection } from "./useSelectCollection";
 
 import { computed, ref, shallowRef, watch } from "vue";
-import { findNextEnabledOption, getEnabledOptions } from "@/composables/useSelectCollection";
+import { getEnabledOptions } from "@/composables/useSelectCollection";
+import { shouldShowCreateItem } from "@/lib/create-item";
 import { defaultSelectFilterBy, filterOptions } from "@/lib/filter";
 import { createSelectInstanceId } from "@/lib/ids";
 
@@ -17,6 +19,7 @@ type SelectStateEvents<OptionValue> = {
   onMenuOpened?: () => void;
   onMenuClosed?: () => void;
   onSearch?: (value: string) => void;
+  onCreate?: (value: string) => void;
   onOptionSelected?: (value: OptionValue) => void;
   onOptionDeselected?: (value: OptionValue | null) => void;
 };
@@ -32,6 +35,7 @@ type UseSelectStateParams<OptionValue extends string | number> = {
   resetSearchOnBlur?: Ref<boolean>;
   resetSearchOnSelect?: Ref<boolean>;
   hideSelected?: Ref<boolean>;
+  createItem?: Ref<CreateItemMode | undefined>;
   propOptions: Ref<readonly SelectOption<OptionValue>[]>;
   filterBy: Ref<FilterByFn<OptionValue>>;
   collection: ReturnType<typeof useSelectCollection<OptionValue>>;
@@ -58,10 +62,12 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   const triggerId = `${instanceId}-trigger`;
   const inputId = `${instanceId}-input`;
   const listboxId = `${instanceId}-listbox`;
+  const createItemElementId = `${instanceId}-create-item`;
 
   const isOpen = ref(false);
   const searchValue = ref("");
   const activeOptionValue = shallowRef<OptionValue | null>(null);
+  const isCreateItemActive = ref(false);
   const inputElement = ref<HTMLInputElement | null>(null);
 
   const filteredOptions = computed(() => {
@@ -83,6 +89,17 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
 
   const navigableOptions = computed(() => getEnabledOptions(filteredOptions.value));
 
+  const showCreateItem = computed(() =>
+    shouldShowCreateItem(
+      params.createItem?.value,
+      params.searchable.value,
+      searchValue.value,
+      filteredOptions.value.length,
+    ),
+  );
+
+  const createItemSearchValue = computed(() => searchValue.value.trim());
+
   const selectedOptions = computed(() => {
     const selectedValues = normalizeSelectedValues(params.modelValue.value, params.multiple.value);
     const optionsByValue = new Map(
@@ -95,6 +112,10 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   });
 
   const activeOptionElementId = computed(() => {
+    if (isCreateItemActive.value) {
+      return createItemElementId;
+    }
+
     if (activeOptionValue.value == null) {
       return undefined;
     }
@@ -107,6 +128,12 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   });
 
   const syncActiveOptionWithFilter = () => {
+    if (isCreateItemActive.value && showCreateItem.value) {
+      return;
+    }
+
+    isCreateItemActive.value = false;
+
     const isActiveInFiltered = activeOptionValue.value != null
       && navigableOptions.value.some((option) => option.value === activeOptionValue.value);
 
@@ -115,6 +142,10 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     }
 
     activeOptionValue.value = navigableOptions.value[0]?.value ?? null;
+
+    if (activeOptionValue.value == null && showCreateItem.value) {
+      isCreateItemActive.value = true;
+    }
   };
 
   const setActiveOptionValue = (value: OptionValue | null) => {
@@ -123,6 +154,7 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
 
   const focusFirstOption = () => {
     activeOptionValue.value = navigableOptions.value[0]?.value ?? null;
+    isCreateItemActive.value = activeOptionValue.value == null && showCreateItem.value;
   };
 
   const focusSearchInput = () => {
@@ -134,13 +166,34 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   };
 
   const moveActiveOption = (direction: 1 | -1) => {
-    const nextOption = findNextEnabledOption(
-      filteredOptions.value,
-      activeOptionValue.value,
-      direction,
-    );
+    const options = navigableOptions.value;
+    const hasCreateItem = showCreateItem.value;
+    const totalItems = options.length + (hasCreateItem ? 1 : 0);
 
-    activeOptionValue.value = nextOption?.value ?? null;
+    if (totalItems === 0) {
+      activeOptionValue.value = null;
+      isCreateItemActive.value = false;
+      return;
+    }
+
+    const currentIndex = isCreateItemActive.value
+      ? options.length
+      : (activeOptionValue.value == null
+          ? -1
+          : options.findIndex((option) => option.value === activeOptionValue.value));
+
+    const nextIndex = currentIndex === -1
+      ? (direction === 1 ? 0 : totalItems - 1)
+      : (currentIndex + direction + totalItems) % totalItems;
+
+    if (hasCreateItem && nextIndex === options.length) {
+      isCreateItemActive.value = true;
+      activeOptionValue.value = null;
+      return;
+    }
+
+    isCreateItemActive.value = false;
+    activeOptionValue.value = options[nextIndex]?.value ?? null;
   };
 
   const open = () => {
@@ -243,7 +296,36 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     }
   };
 
+  const selectCreateItem = () => {
+    if (!showCreateItem.value || params.disabled.value) {
+      return;
+    }
+
+    const value = createItemSearchValue.value;
+
+    if (!value) {
+      return;
+    }
+
+    params.events?.onCreate?.(value);
+
+    if (params.resetSearchOnSelect?.value ?? true) {
+      clearSearch();
+    }
+
+    isCreateItemActive.value = false;
+
+    if (shouldCloseOnSelect()) {
+      close();
+    }
+  };
+
   const selectActiveOption = () => {
+    if (isCreateItemActive.value) {
+      selectCreateItem();
+      return;
+    }
+
     if (activeOptionValue.value == null) {
       return;
     }
@@ -332,10 +414,15 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     allOptions: params.collection.allOptions,
     filteredOptions,
     selectedOptions,
+    showCreateItem,
+    createItemSearchValue,
+    isCreateItemActive: computed(() => isCreateItemActive.value),
+    createItemElementId,
     open,
     close,
     toggle,
     select,
+    selectCreateItem,
     selectActiveOption,
     deselect,
     deselectLast,
@@ -374,9 +461,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   }, { flush: "sync" });
 
   watch(
-    () => [isOpen.value, navigableOptions.value] as const,
-    ([open, navigable]) => {
-      if (!open || navigable.length === 0) {
+    () => [isOpen.value, navigableOptions.value, showCreateItem.value] as const,
+    ([open, navigable, canCreate]) => {
+      if (!open || (navigable.length === 0 && !canCreate)) {
         return;
       }
 

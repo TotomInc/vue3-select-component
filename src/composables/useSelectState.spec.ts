@@ -440,4 +440,101 @@ describe("useSelectState", () => {
       expect(context.isOpen.value).toBe(true);
     });
   });
+
+  it("shows create item when enabled and search has no matches", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(true),
+        createItem: ref(true),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.searchValue.value = "new status";
+
+      expect(context.showCreateItem.value).toBe(true);
+      expect(context.createItemSearchValue.value).toBe("new status");
+    });
+  });
+
+  it("emits create with the trimmed search value and closes the menu", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const onCreate = vi.fn();
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(true),
+        createItem: ref(true),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+        events: { onCreate },
+      });
+
+      context.open();
+      context.searchValue.value = "  Rust  ";
+      context.selectCreateItem();
+
+      expect(onCreate).toHaveBeenCalledWith("Rust");
+      expect(context.searchValue.value).toBe("");
+      expect(context.isOpen.value).toBe(false);
+      expect(modelValue.value).toBeNull();
+    });
+  });
+
+  it("keeps create item visible in always mode when matches remain", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(true),
+        createItem: ref("always"),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.searchValue.value = "java";
+
+      expect(context.filteredOptions.value).toHaveLength(1);
+      expect(context.showCreateItem.value).toBe(true);
+    });
+  });
 });

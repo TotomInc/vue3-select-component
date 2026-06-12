@@ -36,6 +36,7 @@ const closeOnSelect = toRef(() => props.closeOnSelect);
 const resetSearchOnBlur = toRef(() => props.resetSearchOnBlur);
 const resetSearchOnSelect = toRef(() => props.resetSearchOnSelect);
 const hideSelected = toRef(() => props.hideSelected);
+const createItem = toRef(() => props.createItem);
 const propOptions = toRef(() => props.options);
 const filterBy = computed(() => props.filterBy);
 
@@ -54,6 +55,7 @@ const { context } = useSelectState({
   resetSearchOnBlur,
   resetSearchOnSelect,
   hideSelected,
+  createItem,
   propOptions,
   filterBy,
   collection,
@@ -61,6 +63,7 @@ const { context } = useSelectState({
     onMenuOpened: () => emit("menuOpened"),
     onMenuClosed: () => emit("menuClosed"),
     onSearch: (value) => emit("search", value),
+    onCreate: (value) => emit("create", value),
     onOptionSelected: (value) => emit("optionSelected", value),
     onOptionDeselected: (value) => emit("optionDeselected", value),
   },

@@ -364,6 +364,34 @@
   color: var(--vs-text-color);
 }
 
+[data-select-popover] [data-select-create-item] {
+  display: flex;
+  align-items: center;
+  width: var(--vs-option-width);
+  margin: 0;
+  padding: var(--vs-option-padding);
+  border: 0;
+  font-family: var(--vs-font-family);
+  font-size: var(--vs-option-font-size);
+  font-weight: var(--vs-option-font-weight);
+  line-height: var(--vs-line-height);
+  color: var(--vs-option-text-color);
+  text-align: var(--vs-option-text-align);
+  white-space: break-spaces;
+  background-color: var(--vs-option-background-color);
+  cursor: var(--vs-option-cursor);
+}
+
+[data-select-popover] [data-select-create-item]:hover {
+  background-color: var(--vs-option-hover-background-color);
+  color: var(--vs-option-hover-text-color);
+}
+
+[data-select-popover] [data-select-create-item][data-active="true"] {
+  background-color: var(--vs-option-focused-background-color);
+  color: var(--vs-option-focused-text-color);
+}
+
 [data-select-popover] [data-select-option] {
   display: flex;
   align-items: center;

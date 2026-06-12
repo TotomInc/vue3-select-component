@@ -1,4 +1,3 @@
-import { execSync } from "node:child_process";
 import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
@@ -86,9 +85,5 @@ export default defineConfig({
     },
 
     outline: "deep",
-  },
-
-  async buildEnd(siteConfig) {
-    execSync("npm run build:playground", { cwd: siteConfig.root, stdio: "inherit" });
   },
 });

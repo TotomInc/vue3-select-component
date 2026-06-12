@@ -203,6 +203,10 @@
   color: var(--vs-placeholder-color);
 }
 
+[data-assembled-select] [data-select-trigger]:has([data-select-value]) [data-select-input]::placeholder {
+  color: transparent;
+}
+
 [data-assembled-select] [data-select-trigger] [data-select-input]:disabled {
   cursor: not-allowed;
 }

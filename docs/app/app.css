@@ -4,3 +4,53 @@
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'Geist Mono', monospace;
 }
+
+.select-demo {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 28rem;
+  margin-block: 1.5rem;
+}
+
+.select-demo__value {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  background: var(--ui-bg-muted);
+  font-size: 0.8125rem;
+}
+
+.select-demo__value-label {
+  font-weight: 500;
+  color: var(--ui-text-muted);
+}
+
+.select-demo__value code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.select-demo-fallback {
+  max-width: 28rem;
+  height: 2.5rem;
+  margin-block: 1.5rem;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  background: var(--ui-bg-muted);
+  animation: select-demo-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes select-demo-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}

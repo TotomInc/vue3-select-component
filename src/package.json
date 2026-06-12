@@ -53,7 +53,9 @@
     "build:lib": "vite build",
     "build:styles": "vite build --config vite.styles.config.ts",
     "type-check": "vue-tsc --build",
-    "bumpp": "bumpp package.json ../pnpm-lock.yaml"
+    "bumpp": "bumpp package.json ../pnpm-lock.yaml",
+    "bumpp:beta": "bumpp package.json ../pnpm-lock.yaml --release prerelease --preid beta",
+    "bumpp:rc": "bumpp package.json ../pnpm-lock.yaml --release prerelease --preid rc"
   },
   "peerDependencies": {
     "vue": "^3.5.0"

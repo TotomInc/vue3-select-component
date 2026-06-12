@@ -5,6 +5,10 @@ on:
     tags:
       - "v*"
 
+permissions:
+  id-token: write # Required for npm trusted publishing (OIDC).
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -21,8 +25,11 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24.x
-          cache: pnpm
           registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false # Never use caching in release builds.
+
+      - name: Install npm with trusted publishing support
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -34,6 +41,15 @@ jobs:
         run: pnpm --filter vue3-select-component run test
 
       - name: Publish to npm
-        run: pnpm --filter vue3-select-component publish --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: src
+        run: |
+          # Extract the version from the GitHub ref, remove the 'refs/tags/v' prefix
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          # Check if the version contains a hyphen, meaning it's a prerelease (e.g., 1.0.0-beta.1)
+          if [[ "$VERSION" == *-* ]]; then
+            # Extract the prerelease label (e.g., 'beta.1'), take the part before the first dot as the tag (e.g., 'beta')
+            PRERELEASE_ID="${VERSION#*-}"
+            npm publish --tag "${PRERELEASE_ID%%.*}"
+          else
+            npm publish
+          fi

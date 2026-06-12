@@ -14,7 +14,9 @@
     "test": "pnpm --filter vue3-select-component run test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "bumpp": "pnpm --filter vue3-select-component run bumpp"
+    "bumpp": "pnpm --filter vue3-select-component run bumpp",
+    "bumpp:beta": "pnpm --filter vue3-select-component run bumpp:beta",
+    "bumpp:rc": "pnpm --filter vue3-select-component run bumpp:rc"
   },
   "devDependencies": {
     "@antfu/eslint-config": "9.0.0",

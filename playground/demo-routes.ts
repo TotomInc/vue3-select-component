@@ -127,6 +127,12 @@ export const demoRoutes: DemoRoute[] = [
     component: () => import("./demos/IconSlots.vue"),
   },
   {
+    path: "grouped-primitives",
+    label: "Grouped primitives",
+    group: "Customization",
+    component: () => import("./demos/GroupedPrimitives.vue"),
+  },
+  {
     path: "menu-positioning",
     label: "Menu positioning",
     group: "Customization",

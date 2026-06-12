@@ -6,8 +6,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   Select,
+  SelectGroup,
+  SelectGroupLabel,
   SelectOption,
   SelectRoot,
+  SelectSeparator,
 } from "./index";
 
 import packageJson from "./package.json";
@@ -19,6 +22,9 @@ describe("src internal exports", () => {
     expect(Select).toBeTruthy();
     expect(SelectRoot).toBeTruthy();
     expect(SelectOption).toBeTruthy();
+    expect(SelectGroup).toBeTruthy();
+    expect(SelectGroupLabel).toBeTruthy();
+    expect(SelectSeparator).toBeTruthy();
   });
 
   it("ships minified styles in dist for npm subpath exports", () => {

@@ -1,5 +1,7 @@
 export { default as SelectClear } from "./SelectClear.vue";
 export { default as SelectCreateItem } from "./SelectCreateItem.vue";
+export { default as SelectGroup } from "./SelectGroup.vue";
+export { default as SelectGroupLabel } from "./SelectGroupLabel.vue";
 export { default as SelectIcon } from "./SelectIcon.vue";
 export { default as SelectInput } from "./SelectInput.vue";
 export { default as SelectListbox } from "./SelectListbox.vue";
@@ -7,6 +9,7 @@ export { default as SelectNoOptions } from "./SelectNoOptions.vue";
 export { default as SelectOption } from "./SelectOption.vue";
 export { default as SelectPopover } from "./SelectPopover.vue";
 export { default as SelectRoot } from "./SelectRoot.vue";
+export { default as SelectSeparator } from "./SelectSeparator.vue";
 export { default as SelectTag } from "./SelectTag.vue";
 export { default as SelectTrailingIcon } from "./SelectTrailingIcon.vue";
 export { default as SelectTrigger } from "./SelectTrigger.vue";

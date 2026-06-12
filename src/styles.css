@@ -50,6 +50,13 @@
   --vs-option-disabled-background-color: #f4f4f5;
   --vs-option-opacity-menu-open: 0.4;
 
+  --vs-group-label-padding: 8px 12px 4px;
+  --vs-group-label-font-size: 12px;
+  --vs-group-label-font-weight: 600;
+  --vs-group-label-text-color: #52525b;
+  --vs-separator-margin: 4px 0;
+  --vs-separator-border-color: #e4e4e7;
+
   --vs-multi-value-gap: 4px;
   --vs-multi-value-margin: 2px;
   --vs-multi-value-border: 0;
@@ -372,6 +379,21 @@
   font-family: var(--vs-font-family);
   font-size: var(--vs-font-size);
   color: var(--vs-text-color);
+}
+
+[data-select-popover] [data-select-group-label] {
+  padding: var(--vs-group-label-padding);
+  font-family: var(--vs-font-family);
+  font-size: var(--vs-group-label-font-size);
+  font-weight: var(--vs-group-label-font-weight);
+  line-height: var(--vs-line-height);
+  color: var(--vs-group-label-text-color);
+}
+
+[data-select-popover] [data-select-separator] {
+  height: 1px;
+  margin: var(--vs-separator-margin);
+  background-color: var(--vs-separator-border-color);
 }
 
 [data-select-popover] [data-select-create-item] {

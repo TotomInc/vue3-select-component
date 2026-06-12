@@ -4,6 +4,7 @@ import type { SelectOptionSlots } from "@/types/slots";
 
 import { computed, onMounted, onUnmounted } from "vue";
 import { injectSelectContext } from "@/lib/context";
+import { injectOptionalSelectGroupContext } from "@/lib/group-context";
 import { createOptionId } from "@/lib/ids";
 
 const props = defineProps<SelectOptionProps<OptionValue>>();
@@ -11,6 +12,7 @@ const props = defineProps<SelectOptionProps<OptionValue>>();
 defineSlots<SelectOptionSlots>();
 
 const context = injectSelectContext<OptionValue>();
+const groupContext = injectOptionalSelectGroupContext<OptionValue>();
 const optionId = createOptionId();
 
 const isSelected = computed(() => {
@@ -45,10 +47,12 @@ onMounted(() => {
     label: props.label,
     disabled: props.disabled ?? false,
   });
+  groupContext?.registerOptionValue(props.value);
 });
 
 onUnmounted(() => {
   context.unregisterOption(optionId);
+  groupContext?.unregisterOptionValue(props.value);
 });
 </script>
 

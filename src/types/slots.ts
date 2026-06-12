@@ -54,6 +54,18 @@ export type SelectCreateItemSlots = {
   default?: (props: SelectSearchValueSlotProps) => any;
 };
 
+export type SelectGroupSlots = {
+  default?: () => any;
+};
+
+export type SelectGroupLabelSlots = {
+  default?: () => any;
+};
+
+export type SelectSeparatorSlots = {
+  default?: () => any;
+};
+
 export type SelectClearSlots = {
   default?: () => any;
 };

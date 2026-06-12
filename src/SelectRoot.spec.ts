@@ -6,12 +6,15 @@ import { defineComponent, h, ref } from "vue";
 
 import SelectClear from "./primitives/SelectClear.vue";
 import SelectCreateItem from "./primitives/SelectCreateItem.vue";
+import SelectGroup from "./primitives/SelectGroup.vue";
+import SelectGroupLabel from "./primitives/SelectGroupLabel.vue";
 import SelectInput from "./primitives/SelectInput.vue";
 import SelectListbox from "./primitives/SelectListbox.vue";
 import SelectNoOptions from "./primitives/SelectNoOptions.vue";
 import SelectOption from "./primitives/SelectOption.vue";
 import SelectPopover from "./primitives/SelectPopover.vue";
 import SelectRoot from "./primitives/SelectRoot.vue";
+import SelectSeparator from "./primitives/SelectSeparator.vue";
 import SelectTag from "./primitives/SelectTag.vue";
 import SelectTrailingIcon from "./primitives/SelectTrailingIcon.vue";
 import SelectTrigger from "./primitives/SelectTrigger.vue";
@@ -548,6 +551,172 @@ describe("v1 SelectRoot core module", () => {
 });
 
 describe("v1 primitive composition", () => {
+  it("renders grouped options with labelled groups and separators", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => [
+                  h(SelectGroup, null, {
+                    default: () => [
+                      h(SelectGroupLabel, null, { default: () => "Frontend" }),
+                      h(SelectOption, { value: "js", label: "JavaScript" }),
+                      h(SelectOption, { value: "ts", label: "TypeScript" }),
+                    ],
+                  }),
+                  h(SelectSeparator),
+                  h(SelectGroup, null, {
+                    default: () => [
+                      h(SelectGroupLabel, null, { default: () => "Systems" }),
+                      h(SelectOption, { value: "rs", label: "Rust" }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    const groups = wrapper.findAll("[data-select-group]");
+    const labels = wrapper.findAll("[data-select-group-label]");
+
+    expect(groups).toHaveLength(2);
+    expect(labels.map((label) => label.text())).toEqual(["Frontend", "Systems"]);
+    expect(groups[0]?.attributes("role")).toBe("group");
+    expect(groups[0]?.attributes("aria-labelledby")).toBe(labels[0]?.attributes("id"));
+    expect(wrapper.get("[data-select-separator]").attributes("role")).toBe("separator");
+    expect(wrapper.findAll("[data-select-option]")).toHaveLength(3);
+  });
+
+  it("keeps keyboard navigation on grouped options only", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick a language" }),
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => [
+                  h(SelectGroup, null, {
+                    default: () => [
+                      h(SelectGroupLabel, null, { default: () => "Frontend" }),
+                      h(SelectOption, { value: "js", label: "JavaScript" }),
+                      h(SelectOption, { value: "ts", label: "TypeScript" }),
+                    ],
+                  }),
+                  h(SelectSeparator),
+                  h(SelectGroup, null, {
+                    default: () => [
+                      h(SelectGroupLabel, null, { default: () => "Systems" }),
+                      h(SelectOption, { value: "rs", label: "Rust" }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("js");
+
+    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
+    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
+
+    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("rs");
+
+    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "Enter" });
+
+    expect(model.value).toBe("rs");
+  });
+
+  it("hides a group when filtering hides all of its options", async () => {
+    const model = ref<SelectModelValue<string>>(null);
+
+    const wrapper = mount(SelectRoot<string>, {
+      props: {
+        "modelValue": null,
+        "searchable": true,
+        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+          model.value = value;
+          wrapper.setProps({ modelValue: value });
+        },
+      },
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => [
+              h(SelectValue, { placeholder: "Pick a language" }),
+              h(SelectInput),
+            ],
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, null, {
+                default: () => [
+                  h(SelectGroup, null, {
+                    default: () => [
+                      h(SelectGroupLabel, null, { default: () => "Frontend" }),
+                      h(SelectOption, { value: "js", label: "JavaScript" }),
+                      h(SelectOption, { value: "ts", label: "TypeScript" }),
+                    ],
+                  }),
+                  h(SelectGroup, null, {
+                    default: () => [
+                      h(SelectGroupLabel, null, { default: () => "Systems" }),
+                      h(SelectOption, { value: "rs", label: "Rust" }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    await wrapper.get("[data-select-input]").setValue("rust");
+
+    const groups = wrapper.findAll("[data-select-group]");
+
+    expect(groups[0]?.attributes("style")).toContain("display: none");
+    expect(groups[1]?.attributes("style")).toBeUndefined();
+    expect(wrapper.findAll("[data-select-option]")).toHaveLength(1);
+    expect(wrapper.get("[data-select-option]").attributes("data-value")).toBe("rs");
+  });
+
   it("renders multi-select tags and removes a value from the tag button", async () => {
     const { wrapper, model } = mountPrimitiveSelect({
       multiple: true,

@@ -71,6 +71,10 @@ export const router = createRouter({
           component: () => import("../demos/ClearSlot.vue"),
         },
         {
+          path: "icon-slots",
+          component: () => import("../demos/IconSlots.vue"),
+        },
+        {
           path: "menu-positioning",
           component: () => import("../demos/MenuPositioning.vue"),
         },

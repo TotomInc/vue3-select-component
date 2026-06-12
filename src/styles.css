@@ -73,11 +73,15 @@
   --vs-multi-value-xmark-color: var(--vs-multi-value-label-text-color);
   --vs-multi-value-xmark-hover-color: #fff;
 
-  --vs-indicators-gap: 0;
-  --vs-indicator-icon-size: 20px;
-  --vs-indicator-icon-color: var(--vs-text-color);
-  --vs-indicator-icon-cursor: pointer;
-  --vs-indicator-dropdown-icon-transition: transform 0.2s ease-out;
+  --vs-icon-size: 20px;
+  --vs-icon-color: var(--vs-text-color);
+  --vs-icon-gap: 0.5rem;
+
+  --vs-trailing-icons-gap: 0;
+  --vs-trailing-icon-size: 20px;
+  --vs-trailing-icon-color: var(--vs-text-color);
+  --vs-trailing-icon-cursor: pointer;
+  --vs-trailing-icon-transition: transform 0.2s ease-out;
 
   --vs-spinner-color: var(--vs-text-color);
   --vs-spinner-size: 16px;
@@ -94,12 +98,12 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--vs-indicators-gap);
+  gap: var(--vs-trailing-icons-gap);
   width: 100%;
   min-height: var(--vs-min-height);
   margin: 0;
   padding: var(--vs-padding-y) var(--vs-padding-x);
-  padding-right: calc(var(--vs-padding-x) + var(--vs-indicator-icon-size) + 0.5rem);
+  padding-right: calc(var(--vs-padding-x) + var(--vs-trailing-icon-size) + 0.5rem);
   border: var(--vs-border);
   border-radius: var(--vs-border-radius);
   background-color: var(--vs-background-color);
@@ -148,11 +152,27 @@
   color: var(--vs-placeholder-color);
 }
 
+[data-assembled-select] [data-select-icon] {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--vs-icon-size);
+  height: var(--vs-icon-size);
+  margin-right: var(--vs-icon-gap);
+  color: var(--vs-icon-color);
+}
+
+[data-assembled-select] [data-select-icon] svg {
+  width: var(--vs-icon-size);
+  height: var(--vs-icon-size);
+}
+
 [data-assembled-select] [data-select-trigger][aria-expanded="true"] [data-select-value]:not(:has([data-select-tag])) {
   opacity: var(--vs-option-opacity-menu-open);
 }
 
-[data-assembled-select] [data-select-indicator] {
+[data-assembled-select] [data-select-trailing-icon] {
   position: absolute;
   top: 50%;
   right: var(--vs-padding-x);
@@ -160,23 +180,23 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: var(--vs-indicator-icon-size);
-  height: var(--vs-indicator-icon-size);
-  color: var(--vs-indicator-icon-color);
+  width: var(--vs-trailing-icon-size);
+  height: var(--vs-trailing-icon-size);
+  color: var(--vs-trailing-icon-color);
   transform: translateY(-50%);
-  transition: var(--vs-indicator-dropdown-icon-transition);
+  transition: var(--vs-trailing-icon-transition);
   pointer-events: none;
 }
 
-[data-assembled-select] [data-select-indicator][data-open="true"] {
+[data-assembled-select] [data-select-trailing-icon][data-open="true"] {
   transform: translateY(-50%) rotate(180deg);
 }
 
-[data-assembled-select] [data-select-indicator][data-loading="true"] svg {
+[data-assembled-select] [data-select-trailing-icon][data-loading="true"] svg {
   display: none;
 }
 
-[data-assembled-select] [data-select-indicator][data-loading="true"]::after {
+[data-assembled-select] [data-select-trailing-icon][data-loading="true"]::after {
   content: "";
   display: inline-block;
   width: var(--vs-spinner-size);
@@ -190,18 +210,18 @@
 [data-assembled-select] [data-select-clear] {
   position: absolute;
   top: 50%;
-  right: calc(var(--vs-padding-x) + var(--vs-indicator-icon-size) + var(--vs-indicators-gap));
+  right: calc(var(--vs-padding-x) + var(--vs-trailing-icon-size) + var(--vs-trailing-icons-gap));
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--vs-indicator-icon-size);
-  height: var(--vs-indicator-icon-size);
+  width: var(--vs-trailing-icon-size);
+  height: var(--vs-trailing-icon-size);
   margin: 0;
   padding: 0;
   border: 0;
-  color: var(--vs-indicator-icon-color);
+  color: var(--vs-trailing-icon-color);
   background: none;
-  cursor: var(--vs-indicator-icon-cursor);
+  cursor: var(--vs-trailing-icon-cursor);
   transform: translateY(-50%);
 }
 
@@ -211,8 +231,8 @@
 }
 
 [data-assembled-select] [data-select-clear] svg {
-  width: var(--vs-indicator-icon-size);
-  height: var(--vs-indicator-icon-size);
+  width: var(--vs-trailing-icon-size);
+  height: var(--vs-trailing-icon-size);
 }
 
 [data-assembled-select] [data-select-tag] {

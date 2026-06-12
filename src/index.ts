@@ -2,7 +2,7 @@ export { default as Select } from "./assembled/Select.vue";
 
 export {
   SelectClear,
-  SelectIndicator,
+  SelectIcon,
   SelectInput,
   SelectListbox,
   SelectNoOptions,
@@ -10,6 +10,7 @@ export {
   SelectPopover,
   SelectRoot,
   SelectTag,
+  SelectTrailingIcon,
   SelectTrigger,
   SelectValue,
 } from "./primitives";

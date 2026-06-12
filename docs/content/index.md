@@ -183,7 +183,7 @@ ui:
     Slots
 
     #description
-    Customize values, options, tags, indicators, and empty states on primitives.
+    Customize values, options, tags, icons, and empty states on primitives.
     ::::
 
     ::::u-page-card

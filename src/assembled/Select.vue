@@ -11,13 +11,14 @@ import {
   normalizeSelectOptions,
 } from "@/lib/normalize-options";
 import SelectClear from "@/primitives/SelectClear.vue";
-import SelectIndicator from "@/primitives/SelectIndicator.vue";
+import SelectIcon from "@/primitives/SelectIcon.vue";
 import SelectInput from "@/primitives/SelectInput.vue";
 import SelectListbox from "@/primitives/SelectListbox.vue";
 import SelectNoOptions from "@/primitives/SelectNoOptions.vue";
 import SelectOptionItem from "@/primitives/SelectOption.vue";
 import SelectPopover from "@/primitives/SelectPopover.vue";
 import SelectRoot from "@/primitives/SelectRoot.vue";
+import SelectTrailingIcon from "@/primitives/SelectTrailingIcon.vue";
 import SelectTrigger from "@/primitives/SelectTrigger.vue";
 import SelectValue from "@/primitives/SelectValue.vue";
 
@@ -125,12 +126,19 @@ function emitSourceOptionDeselected(value: OptionValue | null) {
     @option-deselected="emitSourceOptionDeselected"
   >
     <SelectTrigger>
+      <SelectIcon v-if="$slots.icon">
+        <slot name="icon" />
+      </SelectIcon>
       <SelectValue :placeholder="placeholder">
         <template v-if="$slots['tag-remove']" #tag-remove="tagRemoveSlotProps">
           <slot name="tag-remove" v-bind="tagRemoveSlotProps" />
         </template>
       </SelectValue>
-      <SelectIndicator />
+      <SelectTrailingIcon>
+        <template v-if="$slots['trailing-icon']" #default="trailingIconSlotProps">
+          <slot name="trailing-icon" v-bind="trailingIconSlotProps" />
+        </template>
+      </SelectTrailingIcon>
       <SelectClear v-if="clearable">
         <template v-if="$slots.clear" #default>
           <slot name="clear" />

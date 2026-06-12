@@ -216,13 +216,44 @@ describe("assembled Select", () => {
     expect(getPopoverAriaHidden()).toBe("false");
   });
 
-  it("shows the loading indicator when loading is enabled", () => {
+  it("shows the loading trailing icon when loading is enabled", () => {
     const { wrapper } = mountAssembledSelect({
       options,
       loading: true,
     });
 
-    expect(wrapper.get("[data-select-indicator]").attributes("data-loading")).toBe("true");
+    expect(wrapper.get("[data-select-trailing-icon]").attributes("data-loading")).toBe("true");
+  });
+
+  it("renders a custom leading icon from the icon slot", () => {
+    const { wrapper } = mountAssembledSelect({
+      options,
+      slots: {
+        icon: () => "🌍",
+      },
+    });
+
+    const icon = wrapper.get("[data-select-icon]");
+
+    expect(icon.text()).toBe("🌍");
+    expect(icon.attributes("aria-hidden")).toBe("true");
+  });
+
+  it("renders a custom trailing icon from the trailing-icon slot", async () => {
+    const { wrapper } = mountAssembledSelect({
+      options,
+      slots: {
+        "trailing-icon": ({ open }: { open: boolean }) => (open ? "▲" : "▼"),
+      },
+    });
+
+    const trailingIcon = wrapper.get("[data-select-trailing-icon]");
+
+    expect(trailingIcon.text()).toBe("▼");
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+
+    expect(trailingIcon.text()).toBe("▲");
   });
 
   it("shows a checkmark on selected options in multi-select mode", async () => {

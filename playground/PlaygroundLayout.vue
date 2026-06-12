@@ -15,6 +15,7 @@ const links = [
   { path: "/no-options-slot", label: "No options slot" },
   { path: "/tag-remove-slot", label: "Tag remove slot" },
   { path: "/clear-slot", label: "Clear slot" },
+  { path: "/icon-slots", label: "Icon slots" },
   { path: "/menu-positioning", label: "Menu positioning" },
   { path: "/search-event", label: "Search event" },
   { path: "/events", label: "Events" },

@@ -4,13 +4,13 @@ import { mount } from "@vue/test-utils";
 import { h, ref } from "vue";
 
 import SelectClear from "../primitives/SelectClear.vue";
-import SelectIndicator from "../primitives/SelectIndicator.vue";
 import SelectInput from "../primitives/SelectInput.vue";
 import SelectListbox from "../primitives/SelectListbox.vue";
 import SelectNoOptions from "../primitives/SelectNoOptions.vue";
 import SelectOption from "../primitives/SelectOption.vue";
 import SelectPopover from "../primitives/SelectPopover.vue";
 import SelectRoot from "../primitives/SelectRoot.vue";
+import SelectTrailingIcon from "../primitives/SelectTrailingIcon.vue";
 import SelectTrigger from "../primitives/SelectTrigger.vue";
 import SelectValue from "../primitives/SelectValue.vue";
 
@@ -68,7 +68,7 @@ export function mountPrimitiveSelect(props: MountPrimitiveSelectOptions = {}) {
         h(SelectTrigger, null, {
           default: () => [
             h(SelectValue, { placeholder: props.placeholder ?? "Pick a language" }),
-            h(SelectIndicator),
+            h(SelectTrailingIcon),
             h(SelectClear),
           ],
         }),

@@ -1,5 +1,5 @@
 export { default as SelectClear } from "./SelectClear.vue";
-export { default as SelectIndicator } from "./SelectIndicator.vue";
+export { default as SelectIcon } from "./SelectIcon.vue";
 export { default as SelectInput } from "./SelectInput.vue";
 export { default as SelectListbox } from "./SelectListbox.vue";
 export { default as SelectNoOptions } from "./SelectNoOptions.vue";
@@ -7,5 +7,6 @@ export { default as SelectOption } from "./SelectOption.vue";
 export { default as SelectPopover } from "./SelectPopover.vue";
 export { default as SelectRoot } from "./SelectRoot.vue";
 export { default as SelectTag } from "./SelectTag.vue";
+export { default as SelectTrailingIcon } from "./SelectTrailingIcon.vue";
 export { default as SelectTrigger } from "./SelectTrigger.vue";
 export { default as SelectValue } from "./SelectValue.vue";

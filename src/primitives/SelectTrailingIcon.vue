@@ -10,7 +10,7 @@ const isLoading = computed(() => context.loading.value);
 
 <template>
   <span
-    data-select-indicator
+    data-select-trailing-icon
     :data-open="isOpen"
     :data-loading="isLoading"
     aria-hidden="true"

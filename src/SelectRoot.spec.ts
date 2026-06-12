@@ -5,7 +5,6 @@ import { describe, expect, it } from "vitest";
 import { defineComponent, h, ref } from "vue";
 
 import SelectClear from "./primitives/SelectClear.vue";
-import SelectIndicator from "./primitives/SelectIndicator.vue";
 import SelectInput from "./primitives/SelectInput.vue";
 import SelectListbox from "./primitives/SelectListbox.vue";
 import SelectNoOptions from "./primitives/SelectNoOptions.vue";
@@ -13,6 +12,7 @@ import SelectOption from "./primitives/SelectOption.vue";
 import SelectPopover from "./primitives/SelectPopover.vue";
 import SelectRoot from "./primitives/SelectRoot.vue";
 import SelectTag from "./primitives/SelectTag.vue";
+import SelectTrailingIcon from "./primitives/SelectTrailingIcon.vue";
 import SelectTrigger from "./primitives/SelectTrigger.vue";
 import SelectValue from "./primitives/SelectValue.vue";
 import {
@@ -421,7 +421,7 @@ describe("v1 primitive composition", () => {
     expect(wrapper.findAll("[data-select-tag]")).toHaveLength(1);
   });
 
-  it("exposes loading state on the indicator primitive", () => {
+  it("exposes loading state on the trailing icon primitive", () => {
     const model = ref<SelectModelValue<string>>(null);
 
     const wrapper = mount(SelectRoot<string>, {
@@ -436,16 +436,16 @@ describe("v1 primitive composition", () => {
       slots: {
         default: () => [
           h(SelectTrigger, null, {
-            default: () => h(SelectIndicator),
+            default: () => h(SelectTrailingIcon),
           }),
         ],
       },
     });
 
-    expect(wrapper.get("[data-select-indicator]").attributes("data-loading")).toBe("true");
+    expect(wrapper.get("[data-select-trailing-icon]").attributes("data-loading")).toBe("true");
   });
 
-  it("renders a default chevron in the indicator primitive", async () => {
+  it("renders a default chevron in the trailing icon primitive", async () => {
     const model = ref<SelectModelValue<string>>(null);
 
     const wrapper = mount(SelectRoot<string>, {
@@ -459,20 +459,20 @@ describe("v1 primitive composition", () => {
       slots: {
         default: () => [
           h(SelectTrigger, null, {
-            default: () => h(SelectIndicator),
+            default: () => h(SelectTrailingIcon),
           }),
         ],
       },
     });
 
-    const indicator = wrapper.get("[data-select-indicator]");
+    const trailingIcon = wrapper.get("[data-select-trailing-icon]");
 
-    expect(indicator.find("svg").exists()).toBe(true);
-    expect(indicator.attributes("data-open")).toBe("false");
+    expect(trailingIcon.find("svg").exists()).toBe(true);
+    expect(trailingIcon.attributes("data-open")).toBe("false");
 
     await wrapper.get("[data-select-trigger]").trigger("click");
 
-    expect(indicator.attributes("data-open")).toBe("true");
+    expect(trailingIcon.attributes("data-open")).toBe("true");
   });
 
   it("renders a default remove icon in SelectTag", () => {

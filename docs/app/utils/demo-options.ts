@@ -25,3 +25,29 @@ export const languageOptions = [
   { label: "Python", value: "py" },
   { label: "Rust", value: "rs" },
 ];
+
+export type LanguageOptionWithMeta = {
+  label: string;
+  value: string;
+  description: string;
+};
+
+export const languageOptionsWithMeta: LanguageOptionWithMeta[] = [
+  { label: "JavaScript", value: "js", description: "Runs in browsers and Node.js" },
+  { label: "TypeScript", value: "ts", description: "Typed superset of JavaScript" },
+  { label: "Python", value: "py", description: "General-purpose scripting" },
+  { label: "Rust", value: "rs", description: "Systems programming with ownership" },
+];
+
+export type CountryRecord = {
+  name: string;
+  code: string;
+  region: string;
+};
+
+export const countryRecords: CountryRecord[] = [
+  { name: "France", code: "FR", region: "Europe" },
+  { name: "Japan", code: "JP", region: "Asia" },
+  { name: "Brazil", code: "BR", region: "South America" },
+  { name: "Canada", code: "CA", region: "North America" },
+];

@@ -38,6 +38,70 @@
   user-select: none;
 }
 
+.select-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.select-demo__control {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ui-text-muted);
+}
+
+.select-demo__control select {
+  min-width: 6rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  font: inherit;
+}
+
+.select-primitive-option {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.select-primitive-option__label {
+  font-weight: 500;
+}
+
+.select-primitive-option__meta {
+  font-size: 0.75rem;
+  color: var(--ui-text-muted);
+}
+
+.select-primitive-option__region {
+  margin-inline-start: auto;
+  padding: 0.125rem 0.375rem;
+  border-radius: 999px;
+  background: var(--ui-bg-muted);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--ui-text-muted);
+  white-space: nowrap;
+}
+
+.select-primitive-option--row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.select-primitive-create {
+  font-weight: 500;
+}
+
+.select-primitive-empty {
+  color: var(--ui-text-muted);
+}
+
 .select-demo__value {
   display: grid;
   gap: 0.25rem;

@@ -1,8 +1,8 @@
 <br />
 
 <p align="center">
-  <a href="https://vue3-select-component.vercel.app/">
-    <img src="https://vue3-select-component.vercel.app/logo.png" alt="Vue3 Select Component" height="256" width="256" />
+  <a href="https://v0-vue3-select-component.vercel.app/">
+    <img src="https://v0-vue3-select-component.vercel.app/logo.png" alt="Vue3 Select Component" height="256" width="256" />
   </a>
 </p>
 
@@ -29,13 +29,13 @@
 </p>
 
 <p align="center">
- <a href="https://vue3-select-component.vercel.app/" target="__blank">Documentation</a> | <a href="https://vue3-select-component.vercel.app/getting-started.html" target="__blank">Getting Started</a> | <a href="https://vue3-select-component.vercel.app/demo/single-select.html" target="__blank">Examples / Demos</a>
+ <a href="https://v0-vue3-select-component.vercel.app/" target="__blank">Documentation</a> | <a href="https://v0-vue3-select-component.vercel.app/getting-started.html" target="__blank">Getting Started</a> | <a href="https://v0-vue3-select-component.vercel.app/demo/single-select.html" target="__blank">Examples / Demos</a>
 </p>
 
 **Core features:**
 
 - ⚙️ Data manipulation with `v-model`
-- 🔑 [Typesafe relationship](https://vue3-select-component.vercel.app/typescript.html) between `options` and `v-model`
+- 🔑 [Typesafe relationship](https://v0-vue3-select-component.vercel.app/typescript.html) between `options` and `v-model`
 - 🎨 Great styling out-of-the-box, customization with CSS variables & Vue `:deep`
 - ✅ Single & multi-select support
 - 🖌️ Infinite customization with `<slot>`s
@@ -117,7 +117,7 @@ const userOptions: UserOption[] = [
 </template>
 ```
 
-[There's an entire documentation page](https://vue3-select-component.vercel.app/typescript.html) dedicated to usage with TypeScript.
+[There's an entire documentation page](https://v0-vue3-select-component.vercel.app/typescript.html) dedicated to usage with TypeScript.
 
 ## Contributing & Development
 
@@ -130,21 +130,19 @@ const userOptions: UserOption[] = [
 
 ### Contributing
 
-- 🌿 **Branching strategy** - We use `dev` for integration and `master` for releases
+- 🌿 **Branching strategy** - `v0` for 0.x maintenance (hotfixes and npm releases), `master` for v1 development
 - 🚀 **Release process** - How to create prereleases and stable releases
 - 📝 **Commit conventions** - We follow conventional commits
 - 🧪 **Testing requirements** - All PRs need tests and type safety
 - 📖 **Documentation** - How to add examples and update docs
 
-### Development documentation
+### Documentation
 
-The `dev` branch documentation can be found at:
+Documentation for the 0.x line is deployed from the `v0` branch:
 
-https://dev-vue3-select-component.vercel.app/
+https://v0-vue3-select-component.vercel.app/
 
-This documentation is automatically generated from the `dev` branch and is updated with each commit.
-
-**Note**: it doesn't reflect the latest stable release.
+v1 is in active development on `master`. Preview docs locally with `npm run docs:dev`.
 
 ## Releases
 

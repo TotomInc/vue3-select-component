@@ -15,7 +15,7 @@ export default defineConfig({
   ],
 
   sitemap: {
-    hostname: "https://vue3-select-component.vercel.app",
+    hostname: "https://v0-vue3-select-component.vercel.app",
   },
 
   themeConfig: {

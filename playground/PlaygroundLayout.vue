@@ -135,7 +135,7 @@ const sourceError = ref("");
 let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
 
 const rawBaseUrl
-  = "https://raw.githubusercontent.com/TotomInc/vue3-select-component/refs/heads/master/playground/demos";
+  = "https://raw.githubusercontent.com/TotomInc/vue3-select-component/refs/heads/v0/playground/demos";
 
 const demoItems = computed<DemoItem[]>(() => sections.flatMap((section) => section.items));
 const currentDemo = computed(() => demoItems.value.find((item) => item.value === route.path) ?? null);
@@ -226,7 +226,7 @@ watch(currentSourceUrl, loadSource, { immediate: true });
         <div class="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
           <a
             class="inline-flex items-center gap-2 rounded-full border border-neutral-800/80 px-3 py-1.5 transition hover:border-neutral-700 hover:text-neutral-200"
-            href="https://vue3-select-component.vercel.app/"
+            href="https://v0-vue3-select-component.vercel.app/"
             rel="noreferrer"
             target="_blank"
           >

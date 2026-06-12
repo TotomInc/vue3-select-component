@@ -20,7 +20,7 @@ You must import the styles in your application for the component to display corr
 
 Using CSS variables, it is possible to customize the component style easily _but_ this method provides less flexibility over your design. When importing the component, you will notice that CSS variables are injected into the `:root` scope and are prefixed with `--vs-[...]`.
 
-For a complete list of CSS variables, we recommend to take a look at the source-code ([`/src/Select.vue`](https://github.com/TotomInc/vue3-select-component/blob/master/src/Select.vue)) or look at your DevTools _(open DevTools => `Elements` tab => pick `<html />` node => view all CSS variables inside the `:root` scope)_.
+For a complete list of CSS variables, we recommend to take a look at the source-code ([`/src/Select.vue`](https://github.com/TotomInc/vue3-select-component/blob/v0/src/Select.vue)) or look at your DevTools _(open DevTools => `Elements` tab => pick `<html />` node => view all CSS variables inside the `:root` scope)_.
 
 ### List of CSS variables
 

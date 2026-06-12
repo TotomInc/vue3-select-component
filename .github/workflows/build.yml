@@ -6,8 +6,8 @@ on:
       - "*"
   pull_request:
     branches:
+      - v0
       - master
-      - dev
 
 jobs:
   build:

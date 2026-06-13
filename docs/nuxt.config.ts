@@ -9,6 +9,12 @@ export default defineNuxtConfig({
 
   modules: ['@vercel/analytics'],
 
+  // Static deploy serves files from .vercel/output/static only, so Vercel Image
+  // Optimization (/_vercel/image) is unavailable. Use direct public asset URLs.
+  image: {
+    provider: "none",
+  },
+
   runtimeConfig: {
     public: {
       packageVersion: libPackage.version,

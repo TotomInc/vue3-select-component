@@ -9,15 +9,15 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
-    "@vueuse/core": "14.3.0",
     "@comark/nuxt": "0.4.0",
     "@vercel/analytics": "2.0.1",
+    "@vueuse/core": "14.3.0",
     "better-sqlite3": "12.10.0",
-    "docus": "5.12.0",
-    "nuxt": "4.4.6",
+    "docus": "5.12.1",
+    "nuxt": "4.4.8",
     "vue3-select-component": "workspace:*"
   },
   "devDependencies": {
-    "vue": "3.5.35"
+    "vue": "3.5.38"
   }
 }

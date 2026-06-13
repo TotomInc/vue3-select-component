@@ -133,6 +133,12 @@ export const demoRoutes: DemoRoute[] = [
     component: () => import("./demos/GroupedPrimitives.vue"),
   },
   {
+    path: "virtualized-primitives",
+    label: "Virtualized primitives",
+    group: "Customization",
+    component: () => import("./demos/VirtualizedPrimitives.vue"),
+  },
+  {
     path: "menu-positioning",
     label: "Menu positioning",
     group: "Customization",

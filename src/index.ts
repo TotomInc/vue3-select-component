@@ -2,6 +2,8 @@ export { default as Select } from "./assembled/Select.vue";
 
 export type { CreateItemMode } from "./lib/create-item";
 
+export { injectSelectContext, provideSelectContext } from "./lib/context";
+export type { SelectContext } from "./lib/context";
 export {
   SelectClear,
   SelectCreateItem,

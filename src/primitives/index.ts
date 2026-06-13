@@ -1,3 +1,5 @@
+export { injectSelectContext, provideSelectContext } from "../lib/context";
+export type { SelectContext } from "../lib/context";
 export { default as SelectClear } from "./SelectClear.vue";
 export { default as SelectCreateItem } from "./SelectCreateItem.vue";
 export { default as SelectGroup } from "./SelectGroup.vue";

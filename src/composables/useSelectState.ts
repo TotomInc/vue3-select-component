@@ -128,6 +128,13 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
   });
 
   const syncActiveOptionWithFilter = () => {
+    const isTyping = params.searchable.value && searchValue.value.length > 0;
+
+    if (isTyping) {
+      focusFirstOption();
+      return;
+    }
+
     if (isCreateItemActive.value && showCreateItem.value) {
       return;
     }

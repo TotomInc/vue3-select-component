@@ -41,6 +41,38 @@ describe("useSelectState", () => {
     });
   });
 
+  it("focuses the first navigable option while typing even if the current active option remains visible", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+          { label: "TypeScript", value: "ts" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(true),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.setActiveOptionValue("ts");
+      context.searchValue.value = "s";
+
+      expect(context.activeOptionValue.value).toBe("js");
+      expect(context.filteredOptions.value.map((option) => option.value)).toEqual(["js", "ts"]);
+    });
+  });
+
   it("resets the active option when filtering removes it from the navigable set", () => {
     runInScope(() => {
       const modelValue = ref<string | null>(null);
@@ -505,6 +537,41 @@ describe("useSelectState", () => {
       expect(context.searchValue.value).toBe("");
       expect(context.isOpen.value).toBe(false);
       expect(modelValue.value).toBeNull();
+    });
+  });
+
+  it("focuses the first option instead of the create item while typing with matches", () => {
+    runInScope(() => {
+      const modelValue = ref<string | null>(null);
+      const collection = useSelectCollection<string>({
+        propOptions: () => [
+          { label: "JavaScript", value: "js" },
+        ],
+      });
+
+      const { context } = useSelectState({
+        modelValue,
+        multiple: ref(false),
+        disabled: ref(false),
+        searchable: ref(true),
+        clearable: ref(false),
+        loading: ref(false),
+        closeOnSelect: ref(true),
+        createItem: ref("always"),
+        propOptions: ref([]),
+        filterBy: ref((option, search) => option.label.toLowerCase().includes(search.toLowerCase())),
+        collection,
+      });
+
+      context.open();
+      context.searchValue.value = "new";
+
+      expect(context.isCreateItemActive.value).toBe(true);
+
+      context.searchValue.value = "java";
+
+      expect(context.activeOptionValue.value).toBe("js");
+      expect(context.isCreateItemActive.value).toBe(false);
     });
   });
 

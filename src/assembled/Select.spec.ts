@@ -165,6 +165,30 @@ describe("assembled Select", () => {
     expect(wrapper.get("[data-select-value]").text()).toBe("Pick a language");
   });
 
+  it("focuses the first matching option while typing in the search input", async () => {
+    const { wrapper, getInput } = mountAssembledSelect({
+      options: [
+        { label: "Alpha", value: "alpha" },
+        { label: "Beta", value: "beta" },
+        { label: "Gamma", value: "gamma" },
+      ],
+    });
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    const input = getInput().get("input");
+
+    await input.trigger("keydown", { key: "ArrowDown" });
+
+    const getActiveOption = () => document.body.querySelector<HTMLElement>("[data-select-option][data-active='true']");
+
+    expect(getActiveOption()?.dataset.value).toBe("beta");
+
+    await input.setValue("a");
+
+    expect(getActiveOption()?.dataset.value).toBe("alpha");
+    expect(input.attributes("aria-activedescendant")).toBe(getActiveOption()?.id);
+  });
+
   it("emits search when typing in the trigger input", async () => {
     const onSearch = vi.fn();
     const { wrapper, getInput, findVisibleOptions } = mountAssembledSelect({

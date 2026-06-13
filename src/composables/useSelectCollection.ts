@@ -48,9 +48,7 @@ export function useSelectCollection<Value extends string | number>(params: UseSe
     }
 
     for (const option of declarativeRegistry.value.values()) {
-      if (!byValue.has(String(option.value))) {
-        byValue.set(String(option.value), option);
-      }
+      byValue.set(String(option.value), option);
     }
 
     return [...byValue.values()];

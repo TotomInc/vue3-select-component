@@ -313,6 +313,26 @@ describe("v1 SelectRoot core module", () => {
     expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("gamma");
   });
 
+  it("focuses the first matching option while typing in the search input", async () => {
+    const { wrapper } = mountPrimitiveSelect({
+      searchable: true,
+      selectOptions: [
+        { label: "Alpha", value: "alpha" },
+        { label: "Beta", value: "beta" },
+        { label: "Gamma", value: "gamma" },
+      ],
+    });
+
+    await wrapper.get("[data-select-input]").trigger("focus");
+    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowDown" });
+
+    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("beta");
+
+    await wrapper.get("[data-select-input]").setValue("a");
+
+    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("alpha");
+  });
+
   it("filters options and keeps the active option in the filtered set", async () => {
     const { wrapper } = mountPrimitiveSelect({ searchable: true });
 

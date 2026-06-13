@@ -35,7 +35,8 @@ describe("useSelectCollection", () => {
     const values = collection.allOptions.value.map((option) => option.value);
 
     expect(values).toEqual(["js", "ts", "rs"]);
-    expect(collection.allOptions.value.find((option) => option.value === "ts")?.label).toBe("TypeScript");
+    expect(collection.allOptions.value.find((option) => option.value === "ts")?.label).toBe("TS duplicate");
+    expect(collection.allOptions.value.find((option) => option.value === "ts")?.id).toBe("declarative-ts-duplicate");
   });
 
   it("unregisters declarative options on unmount", () => {

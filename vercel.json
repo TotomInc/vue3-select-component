@@ -3,5 +3,5 @@
   "framework": null,
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "VERCEL_OIDC_TOKEN= AI_GATEWAY_API_KEY= pnpm run docs:build",
-  "outputDirectory": "docs/.vercel/output/static"
+  "outputDirectory": "docs/.vercel/output"
 }

@@ -139,6 +139,18 @@ export const demoRoutes: DemoRoute[] = [
     component: () => import("./demos/VirtualizedPrimitives.vue"),
   },
   {
+    path: "infinite-scroll-primitives",
+    label: "Infinite scroll primitives",
+    group: "Customization",
+    component: () => import("./demos/InfiniteScrollPrimitives.vue"),
+  },
+  {
+    path: "remote-search-primitives",
+    label: "Remote search primitives",
+    group: "Customization",
+    component: () => import("./demos/RemoteSearchPrimitives.vue"),
+  },
+  {
     path: "menu-positioning",
     label: "Menu positioning",
     group: "Customization",

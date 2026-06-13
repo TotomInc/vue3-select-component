@@ -118,6 +118,45 @@ describe("assembled Select", () => {
     expect(wrapper.get("[data-select-value]").text()).toBe("France");
   });
 
+  it("closes the menu when Tab moves focus outside a non-searchable trigger", async () => {
+    const { wrapper, getPopoverAriaHidden } = mountAssembledSelect({
+      options,
+      searchable: false,
+    });
+    const outside = document.createElement("button");
+
+    document.body.append(outside);
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    expect(getPopoverAriaHidden()).toBe("false");
+
+    await wrapper.get("[data-select-trigger]").trigger("keydown", { key: "Tab" });
+
+    expect(getPopoverAriaHidden()).toBe("true");
+
+    outside.remove();
+  });
+
+  it("closes the menu when focus moves outside a non-searchable select", async () => {
+    const { wrapper, getPopoverAriaHidden } = mountAssembledSelect({
+      options,
+      searchable: false,
+    });
+    const outside = document.createElement("button");
+
+    document.body.append(outside);
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    expect(getPopoverAriaHidden()).toBe("false");
+
+    outside.focus();
+    await wrapper.vm.$nextTick();
+
+    expect(getPopoverAriaHidden()).toBe("true");
+
+    outside.remove();
+  });
+
   it("closes the menu on Escape", async () => {
     const { wrapper, getListbox, getPopoverAriaHidden } = mountAssembledSelect({ options });
 

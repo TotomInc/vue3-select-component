@@ -6,6 +6,8 @@
 - Do not add v0-to-v1 migration shims or v0 prop aliases in v1 code; document breaking changes in docs only.
 - New primitives API (slots, icons, clear button, empty state, etc.) should be exposed on assembled `Select` where it makes sense.
 - When teleport-related unit tests stay flaky after reasonable effort, remove the blocking test and revisit later rather than blocking delivery.
+- Prefer correcting default behavior over adding opt-in props when fixing reported UX issues.
+- Behavior and composable fixes should cover both primitives and assembled `Select`, with tests.
 
 ## Learned Workspace Facts
 
@@ -14,5 +16,7 @@
 - Docs and playground consume the library through workspace package linking to built `dist/`, not fragile source aliases.
 - Dropdown positioning uses Reka UI Popover with teleport-to-body as the default for assembled and primitive selects.
 - The library is built with Vite, unplugin, and unplugin-dts.
-- Docs deploy as static SSG via `nuxt generate`; Vercel output directory is `docs/.output/public`.
+- Docs deploy as static SSG via `nuxt generate`; Vercel output directory is `docs/.vercel/output/static`.
+- Complex use cases (virtualized lists, infinite scroll, remote data) are primitives recipes in the guide, not assembled `Select` APIs.
+- Assembled `Select` defaults `searchable` to `true`.
 - v0 maintenance lives on the `v0` branch with its own Vercel site; active v1 development is on `v1-dev`.

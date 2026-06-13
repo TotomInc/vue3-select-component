@@ -119,6 +119,40 @@ describe("v1 SelectRoot foundation", () => {
     expect(wrapper.findAll("[data-select-option]")).toHaveLength(2);
   });
 
+  it("closes the menu when Tab moves focus outside a non-searchable trigger", async () => {
+    const { wrapper } = mountPrimitiveSelect({ searchable: false });
+    const trigger = wrapper.get("[data-select-trigger]");
+    const outside = document.createElement("button");
+
+    document.body.append(outside);
+
+    await trigger.trigger("click");
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+
+    await trigger.trigger("keydown", { key: "Tab" });
+
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+
+    outside.remove();
+  });
+
+  it("closes the menu when focus moves outside a non-searchable select", async () => {
+    const { wrapper } = mountPrimitiveSelect({ searchable: false });
+    const outside = document.createElement("button");
+
+    document.body.append(outside);
+
+    await wrapper.get("[data-select-trigger]").trigger("click");
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+
+    outside.focus();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+
+    outside.remove();
+  });
+
   it("closes the menu when clicking the trigger again without reopening", async () => {
     const { wrapper } = mountPrimitiveSelect();
     const trigger = wrapper.get("[data-select-trigger]");

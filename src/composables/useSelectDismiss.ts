@@ -58,6 +58,24 @@ export function useSelectDismiss(params: UseSelectDismissParams) {
     params.close();
   };
 
+  const handleDocumentFocusIn = (event: FocusEvent) => {
+    if (!params.isOpen.value) {
+      return;
+    }
+
+    const { target } = event;
+
+    if (!(target instanceof Node)) {
+      return;
+    }
+
+    if (isNodeInsideElements(target, dismissTargets())) {
+      return;
+    }
+
+    params.close();
+  };
+
   let isListening = false;
 
   const startListening = () => {
@@ -66,6 +84,7 @@ export function useSelectDismiss(params: UseSelectDismissParams) {
     }
 
     document.addEventListener("click", handleDocumentClick);
+    document.addEventListener("focusin", handleDocumentFocusIn);
     isListening = true;
   };
 
@@ -75,6 +94,7 @@ export function useSelectDismiss(params: UseSelectDismissParams) {
     }
 
     document.removeEventListener("click", handleDocumentClick);
+    document.removeEventListener("focusin", handleDocumentFocusIn);
     isListening = false;
   };
 

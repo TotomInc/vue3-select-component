@@ -1,64 +1,94 @@
 <br />
 
 <p align="center">
-  <a href="https://vue3-select-component.vercel.app/">
-    <img src="https://vue3-select-component.vercel.app/logo.png" alt="Vue3 Select Component" height="256" width="256" />
+  <a href="https://v1-vue3-select-component.vercel.app/">
+    <img src="https://v1-vue3-select-component.vercel.app/logo.png" alt="Vue 3 Select Component" height="256" width="256" />
   </a>
 </p>
 
 <h1 align="center">
-  Vue3-Select-Component
+  Vue 3 Select Component
 </h1>
 
 <p align="center">
-  Best-in-class select component for Vue 3, with a focus on DX, accessibility and ease-of-use.
+  Accessible select for Vue 3. Type-safe, customizable, with a batteries-included <code>Select</code> or headless primitives.
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/vue3-select-component" target="__blank">
-    <img src="https://img.shields.io/npm/v/vue3-select-component.svg?style=flat" alt="npm package" />
+  <a href="https://www.npmjs.com/package/vue3-select-component" target="_blank">
+    <img src="https://img.shields.io/npm/v/vue3-select-component.svg?style=flat" alt="npm version" />
   </a>
 
-  <a href="https://www.npmjs.com/package/vue3-select-component" target="__blank">
-    <img src="https://img.shields.io/npm/dm/vue3-select-component?style=flat" alt="npm package" />
+  <a href="https://www.npmjs.com/package/vue3-select-component" target="_blank">
+    <img src="https://img.shields.io/npm/dm/vue3-select-component?style=flat" alt="npm downloads" />
   </a>
 
-  <a href="https://github.com/TotomInc/vue3-select-component" target="__blank">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/TotomInc/vue3-select-component?flat">
+  <a href="https://github.com/TotomInc/vue3-select-component" target="_blank">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/TotomInc/vue3-select-component?style=flat">
   </a>
 </p>
 
 <p align="center">
- <a href="https://vue3-select-component.vercel.app/" target="__blank">Documentation</a> | <a href="https://vue3-select-component.vercel.app/getting-started/usage" target="__blank">Getting Started</a> | <a href="https://vue3-select-component.vercel.app/guide/primitives" target="__blank">Primitives</a>
+  <a href="https://v1-vue3-select-component.vercel.app/" target="_blank">Documentation</a>
+  ·
+  <a href="https://v1-vue3-select-component.vercel.app/getting-started/usage" target="_blank">Getting Started</a>
+  ·
+  <a href="https://v1-vue3-select-component.vercel.app/guide/primitives" target="_blank">Primitives</a>
+  ·
+  <a href="https://v1-vue3-select-component.vercel.app/guide/migration" target="_blank">v0 Migration</a>
 </p>
 
-**Core features:**
+> **v1** is in active development on the `v1-dev` branch. Documentation lives at [v1-vue3-select-component.vercel.app](https://v1-vue3-select-component.vercel.app/). It introduces a headless primitives API alongside the assembled `Select`. See the [migration guide](https://v1-vue3-select-component.vercel.app/guide/migration) if you are upgrading from v0. v0 maintenance continues on the `v0` branch.
 
-- ⚙️ Data manipulation with `v-model`
-- 🔑 [Typesafe relationship](https://vue3-select-component.vercel.app/guide/typescript) between `options` and `v-model`
-- 🎨 Default styles with `--vs-*` CSS variables, or fully headless primitives
-- ✅ Single & multi-select support
-- 🧱 Assembled `Select` or composable primitives
-- 🪄 `<Teleport />` menu where you want
-- 📦 Light bundle, minimal dependencies
+## What is Vue 3 Select Component?
+
+v1 is a headless select built on two APIs that share the same state machine, accessibility behavior, and TypeScript types:
+
+| API | Import | Best for |
+|-----|--------|----------|
+| **Assembled `Select`** | `vue3-select-component` | Drop-in select with search, clear, multi-select, and sensible defaults |
+| **Primitives** | `vue3-select-component/primitives` | Custom UX such as infinite scroll, virtualized lists, or non-standard layouts |
+
+The assembled `Select` is a fixed composition of primitives. It is not a separate implementation. When defaults are not enough, compose primitives directly or mix both approaches.
+
+## Features
+
+- **Two-way binding** with `v-model` for single and multi-select
+- **End-to-end types** that tie `option.value` to `v-model`
+- **Search and filter** with custom `filterBy` logic (search is on by default on assembled `Select`)
+- **Clear, loading, and disabled states** with familiar boolean props
+- **Option groups** via `SelectGroup`, `SelectGroupLabel`, and `SelectSeparator` primitives
+- **Create new options** with `createItem` on assembled `Select` or `SelectRoot`
+- **Accessible by default** following the WAI-ARIA combobox pattern
+- **Teleport the menu** to `document.body` by default (Reka UI Popover under the hood)
+- **Style your way** with optional `--vs-*` CSS variables, or fully unstyled primitives with `data-*` hooks
+- **Light bundle** with Vue 3.5+ and [Reka UI](https://reka-ui.com/) as the only runtime dependency
+
+## Requirements
+
+- [Vue.js](https://vuejs.org) **3.5+**
 
 ## Installation
 
-Install the package with your package manager:
+```bash
+pnpm add vue3-select-component
+```
 
 ```bash
-npm i vue3-select-component
+npm install vue3-select-component
 ```
+
+## Quick start
 
 Import the assembled component and its default styles:
 
 ```vue
 <script setup lang="ts">
-import { ref } from "vue";
-import Select from "vue3-select-component";
-import "vue3-select-component/styles";
+import { ref } from "vue"
+import Select from "vue3-select-component"
+import "vue3-select-component/styles"
 
-const selected = ref<string | null>(null);
+const selected = ref<string | null>(null)
 </script>
 
 <template>
@@ -74,30 +104,110 @@ const selected = ref<string | null>(null);
 </template>
 ```
 
-Styles are opt-in and must be imported manually (CSP-friendly). You can also import `vue3-select-component/styles.css` directly.
+Styles are opt-in and imported manually (CSP-friendly). You can also import `vue3-select-component/styles.css` directly.
 
-Primitives ship unstyled. See the [styling guide](https://vue3-select-component.vercel.app/guide/styling).
+### Multi-select, clear, and search
 
-## Advanced TypeScript usage
+```vue
+<Select
+  v-model="selectedTags"
+  multiple
+  clearable
+  :options="options"
+  placeholder="Search and select"
+/>
+```
 
-Vue 3 Select Component creates a type-safe relationship between `option.value` and `v-model`.
+| Mode | `v-model` type | Default |
+|------|----------------|---------|
+| Single | `string \| number \| null` | `null` |
+| Multi | `(string \| number)[]` | `[]` |
+
+Disable search with `:searchable="false"` when you want a button-only select.
+
+## Import paths
+
+| Import | Description |
+|--------|-------------|
+| `vue3-select-component` | Assembled `Select` (default export) |
+| `vue3-select-component/primitives` | Headless primitive components |
+| `vue3-select-component/styles` | Default assembled styles (`--vs-*` variables) |
+| `vue3-select-component/styles.css` | Same stylesheet (explicit `.css` subpath) |
+
+## Primitives
+
+Compose custom selects from low-level building blocks:
 
 ```vue
 <script setup lang="ts">
-import type { SelectOptionData } from "vue3-select-component";
-import { ref } from "vue";
-import Select from "vue3-select-component";
-import "vue3-select-component/styles";
+import { ref } from "vue"
+import {
+  SelectRoot,
+  SelectTrigger,
+  SelectValue,
+  SelectInput,
+  SelectTrailingIcon,
+  SelectPopover,
+  SelectListbox,
+  SelectOption,
+  SelectNoOptions,
+} from "vue3-select-component/primitives"
+import "vue3-select-component/styles"
 
-type UserOption = SelectOptionData<number> & { username: string };
+const model = ref<string | null>(null)
 
-const selectedUser = ref<number | null>(null);
+const options = [
+  { value: "js", label: "JavaScript" },
+  { value: "ts", label: "TypeScript" },
+]
+</script>
+
+<template>
+  <SelectRoot v-model="model" :options="options" searchable>
+    <SelectTrigger>
+      <SelectValue placeholder="Pick a language" />
+      <SelectInput />
+      <SelectTrailingIcon />
+    </SelectTrigger>
+
+    <SelectPopover>
+      <SelectListbox>
+        <SelectNoOptions>No results</SelectNoOptions>
+        <SelectOption
+          v-for="opt in options"
+          :key="opt.value"
+          :value="opt.value"
+          :label="opt.label"
+        />
+      </SelectListbox>
+    </SelectPopover>
+  </SelectRoot>
+</template>
+```
+
+Available primitives include `SelectRoot`, `SelectTrigger`, `SelectValue`, `SelectInput`, `SelectIcon`, `SelectTrailingIcon`, `SelectClear`, `SelectPopover`, `SelectListbox`, `SelectOption`, `SelectGroup`, `SelectGroupLabel`, `SelectSeparator`, `SelectTag`, `SelectNoOptions`, and `SelectCreateItem`.
+
+Advanced patterns such as virtualized lists, infinite scroll, and remote data fetching are documented as primitives recipes, not assembled `Select` APIs. See the [complex use cases guide](https://v1-vue3-select-component.vercel.app/guide/complex-use-cases).
+
+## TypeScript
+
+Option values and `v-model` stay in sync through generics:
+
+```vue
+<script setup lang="ts">
+import type { SelectOptionData } from "vue3-select-component"
+import { ref } from "vue"
+import Select from "vue3-select-component"
+import "vue3-select-component/styles"
+
+type UserOption = SelectOptionData<number> & { username: string }
+
+const selectedUser = ref<number | null>(null)
 
 const userOptions: UserOption[] = [
   { label: "Alice", value: 1, username: "alice15" },
   { label: "Bob", value: 2, username: "bob01" },
-  { label: "Charlie", value: 3, username: "charlie20" },
-];
+]
 </script>
 
 <template>
@@ -110,25 +220,61 @@ const userOptions: UserOption[] = [
 </template>
 ```
 
-[See the TypeScript guide](https://vue3-select-component.vercel.app/guide/typescript) for primitives, model types, and generics.
+See the [TypeScript guide](https://v1-vue3-select-component.vercel.app/guide/typescript) for model types, custom option shapes, and primitive generics.
 
-## Contributing & Development
+## Styling
 
-This repository is a pnpm workspace with three packages:
+Import `vue3-select-component/styles` for the assembled `Select`, then customize with `--vs-*` CSS variables. Primitives ship unstyled and expose stable `data-*` hooks for your design system.
+
+See the [styling guide](https://v1-vue3-select-component.vercel.app/guide/styling).
+
+## Nuxt
+
+Works in Nuxt 3 and 4 with no dedicated module. Import the stylesheet once in `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  css: ["vue3-select-component/styles"],
+})
+```
+
+See the [Nuxt guide](https://v1-vue3-select-component.vercel.app/guide/nuxt) for SSR, SSG, and hydration notes.
+
+## Migrating from v0
+
+v1 is a breaking release. Main changes:
+
+| v0 | v1 |
+|----|-----|
+| `isMulti` | `multiple` |
+| `isSearchable` | `searchable` |
+| `isClearable` | `clearable` |
+| `isDisabled` | `disabled` |
+| `isLoading` | `loading` |
+| `Option<T>` type | `SelectOptionData<T>` type |
+| Slots on monolithic `VueSelect` | Slots on individual primitives |
+
+v0 prop aliases are not supported in v1. Rename props during migration.
+
+See the full [migration guide](https://v1-vue3-select-component.vercel.app/guide/migration).
+
+## Contributing & development
+
+This repository is a pnpm workspace:
 
 | Package | Path | Purpose |
 |---------|------|---------|
 | `vue3-select-component` | `src/` | Published library |
 | `@vue3-select-component/playground` | `playground/` | Interactive demos |
-| `@vue3-select-component/docs` | `docs/` | Documentation site |
+| `@vue3-select-component/docs` | `docs/` | v1 documentation site ([v1-vue3-select-component.vercel.app](https://v1-vue3-select-component.vercel.app/)) |
 
 ### Getting started
 
-1. Clone the repository
+1. Clone the repository and check out `v1-dev`
 2. Install dependencies: `pnpm install`
 3. Start local development: `pnpm run dev`
 
-`pnpm run dev` runs the library watch build and the playground together. The playground resolves component source from `src/` directly, so changes are reflected without publishing.
+`pnpm run dev` watch-builds the library and runs the playground. The playground resolves library source from `src/` for fast feedback during component work.
 
 ### Workspace scripts
 
@@ -139,28 +285,29 @@ This repository is a pnpm workspace with three packages:
 | `pnpm run dev:playground` | Playground dev server only |
 | `pnpm run dev:docs` | Documentation dev server |
 | `pnpm run docs:dev` | Watch-build lib + docs dev server |
+| `pnpm run docs:build` | Build lib + generate static docs |
 | `pnpm run build` | Build all workspace packages |
-| `pnpm run test` | Run library tests |
+| `pnpm run test` | Run library tests with coverage |
 | `pnpm run lint` | Lint the monorepo |
 
 ### Library build output
 
-The library build produces:
+| Output | Description |
+|--------|-------------|
+| `dist/index.es.js` | Assembled `Select` entry |
+| `dist/primitives.js` | Headless primitives entry |
+| `dist/styles.css` | Minified default styles |
 
-- `dist/index.es.js` — assembled `Select` entry
-- `dist/primitives.js` — headless primitives entry
-- `dist/styles.css` — minified default styles (`vue3-select-component/styles`)
+### Contributing guidelines
 
-### Contributing
-
-- 🌿 **Branching** — `v1-dev` for integration, `master` for releases
-- 📝 **Commits** — Conventional commits
-- 🧪 **Tests** — All PRs need tests and type safety (`pnpm run test`, `pnpm run build`)
-- 📖 **Docs** — Update `docs/` when changing public API or behavior
+- **Branching** — `v1-dev` for v1 integration, `master` for releases, `v0` for v0 maintenance
+- **Commits** — Conventional commits
+- **Tests** — PRs should include tests and pass `pnpm run test` and `pnpm run build`
+- **Docs** — Update `docs/` when changing public API or behavior
 
 ## Releases
 
-For changelog, visit [releases](https://github.com/TotomInc/vue3-select-component/releases).
+Changelog and release notes are on [GitHub Releases](https://github.com/TotomInc/vue3-select-component/releases).
 
 ## License
 

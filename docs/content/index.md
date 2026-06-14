@@ -1,9 +1,9 @@
 ---
 title: Vue 3 Select Component
-description: Accessible select for Vue 3. Type-safe, customizable, with assembled Select or headless primitives.
+description: Build accessible, type-safe select inputs in Vue 3. Use the batteries-included Select component or compose headless primitives for full UI control.
 seo:
-  title: Vue 3 Select Component
-  description: Accessible select for Vue 3. Type-safe, customizable, with assembled Select or headless primitives.
+  title: Vue 3 Select Component | Accessible Vue 3 Select
+  description: Build accessible, type-safe select inputs in Vue 3. Use the batteries-included Select component or compose headless primitives for full UI control.
 ---
 
 ::u-page-hero

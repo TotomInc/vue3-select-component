@@ -8,16 +8,16 @@ seo:
 
 ::u-page-hero
 ---
-orientation: horizontal
+orientation: vertical
 ui:
   container: max-w-7xl mx-auto
 ---
 #headline
   :::u-button
   ---
-  size: sm
+  size: md
   to: /guide/migration
-  variant: outline
+  variant: soft
   icon: i-lucide-sparkles
   ---
   v1: introducing Primitives

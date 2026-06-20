@@ -16,8 +16,7 @@ ignoredBuiltDependencies:
   - sharp
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
-  - "@comark/*"
-  - comark
+  - gensync
 onlyBuiltDependencies:
   - better-sqlite3
 shellEmulator: true

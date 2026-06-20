@@ -22,12 +22,12 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6

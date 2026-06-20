@@ -21,4 +21,4 @@
 - Docs deploy as static SSG via `nuxt generate`; Vercel output directory is `docs/.vercel/output/static`.
 - Complex use cases (virtualized lists, infinite scroll, remote data) are primitives recipes in the guide, not assembled `Select` APIs.
 - Assembled `Select` defaults `searchable` to `true`.
-- v0 maintenance lives on the `v0` branch with its own Vercel site; active v1 development is on `v1-dev`.
+- v1 documentation is deployed at `vue3-select-component.vercel.app`; v0 documentation at `v0-vue3-select-component.vercel.app` on the `v0` branch.

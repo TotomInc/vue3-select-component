@@ -5,7 +5,7 @@ import libPackage from "../src/package.json";
 
 const libStyles = fileURLToPath(new URL("../src/styles.css", import.meta.url));
 
-const siteUrl = process.env.NUXT_SITE_URL ?? "https://v1-vue3-select-component.vercel.app";
+const siteUrl = process.env.NUXT_SITE_URL ?? "https://vue3-select-component.vercel.app";
 
 export default defineNuxtConfig({
   extends: ["docus"],

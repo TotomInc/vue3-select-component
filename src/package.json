@@ -5,6 +5,7 @@
   "description": "A flexible & modern select-input control for Vue 3.",
   "author": "Thomas Cazade <cazade.thomas@gmail.com>",
   "license": "MIT",
+  "homepage": "https://vue3-select-component.vercel.app/",
   "repository": {
     "type": "git",
     "url": "https://github.com/TotomInc/vue3-select-component.git"

@@ -100,7 +100,11 @@ function onMenuOpened() {
       </SelectRoot>
     </div>
 
-    <p v-if="fetchError" class="demo-error" role="alert">
+    <p
+      v-if="fetchError"
+      class="demo-error"
+      role="alert"
+    >
       {{ fetchError }}
     </p>
 

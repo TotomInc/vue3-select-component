@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, useTemplateRef } from "vue";
 import { useInfiniteScroll } from "@vueuse/core";
+import { computed, useTemplateRef } from "vue";
 import {
   injectSelectContext,
   SelectNoOptions,

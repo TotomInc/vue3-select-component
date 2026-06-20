@@ -20,10 +20,10 @@ export default defineAppConfig({
 
     contentNavigation: {
       defaultVariants: {
-        variant: 'pill',
-        highlight: false
-      }
-    }
+        variant: "pill",
+        highlight: false,
+      },
+    },
   },
 
   header: {

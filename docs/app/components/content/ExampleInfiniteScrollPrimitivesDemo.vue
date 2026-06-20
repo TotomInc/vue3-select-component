@@ -11,8 +11,8 @@ import {
   SelectValue,
 } from "vue3-select-component/primitives";
 
-import InfiniteScrollOptionList from "./InfiniteScrollOptionList.vue";
 import { fetchPostsPage, postToSelectOption } from "~/utils/jsonplaceholder";
+import InfiniteScrollOptionList from "./InfiniteScrollOptionList.vue";
 
 const PAGE_SIZE = 20;
 
@@ -93,7 +93,11 @@ function onMenuOpened() {
       </SelectPopover>
     </SelectRoot>
 
-    <p v-if="fetchError" class="select-demo__error" role="alert">
+    <p
+      v-if="fetchError"
+      class="select-demo__error"
+      role="alert"
+    >
       {{ fetchError }}
     </p>
 

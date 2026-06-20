@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { SelectOptionData } from "vue3-select-component";
 
-import { ref } from "vue";
 import { useDebounceFn } from "@vueuse/core";
+import { ref } from "vue";
 import {
   SelectInput,
   SelectListbox,
@@ -112,7 +112,11 @@ function onMenuOpened() {
       </SelectRoot>
     </div>
 
-    <p v-if="fetchError" class="demo-error" role="alert">
+    <p
+      v-if="fetchError"
+      class="demo-error"
+      role="alert"
+    >
       {{ fetchError }}
     </p>
 

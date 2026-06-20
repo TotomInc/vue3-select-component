@@ -127,6 +127,23 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     return activeOption?.id;
   });
 
+  const setActiveOptionValue = (value: OptionValue | null) => {
+    activeOptionValue.value = value;
+  };
+
+  const focusFirstOption = () => {
+    activeOptionValue.value = navigableOptions.value[0]?.value ?? null;
+    isCreateItemActive.value = activeOptionValue.value == null && showCreateItem.value;
+  };
+
+  const focusSearchInput = () => {
+    if (!params.searchable.value) {
+      return;
+    }
+
+    inputElement.value?.focus();
+  };
+
   const syncActiveOptionWithFilter = () => {
     const isTyping = params.searchable.value && searchValue.value.length > 0;
 
@@ -153,23 +170,6 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     if (activeOptionValue.value == null && showCreateItem.value) {
       isCreateItemActive.value = true;
     }
-  };
-
-  const setActiveOptionValue = (value: OptionValue | null) => {
-    activeOptionValue.value = value;
-  };
-
-  const focusFirstOption = () => {
-    activeOptionValue.value = navigableOptions.value[0]?.value ?? null;
-    isCreateItemActive.value = activeOptionValue.value == null && showCreateItem.value;
-  };
-
-  const focusSearchInput = () => {
-    if (!params.searchable.value) {
-      return;
-    }
-
-    inputElement.value?.focus();
   };
 
   const moveActiveOption = (direction: 1 | -1) => {

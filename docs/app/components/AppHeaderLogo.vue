@@ -1,9 +1,9 @@
 <script setup lang="ts">
-const appConfig = useAppConfig()
-const { public: { packageVersion } } = useRuntimeConfig()
-const { hasLogo, headerLightUrl, headerDarkUrl, contextMenuItems } = useLogoAssets()
+const appConfig = useAppConfig();
+const { public: { packageVersion } } = useRuntimeConfig();
+const { hasLogo, headerLightUrl, headerDarkUrl, contextMenuItems } = useLogoAssets();
 
-const title = computed(() => appConfig.header?.title ?? "Vue3-Select-Component")
+const title = computed(() => appConfig.header?.title ?? "Vue3-Select-Component");
 </script>
 
 <template>
@@ -16,7 +16,8 @@ const title = computed(() => appConfig.header?.title ?? "Vue3-Select-Component")
         :light="headerLightUrl"
         :dark="headerDarkUrl"
         :alt="appConfig.header?.logo?.alt || title"
-        :class="['h-6 w-auto shrink-0', appConfig.header?.logo?.class]"
+        class="h-6 w-auto shrink-0"
+        :class="[appConfig.header?.logo?.class]"
       />
     </UContextMenu>
 

@@ -1,3 +1,4 @@
+/* eslint-disable node/prefer-global/process */
 import { fileURLToPath } from "node:url";
 
 import libPackage from "../src/package.json";
@@ -9,7 +10,7 @@ const siteUrl = process.env.NUXT_SITE_URL ?? "https://v1-vue3-select-component.v
 export default defineNuxtConfig({
   extends: ["docus"],
 
-  modules: ['@vercel/analytics'],
+  modules: ["@vercel/analytics"],
 
   site: {
     name: "Vue 3 Select Component",

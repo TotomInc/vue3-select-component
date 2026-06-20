@@ -19,7 +19,8 @@
     "bumpp:rc": "pnpm --filter vue3-select-component run bumpp:rc"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "9.0.0",
-    "eslint": "10.5.0"
+    "@vue3-select-component/eslint-config": "workspace:*",
+    "eslint": "10.5.0",
+    "jiti": "2.7.0"
   }
 }

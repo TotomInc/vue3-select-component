@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
 import { useVirtualList } from "@vueuse/core";
+import { computed, watch } from "vue";
 import {
   injectSelectContext,
   SelectNoOptions,
   SelectOption,
 } from "vue3-select-component/primitives";
 
-const OPTION_ROW_HEIGHT = 40;
-
 defineProps<{
   totalCount: number;
 }>();
+
+const OPTION_ROW_HEIGHT = 40;
 
 const context = injectSelectContext();
 

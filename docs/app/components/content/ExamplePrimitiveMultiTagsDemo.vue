@@ -19,7 +19,11 @@ const selected = ref<string[]>(["FR", "DE"]);
 
 <template>
   <div data-assembled-select class="select-demo">
-    <SelectRoot v-model="selected" multiple searchable>
+    <SelectRoot
+      v-model="selected"
+      multiple
+      searchable
+    >
       <SelectTrigger>
         <SelectValue placeholder="Select countries">
           <template #tag-remove="{ label }">

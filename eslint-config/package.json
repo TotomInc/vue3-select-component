@@ -1,0 +1,33 @@
+{
+  "name": "@vue3-select-component/eslint-config",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "prepare": "pnpm run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0"
+  },
+  "dependencies": {
+    "@antfu/eslint-config": "9.0.0"
+  },
+  "devDependencies": {
+    "eslint": "10.5.0",
+    "typescript": "5.9.3",
+    "unbuild": "3.6.1"
+  }
+}

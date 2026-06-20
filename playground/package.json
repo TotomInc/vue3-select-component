@@ -3,7 +3,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@vueuse/core": "14.3.0",
@@ -12,6 +14,9 @@
     "vue3-select-component": "workspace:*"
   },
   "devDependencies": {
+    "@vue3-select-component/eslint-config": "workspace:*",
+    "eslint": "10.5.0",
+    "jiti": "2.7.0",
     "typescript": "5.9.3",
     "unplugin-vue": "7.2.0",
     "vite": "8.0.16"

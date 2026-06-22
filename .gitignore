@@ -27,3 +27,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# cursor
+.cursor/hooks/state

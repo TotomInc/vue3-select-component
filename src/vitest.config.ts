@@ -10,7 +10,14 @@ export default mergeConfig(
       coverage: {
         provider: "v8",
         include: ["**/*.vue", "**/*.ts"],
-        exclude: ["test-utils/**", "**/*.spec.ts", "**/*.test.ts"],
+        exclude: [
+          "dist/**",
+          "**/*.d.ts",
+          "test-utils/**",
+          "**/*.spec.ts",
+          "**/*.test.ts",
+          "vite*.config.ts",
+        ],
       },
     },
   }),

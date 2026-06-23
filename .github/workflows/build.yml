@@ -84,3 +84,32 @@ jobs:
 
       - name: Test coverage
         run: pnpm --filter vue3-select-component run test:coverage -- --reporter=verbose
+
+  commitlint:
+    name: Lint commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+
+      - name: Lint commit messages
+        run: |
+          cat > commitlint.config.mjs <<'EOF'
+          export default {
+            extends: ['@commitlint/config-conventional'],
+          };
+          EOF
+
+          npx --yes -p @commitlint/cli -p @commitlint/config-conventional commitlint \
+            --from "${{ github.event.pull_request.base.sha }}" \
+            --to HEAD \
+            --verbose

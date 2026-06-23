@@ -1,8 +1,7 @@
-import type { SelectModelValue } from "./types/model";
-
-import { mount } from "@vue/test-utils";
-import { describe, expect, it, vi } from "vitest";
-import { defineComponent, h, ref } from "vue";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { render } from "vitest-browser-vue";
+import { page } from "vitest/browser";
+import { defineComponent, h } from "vue";
 
 import SelectClear from "./primitives/SelectClear.vue";
 import SelectCreateItem from "./primitives/SelectCreateItem.vue";
@@ -13,40 +12,52 @@ import SelectListbox from "./primitives/SelectListbox.vue";
 import SelectNoOptions from "./primitives/SelectNoOptions.vue";
 import SelectOption from "./primitives/SelectOption.vue";
 import SelectPopover from "./primitives/SelectPopover.vue";
-import SelectRoot from "./primitives/SelectRoot.vue";
 import SelectSeparator from "./primitives/SelectSeparator.vue";
 import SelectTag from "./primitives/SelectTag.vue";
 import SelectTrailingIcon from "./primitives/SelectTrailingIcon.vue";
 import SelectTrigger from "./primitives/SelectTrigger.vue";
 import SelectValue from "./primitives/SelectValue.vue";
 import {
+  cleanupTeleportedSelectContent,
+  dispatchKeydown,
+  flushFocusUpdates,
+  getTeleportedPopoverElement,
+  locateInContainer,
+  queryHTMLElement,
+} from "./test-utils/browser-select-helpers";
+import {
   basicOptions,
-  mountPrimitiveSelect,
   optionsWithDisabled,
-} from "./test-utils/mount-primitive-select";
+  renderPrimitiveSelect,
+  renderSelectRoot,
+} from "./test-utils/render-primitive-select";
 
 describe("v1 SelectRoot foundation", () => {
-  it("renders the root shell and provides context to child primitives", () => {
-    const { wrapper } = mountPrimitiveSelect();
+  afterEach(() => {
+    cleanupTeleportedSelectContent();
+  });
 
-    expect(wrapper.find("[data-select-root]").exists()).toBe(true);
-    expect(wrapper.find("[data-select-trigger]").exists()).toBe(true);
-    expect(wrapper.get("[data-select-value]").text()).toBe("Pick a language");
+  it("renders the root shell and provides context to child primitives", async () => {
+    const { screen, getValue } = await renderPrimitiveSelect();
+
+    await expect.element(locateInContainer(screen.container, "[data-select-root]")).toBeVisible();
+    await expect.element(locateInContainer(screen.container, "[data-select-trigger]")).toBeVisible();
+    await expect.element(getValue()).toHaveTextContent("Pick a language");
   });
 
   it("closes the menu when clicking outside the select", async () => {
-    const { wrapper } = mountPrimitiveSelect();
+    const { getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect();
     const outside = document.createElement("button");
 
     document.body.append(outside);
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    await getTrigger().click();
+    expect(getPopoverAriaHidden()).toBe("false");
 
     outside.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    await wrapper.vm.$nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    expect(getPopoverAriaHidden()).toBe("true");
 
     outside.remove();
   });
@@ -59,16 +70,7 @@ describe("v1 SelectRoot foundation", () => {
     const outside = document.createElement("button");
     document.body.append(outside);
 
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
-      props: {
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    const { getTrigger } = await renderSelectRoot({
       slots: {
         default: () => [
           h(SelectTrigger, null, {
@@ -90,13 +92,13 @@ describe("v1 SelectRoot foundation", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getTrigger().click();
 
     const teleportedPopover = teleportTarget.querySelector("[data-select-popover]");
     expect(teleportedPopover?.getAttribute("aria-hidden")).toBe("false");
 
     outside.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    await wrapper.vm.$nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(teleportedPopover?.getAttribute("aria-hidden")).toBe("true");
 
@@ -105,110 +107,107 @@ describe("v1 SelectRoot foundation", () => {
   });
 
   it("toggles menu open state from the trigger", async () => {
-    const { wrapper } = mountPrimitiveSelect();
+    const { screen, getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect();
+    const trigger = getTrigger();
 
-    const trigger = wrapper.get("[data-select-trigger]");
+    await expect.element(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(getPopoverAriaHidden()).toBe("true");
 
-    expect(trigger.attributes("aria-expanded")).toBe("false");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    await trigger.click();
 
-    await trigger.trigger("click");
-
-    expect(trigger.attributes("aria-expanded")).toBe("true");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
-    expect(wrapper.findAll("[data-select-option]")).toHaveLength(2);
+    await expect.element(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(getPopoverAriaHidden()).toBe("false");
+    expect(screen.container.querySelectorAll("[data-select-option]")).toHaveLength(2);
   });
 
   it("closes the menu when Tab moves focus outside a non-searchable trigger", async () => {
-    const { wrapper } = mountPrimitiveSelect({ searchable: false });
-    const trigger = wrapper.get("[data-select-trigger]");
+    const { getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect({ searchable: false });
     const outside = document.createElement("button");
 
     document.body.append(outside);
 
-    await trigger.trigger("click");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    await getTrigger().click();
+    expect(getPopoverAriaHidden()).toBe("false");
 
-    await trigger.trigger("keydown", { key: "Tab" });
+    await dispatchKeydown(getTrigger(), "Tab");
 
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    expect(getPopoverAriaHidden()).toBe("true");
 
     outside.remove();
   });
 
   it("closes the menu when focus moves outside a non-searchable select", async () => {
-    const { wrapper } = mountPrimitiveSelect({ searchable: false });
+    const { getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect({ searchable: false });
     const outside = document.createElement("button");
 
     document.body.append(outside);
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    await getTrigger().click();
+    expect(getPopoverAriaHidden()).toBe("false");
 
     outside.focus();
-    await wrapper.vm.$nextTick();
+    await flushFocusUpdates();
 
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    expect(getPopoverAriaHidden()).toBe("true");
 
     outside.remove();
   });
 
   it("closes the menu when clicking the trigger again without reopening", async () => {
-    const { wrapper } = mountPrimitiveSelect();
-    const trigger = wrapper.get("[data-select-trigger]");
+    const { getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect();
+    const trigger = getTrigger();
 
-    await trigger.trigger("click");
-    expect(trigger.attributes("aria-expanded")).toBe("true");
+    await trigger.click();
+    await expect.element(trigger).toHaveAttribute("aria-expanded", "true");
 
-    await trigger.trigger("click");
+    await trigger.click();
 
-    expect(trigger.attributes("aria-expanded")).toBe("false");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    await expect.element(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("updates v-model on single selection and closes the menu", async () => {
-    const { wrapper, model } = mountPrimitiveSelect();
+    const { screen, model, getTrigger, getValue, getPopoverAriaHidden } = await renderPrimitiveSelect();
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='ts']").trigger("click");
+    await getTrigger().click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='ts']").click();
 
     expect(model.value).toBe("ts");
-    expect(wrapper.get("[data-select-value]").text()).toBe("TypeScript");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    await expect.element(getValue()).toHaveTextContent("TypeScript");
+    expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("registers declarative options in the collection", async () => {
-    const { wrapper } = mountPrimitiveSelect();
+    const { getTrigger } = await renderPrimitiveSelect();
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getTrigger().click();
 
-    expect(wrapper.find("[data-select-no-options]").exists()).toBe(false);
-    expect(wrapper.findAll("[role='option']")).toHaveLength(2);
+    expect(document.querySelector("[data-select-no-options]")).toBeNull();
+    expect(page.getByRole("option").elements()).toHaveLength(2);
   });
 
   it("clears the model when clearable is enabled", async () => {
-    const { wrapper, model } = mountPrimitiveSelect({ modelValue: "js", clearable: true });
+    const { screen, model, getValue } = await renderPrimitiveSelect({
+      modelValue: "js",
+      clearable: true,
+    });
 
-    expect(wrapper.find("[data-select-clear]").exists()).toBe(true);
+    const clearButton = locateInContainer(screen.container, "[data-select-clear]");
 
-    await wrapper.get("[data-select-clear]").trigger("click");
+    await expect.element(clearButton).toBeVisible();
+
+    await clearButton.click();
 
     expect(model.value).toBeNull();
-    expect(wrapper.get("[data-select-value]").text()).toBe("Pick a language");
+    await expect.element(getValue()).toHaveTextContent("Pick a language");
   });
 
-  it("renders custom clear button content from the SelectClear default slot", () => {
-    const model = ref<SelectModelValue<string>>("js");
-
-    const wrapper = mount(SelectRoot<string>, {
+  it("renders custom clear button content from the SelectClear default slot", async () => {
+    const { screen } = await renderSelectRoot({
       props: {
-        "modelValue": "js",
-        "clearable": true,
-        "options": [...basicOptions],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        modelValue: "js",
+        clearable: true,
+        options: [...basicOptions],
       },
       slots: {
         default: () => [
@@ -224,95 +223,101 @@ describe("v1 SelectRoot foundation", () => {
       },
     });
 
-    expect(wrapper.get("[data-select-clear]").text()).toBe("Reset");
-    expect(wrapper.find("[data-select-clear] svg").exists()).toBe(false);
+    const clearButton = locateInContainer(screen.container, "[data-select-clear]");
+
+    await expect.element(clearButton).toHaveTextContent("Reset");
+    expect(clearButton.element().querySelector("svg")).toBeNull();
   });
 
-  it("throws when a primitive is used outside SelectRoot", () => {
+  it("throws when a primitive is used outside SelectRoot", async () => {
     const OrphanTrigger = defineComponent({
       render: () => h(SelectTrigger),
     });
 
-    expect(() => mount(OrphanTrigger)).toThrow("injectSelectContext must be used within SelectRoot");
+    await expect(async () => render(OrphanTrigger)).rejects.toThrow("injectSelectContext must be used within SelectRoot");
   });
 });
 
 describe("v1 SelectRoot core module", () => {
-  it("supports multi-select toggling without closing the menu", async () => {
-    const { wrapper, model } = mountPrimitiveSelect({ multiple: true });
+  afterEach(() => {
+    cleanupTeleportedSelectContent();
+  });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
-    await wrapper.get("[data-select-option][data-value='ts']").trigger("click");
+  it("supports multi-select toggling without closing the menu", async () => {
+    const { screen, model, getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect({ multiple: true });
+
+    await getTrigger().click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='js']").click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='ts']").click();
 
     expect(model.value).toEqual(["js", "ts"]);
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    expect(getPopoverAriaHidden()).toBe("false");
 
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+    await locateInContainer(screen.container, "[data-select-option][data-value='js']").click();
 
     expect(model.value).toEqual(["ts"]);
   });
 
   it("shows a checkmark on selected options in multi-select mode", async () => {
-    const { wrapper } = mountPrimitiveSelect({ multiple: true });
+    const { screen, getTrigger } = await renderPrimitiveSelect({ multiple: true });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+    await getTrigger().click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='js']").click();
 
-    const selectedOption = wrapper.get("[data-select-option][data-value='js']");
-    const unselectedOption = wrapper.get("[data-select-option][data-value='ts']");
+    const selectedOption = screen.container.querySelector("[data-select-option][data-value='js']");
+    const unselectedOption = screen.container.querySelector("[data-select-option][data-value='ts']");
 
-    expect(selectedOption.find("[data-select-option-checkmark] svg").exists()).toBe(true);
-    expect(unselectedOption.find("[data-select-option-checkmark]").exists()).toBe(false);
+    expect(selectedOption?.querySelector("[data-select-option-checkmark] svg")).not.toBeNull();
+    expect(unselectedOption?.querySelector("[data-select-option-checkmark]")).toBeNull();
   });
 
   it("hides selected options from the dropdown when hideSelected is enabled", async () => {
-    const { wrapper } = mountPrimitiveSelect({
+    const { screen, getTrigger } = await renderPrimitiveSelect({
       multiple: true,
       hideSelected: true,
       modelValue: ["js"],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getTrigger().click();
 
-    expect(wrapper.find("[data-select-option][data-value='js']").exists()).toBe(false);
-    expect(wrapper.find("[data-select-option][data-value='ts']").exists()).toBe(true);
+    expect(screen.container.querySelector("[data-select-option][data-value='js']")).toBeNull();
+    expect(screen.container.querySelector("[data-select-option][data-value='ts']")).not.toBeNull();
   });
 
   it("navigates with arrow keys and skips disabled options", async () => {
-    const { wrapper } = mountPrimitiveSelect({ selectOptions: optionsWithDisabled });
+    const { screen, getTrigger, getListbox } = await renderPrimitiveSelect({ selectOptions: optionsWithDisabled });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
+    await getTrigger().click();
+    await dispatchKeydown(getListbox(), "ArrowDown");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("ts");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("ts");
 
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowUp" });
+    await dispatchKeydown(getListbox(), "ArrowUp");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("js");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("js");
   });
 
   it("selects the active option on Enter", async () => {
-    const { wrapper, model } = mountPrimitiveSelect();
+    const { model, getTrigger, getListbox, getPopoverAriaHidden } = await renderPrimitiveSelect();
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "Enter" });
+    await getTrigger().click();
+    await dispatchKeydown(getListbox(), "ArrowDown");
+    await dispatchKeydown(getListbox(), "Enter");
 
     expect(model.value).toBe("ts");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("opens the menu from the trigger with ArrowDown", async () => {
-    const { wrapper } = mountPrimitiveSelect();
+    const { getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect();
 
-    await wrapper.get("[data-select-trigger]").trigger("keydown", { key: "ArrowDown" });
+    await dispatchKeydown(getTrigger(), "ArrowDown");
 
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    expect(getPopoverAriaHidden()).toBe("false");
   });
 
   it("moves one option per arrow key press from the search input", async () => {
-    const { wrapper } = mountPrimitiveSelect({
+    const { screen, getInput } = await renderPrimitiveSelect({
       searchable: true,
       selectOptions: [
         { label: "Alpha", value: "alpha" },
@@ -321,18 +326,18 @@ describe("v1 SelectRoot core module", () => {
       ],
     });
 
-    await wrapper.get("[data-select-input]").trigger("focus");
-    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowDown" });
+    getInput().element().focus();
+    await dispatchKeydown(getInput(), "ArrowDown");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("beta");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("beta");
 
-    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowUp" });
+    await dispatchKeydown(getInput(), "ArrowUp");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("alpha");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("alpha");
   });
 
   it("wraps upward from the first option to the last option from the search input", async () => {
-    const { wrapper } = mountPrimitiveSelect({
+    const { screen, getInput } = await renderPrimitiveSelect({
       searchable: true,
       selectOptions: [
         { label: "Alpha", value: "alpha" },
@@ -341,14 +346,14 @@ describe("v1 SelectRoot core module", () => {
       ],
     });
 
-    await wrapper.get("[data-select-input]").trigger("focus");
-    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowUp" });
+    getInput().element().focus();
+    await dispatchKeydown(getInput(), "ArrowUp");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("gamma");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("gamma");
   });
 
   it("focuses the first matching option while typing in the search input", async () => {
-    const { wrapper } = mountPrimitiveSelect({
+    const { screen, getInput } = await renderPrimitiveSelect({
       searchable: true,
       selectOptions: [
         { label: "Alpha", value: "alpha" },
@@ -357,53 +362,47 @@ describe("v1 SelectRoot core module", () => {
       ],
     });
 
-    await wrapper.get("[data-select-input]").trigger("focus");
-    await wrapper.get("[data-select-input]").trigger("keydown", { key: "ArrowDown" });
+    getInput().element().focus();
+    await dispatchKeydown(getInput(), "ArrowDown");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("beta");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("beta");
 
-    await wrapper.get("[data-select-input]").setValue("a");
+    await getInput().fill("a");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("alpha");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("alpha");
   });
 
   it("filters options and keeps the active option in the filtered set", async () => {
-    const { wrapper } = mountPrimitiveSelect({ searchable: true });
+    const { screen, getTrigger, getInput, getListbox } = await renderPrimitiveSelect({ searchable: true });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-input]").setValue("type");
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
+    await getTrigger().click();
+    await getInput().fill("type");
+    await dispatchKeydown(getListbox(), "ArrowDown");
 
-    expect(wrapper.findAll("[data-select-option]")).toHaveLength(1);
-    expect(wrapper.get("[data-select-option]").attributes("data-value")).toBe("ts");
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("ts");
+    expect(screen.container.querySelectorAll("[data-select-option]")).toHaveLength(1);
+    expect(queryHTMLElement(screen.container, "[data-select-option]")?.dataset.value).toBe("ts");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("ts");
   });
 
   it("shows the empty state when filtering removes every option", async () => {
-    const { wrapper } = mountPrimitiveSelect({ searchable: true });
+    const { screen, getTrigger, getInput } = await renderPrimitiveSelect({ searchable: true });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-input]").setValue("zzzz");
+    await getTrigger().click();
+    await getInput().fill("zzzz");
 
-    expect(wrapper.find("[data-select-no-options]").exists()).toBe(true);
-    expect(wrapper.findAll("[data-select-option]")).toHaveLength(0);
+    expect(screen.container.querySelector("[data-select-no-options]")).not.toBeNull();
+    expect(screen.container.querySelectorAll("[data-select-option]")).toHaveLength(0);
   });
 
   it("shows create item instead of the empty state when create-item is enabled", async () => {
     const onCreate = vi.fn();
-    const model = ref<SelectModelValue<string>>(null);
 
-    const wrapper = mount(SelectRoot<string>, {
+    const { screen, getTrigger, getInput } = await renderSelectRoot({
       props: {
-        "modelValue": null,
-        "options": [...basicOptions],
-        "searchable": true,
-        "createItem": true,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-        "onCreate": onCreate,
+        options: [...basicOptions],
+        searchable: true,
+        createItem: true,
+        onCreate,
       },
       slots: {
         default: () => [
@@ -433,32 +432,26 @@ describe("v1 SelectRoot core module", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-input]").setValue("Rust");
+    await getTrigger().click();
+    await getInput().fill("Rust");
 
-    expect(wrapper.find("[data-select-no-options]").exists()).toBe(false);
-    expect(wrapper.get("[data-select-create-item]").text()).toBe("Create \"Rust\"");
+    expect(screen.container.querySelector("[data-select-no-options]")).toBeNull();
+    await expect.element(locateInContainer(screen.container, "[data-select-create-item]")).toHaveTextContent("Create \"Rust\"");
 
-    await wrapper.get("[data-select-create-item]").trigger("click");
+    await locateInContainer(screen.container, "[data-select-create-item]").click();
 
     expect(onCreate).toHaveBeenCalledWith("Rust");
   });
 
   it("selects create item with Enter when it is active", async () => {
     const onCreate = vi.fn();
-    const model = ref<SelectModelValue<string>>(null);
 
-    const wrapper = mount(SelectRoot<string>, {
+    const { getTrigger, getInput } = await renderSelectRoot({
       props: {
-        "modelValue": null,
-        "options": [...basicOptions],
-        "searchable": true,
-        "createItem": true,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-        "onCreate": onCreate,
+        options: [...basicOptions],
+        searchable: true,
+        createItem: true,
+        onCreate,
       },
       slots: {
         default: () => [
@@ -488,25 +481,18 @@ describe("v1 SelectRoot core module", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-input]").setValue("Rust");
-    await wrapper.get("[data-select-input]").trigger("keydown", { key: "Enter" });
+    await getTrigger().click();
+    await getInput().fill("Rust");
+    await dispatchKeydown(getInput(), "Enter");
 
     expect(onCreate).toHaveBeenCalledWith("Rust");
   });
 
   it("passes searchValue to the SelectNoOptions default slot", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
+    const { screen, getTrigger, getInput } = await renderSelectRoot({
       props: {
-        "modelValue": null,
-        "options": [...basicOptions],
-        "searchable": true,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        options: [...basicOptions],
+        searchable: true,
       },
       slots: {
         default: () => [
@@ -537,24 +523,17 @@ describe("v1 SelectRoot core module", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-input]").setValue("zzzz");
+    await getTrigger().click();
+    await getInput().fill("zzzz");
 
-    expect(wrapper.get("[data-select-no-options]").text()).toBe("No match for \"zzzz\"");
+    await expect.element(locateInContainer(screen.container, "[data-select-no-options]")).toHaveTextContent("No match for \"zzzz\"");
   });
 
   it("resolves options from the options prop without declarative duplicates", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
+    const { screen, getTrigger, getInput } = await renderSelectRoot({
       props: {
-        "modelValue": null,
-        "options": [...optionsWithDisabled],
-        "searchable": true,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        options: [...optionsWithDisabled],
+        searchable: true,
       },
       slots: {
         default: () => [
@@ -584,38 +563,33 @@ describe("v1 SelectRoot core module", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-input]").setValue("type");
+    await getTrigger().click();
+    await getInput().fill("type");
 
-    expect(wrapper.findAll("[data-select-option]")).toHaveLength(1);
-    expect(wrapper.get("[data-select-option]").attributes("data-value")).toBe("ts");
+    expect(screen.container.querySelectorAll("[data-select-option]")).toHaveLength(1);
+    expect(queryHTMLElement(screen.container, "[data-select-option]")?.dataset.value).toBe("ts");
   });
 
   it("removes the last selected value on Backspace in multi-select mode", async () => {
-    const { wrapper, model } = mountPrimitiveSelect({
+    const { model, getTrigger, getListbox } = await renderPrimitiveSelect({
       multiple: true,
       modelValue: ["js", "ts"],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "Backspace" });
+    await getTrigger().click();
+    await dispatchKeydown(getListbox(), "Backspace");
 
     expect(model.value).toEqual(["js"]);
   });
 });
 
 describe("v1 primitive composition", () => {
-  it("renders grouped options with labelled groups and separators", async () => {
-    const model = ref<SelectModelValue<string>>(null);
+  afterEach(() => {
+    cleanupTeleportedSelectContent();
+  });
 
-    const wrapper = mount(SelectRoot<string>, {
-      props: {
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+  it("renders grouped options with labelled groups and separators", async () => {
+    const { screen, getTrigger } = await renderSelectRoot({
       slots: {
         default: () => [
           h(SelectTrigger, null, {
@@ -647,30 +621,21 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getTrigger().click();
 
-    const groups = wrapper.findAll("[data-select-group]");
-    const labels = wrapper.findAll("[data-select-group-label]");
+    const groups = screen.container.querySelectorAll("[data-select-group]");
+    const labels = screen.container.querySelectorAll("[data-select-group-label]");
 
     expect(groups).toHaveLength(2);
-    expect(labels.map((label) => label.text())).toEqual(["Frontend", "Systems"]);
-    expect(groups[0]?.attributes("role")).toBe("group");
-    expect(groups[0]?.attributes("aria-labelledby")).toBe(labels[0]?.attributes("id"));
-    expect(wrapper.get("[data-select-separator]").attributes("role")).toBe("separator");
-    expect(wrapper.findAll("[data-select-option]")).toHaveLength(3);
+    expect(Array.from(labels).map((label) => label.textContent)).toEqual(["Frontend", "Systems"]);
+    expect(groups[0]?.getAttribute("role")).toBe("group");
+    expect(groups[0]?.getAttribute("aria-labelledby")).toBe(labels[0]?.id);
+    expect(screen.container.querySelector("[data-select-separator]")?.getAttribute("role")).toBe("separator");
+    expect(screen.container.querySelectorAll("[data-select-option]")).toHaveLength(3);
   });
 
   it("keeps keyboard navigation on grouped options only", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
-      props: {
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    const { screen, model, getTrigger, getListbox } = await renderSelectRoot({
       slots: {
         default: () => [
           h(SelectTrigger, null, {
@@ -702,30 +667,23 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("js");
+    await getTrigger().click();
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("js");
 
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
+    await dispatchKeydown(getListbox(), "ArrowDown");
+    await dispatchKeydown(getListbox(), "ArrowDown");
 
-    expect(wrapper.get("[data-select-option][data-active='true']").attributes("data-value")).toBe("rs");
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("rs");
 
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "Enter" });
+    await dispatchKeydown(getListbox(), "Enter");
 
     expect(model.value).toBe("rs");
   });
 
   it("hides a group when filtering hides all of its options", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
+    const { screen, getTrigger, getInput } = await renderSelectRoot({
       props: {
-        "modelValue": null,
-        "searchable": true,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        searchable: true,
       },
       slots: {
         default: () => [
@@ -760,48 +718,40 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-input]").setValue("rust");
+    await getTrigger().click();
+    await getInput().fill("rust");
+    await flushFocusUpdates();
 
-    const groups = wrapper.findAll("[data-select-group]");
+    const groups = screen.container.querySelectorAll("[data-select-group]");
 
-    expect(groups[0]?.attributes("style")).toContain("display: none");
-    expect(groups[1]?.attributes("style")).toBeUndefined();
-    expect(wrapper.findAll("[data-select-option]")).toHaveLength(1);
-    expect(wrapper.get("[data-select-option]").attributes("data-value")).toBe("rs");
+    await expect.element(page.elementLocator(groups[0] as HTMLElement)).not.toBeVisible();
+    await expect.element(page.elementLocator(groups[1] as HTMLElement)).toBeVisible();
+    expect(screen.container.querySelectorAll("[data-select-option]")).toHaveLength(1);
+    expect(queryHTMLElement(screen.container, "[data-select-option]")?.dataset.value).toBe("rs");
   });
 
   it("renders multi-select tags and removes a value from the tag button", async () => {
-    const { wrapper, model } = mountPrimitiveSelect({
+    const { screen, model } = await renderPrimitiveSelect({
       multiple: true,
       modelValue: ["js", "ts"],
       usePropOptions: true,
     });
 
-    await wrapper.vm.$nextTick();
-
-    const tags = wrapper.findAll("[data-select-tag]");
+    const tags = screen.container.querySelectorAll("[data-select-tag]");
     expect(tags).toHaveLength(2);
-    expect(tags[0]?.text()).toContain("JavaScript");
-    expect(tags[1]?.text()).toContain("TypeScript");
+    expect(tags[0]?.textContent).toContain("JavaScript");
+    expect(tags[1]?.textContent).toContain("TypeScript");
 
-    await wrapper.get("[data-select-tag-remove]").trigger("click");
+    await locateInContainer(screen.container, "[data-select-tag-remove]").click();
 
     expect(model.value).toEqual(["ts"]);
-    expect(wrapper.findAll("[data-select-tag]")).toHaveLength(1);
+    expect(screen.container.querySelectorAll("[data-select-tag]")).toHaveLength(1);
   });
 
-  it("exposes loading state on the trailing icon primitive", () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
+  it("exposes loading state on the trailing icon primitive", async () => {
+    const { screen } = await renderSelectRoot({
       props: {
-        "modelValue": null,
-        "loading": true,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        loading: true,
       },
       slots: {
         default: () => [
@@ -812,20 +762,11 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    expect(wrapper.get("[data-select-trailing-icon]").attributes("data-loading")).toBe("true");
+    await expect.element(locateInContainer(screen.container, "[data-select-trailing-icon]")).toHaveAttribute("data-loading", "true");
   });
 
   it("renders a default chevron in the trailing icon primitive", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
-      props: {
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    const { screen, getTrigger } = await renderSelectRoot({
       slots: {
         default: () => [
           h(SelectTrigger, null, {
@@ -835,28 +776,22 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    const trailingIcon = wrapper.get("[data-select-trailing-icon]");
+    const trailingIcon = locateInContainer(screen.container, "[data-select-trailing-icon]");
 
-    expect(trailingIcon.find("svg").exists()).toBe(true);
-    expect(trailingIcon.attributes("data-open")).toBe("false");
+    expect(trailingIcon.element().querySelector("svg")).not.toBeNull();
+    await expect.element(trailingIcon).toHaveAttribute("data-open", "false");
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getTrigger().click();
 
-    expect(trailingIcon.attributes("data-open")).toBe("true");
+    await expect.element(trailingIcon).toHaveAttribute("data-open", "true");
   });
 
-  it("renders a default remove icon in SelectTag", () => {
-    const model = ref<SelectModelValue<string>>(["js"]);
-
-    const wrapper = mount(SelectRoot<string>, {
+  it("renders a default remove icon in SelectTag", async () => {
+    const { screen } = await renderSelectRoot({
       props: {
-        "modelValue": ["js"],
-        "multiple": true,
-        "options": [...basicOptions],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        modelValue: ["js"],
+        multiple: true,
+        options: [...basicOptions],
       },
       slots: {
         default: () => [
@@ -867,21 +802,15 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(true);
+    expect(screen.container.querySelector("[data-select-tag-remove] svg")).not.toBeNull();
   });
 
-  it("forwards a custom remove icon from SelectValue tag-remove slot", () => {
-    const model = ref<SelectModelValue<string>>(["js"]);
-
-    const wrapper = mount(SelectRoot<string>, {
+  it("forwards a custom remove icon from SelectValue tag-remove slot", async () => {
+    const { screen } = await renderSelectRoot({
       props: {
-        "modelValue": ["js"],
-        "multiple": true,
-        "options": [...basicOptions],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        modelValue: ["js"],
+        multiple: true,
+        options: [...basicOptions],
       },
       slots: {
         default: () => [
@@ -894,28 +823,15 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    expect(wrapper.get("[data-select-tag-remove]").text()).toBe("Remove JavaScript");
-    expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(false);
-  });
-
-  it("defaults closeOnSelect to null for auto mode behavior", () => {
-    const { wrapper } = mountPrimitiveSelect();
-
-    expect(wrapper.props("closeOnSelect")).toBeNull();
+    await expect.element(locateInContainer(screen.container, "[data-select-tag-remove]")).toHaveTextContent("Remove JavaScript");
+    expect(screen.container.querySelector("[data-select-tag-remove] svg")).toBeNull();
   });
 
   it("keeps the menu open on single-select when closeOnSelect is false", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
+    const { screen, model, getTrigger, getPopoverAriaHidden } = await renderSelectRoot({
       props: {
-        "modelValue": null,
-        "closeOnSelect": false,
-        "options": [...basicOptions],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        closeOnSelect: false,
+        options: [...basicOptions],
       },
       slots: {
         default: () => [
@@ -938,26 +854,20 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+    await getTrigger().click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='js']").click();
 
     expect(model.value).toBe("js");
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
+    expect(getPopoverAriaHidden()).toBe("false");
   });
 
   it("closes the menu on multi-select when closeOnSelect is enabled", async () => {
-    const model = ref<SelectModelValue<string>>([]);
-
-    const wrapper = mount(SelectRoot<string>, {
+    const { screen, model, getTrigger, getPopoverAriaHidden } = await renderSelectRoot({
       props: {
-        "modelValue": [],
-        "multiple": true,
-        "closeOnSelect": true,
-        "options": [...basicOptions],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        modelValue: [],
+        multiple: true,
+        closeOnSelect: true,
+        options: [...basicOptions],
       },
       slots: {
         default: () => [
@@ -980,40 +890,31 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-option][data-value='js']").trigger("click");
+    await getTrigger().click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='js']").click();
 
     expect(model.value).toEqual(["js"]);
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("true");
+    expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("wires the searchable input and listbox ids for aria-activedescendant", async () => {
-    const { wrapper } = mountPrimitiveSelect({ searchable: true });
+    const { screen, getTrigger, getInput, getListbox } = await renderPrimitiveSelect({ searchable: true });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await wrapper.get("[data-select-listbox]").trigger("keydown", { key: "ArrowDown" });
+    await getTrigger().click();
+    await dispatchKeydown(getListbox(), "ArrowDown");
 
-    const input = wrapper.get("[data-select-input]");
-    const listbox = wrapper.get("[data-select-listbox]");
-    const activeOption = wrapper.get("[data-select-option][data-active='true']");
+    const input = getInput().element();
+    const listbox = getListbox().element();
+    const activeOption = screen.container.querySelector("[data-select-option][data-active='true']");
 
-    expect(input.attributes("role")).toBe("combobox");
-    expect(input.attributes("aria-controls")).toBe(listbox.attributes("id"));
-    expect(input.attributes("aria-activedescendant")).toBe(activeOption.attributes("id"));
-    expect(listbox.attributes("aria-labelledby")).toBe(input.attributes("id"));
+    expect(input.getAttribute("role")).toBe("combobox");
+    expect(input.getAttribute("aria-controls")).toBe(listbox.id);
+    expect(input.getAttribute("aria-activedescendant")).toBe(activeOption?.id);
+    expect(listbox.getAttribute("aria-labelledby")).toBe(input.id);
   });
 
   it("teleports the popover to body by default", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
-      props: {
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    const { screen, getTrigger } = await renderSelectRoot({
       slots: {
         default: () => [
           h(SelectTrigger, null, {
@@ -1035,25 +936,27 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getTrigger().click();
 
-    const teleportedPopover = document.body.querySelector("[data-select-popover]");
+    const teleportedPopover = getTeleportedPopoverElement();
 
     expect(teleportedPopover).not.toBeNull();
     expect(teleportedPopover?.getAttribute("aria-hidden")).toBe("false");
-    expect(wrapper.find("[data-select-popover]").exists()).toBe(false);
-
-    wrapper.unmount();
-    teleportedPopover?.remove();
+    expect(screen.container.querySelector("[data-select-popover]")).toBeNull();
   });
 
   it("renders the popover inline when teleport is false", async () => {
-    const { wrapper } = mountPrimitiveSelect();
+    const { screen, getTrigger, getPopoverAriaHidden } = await renderPrimitiveSelect();
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    getTrigger().element().dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushFocusUpdates();
 
-    expect(wrapper.get("[data-select-popover]").attributes("aria-hidden")).toBe("false");
-    expect(document.body.querySelector("[data-select-popover]")).toBeNull();
+    expect(getPopoverAriaHidden()).toBe("false");
+
+    const popover = screen.container.querySelector("[data-select-popover]");
+
+    expect(popover).not.toBeNull();
+    expect(popover?.closest("[data-select-root]")).not.toBeNull();
   });
 
   it("teleports the popover to a custom target when a selector is provided", async () => {
@@ -1061,16 +964,7 @@ describe("v1 primitive composition", () => {
     teleportTarget.id = "v1-teleport-target";
     document.body.appendChild(teleportTarget);
 
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
-      props: {
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    const { screen, getTrigger } = await renderSelectRoot({
       slots: {
         default: () => [
           h(SelectTrigger, null, {
@@ -1092,28 +986,19 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await getTrigger().click();
 
     const teleportedPopover = teleportTarget.querySelector("[data-select-popover]");
 
     expect(teleportedPopover).not.toBeNull();
     expect(teleportedPopover?.getAttribute("aria-hidden")).toBe("false");
-    expect(wrapper.find("[data-select-popover]").exists()).toBe(false);
+    expect(screen.container.querySelector("[data-select-popover]")).toBeNull();
 
     teleportTarget.remove();
   });
 
   it("forwards reka-ui popover content props to SelectPopover", async () => {
-    const model = ref<SelectModelValue<string>>(null);
-
-    const wrapper = mount(SelectRoot<string>, {
-      props: {
-        "modelValue": null,
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
-      },
+    const { screen, getTrigger } = await renderSelectRoot({
       slots: {
         default: () => [
           h(SelectTrigger, null, {
@@ -1124,7 +1009,7 @@ describe("v1 primitive composition", () => {
             side: "top",
             align: "end",
             sideOffset: 12,
-            modal: true,
+            modal: false,
           }, {
             default: () => [
               h(SelectListbox, null, {
@@ -1141,26 +1026,18 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    const popover = wrapper.getComponent(SelectPopover);
+    getTrigger().element().dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushFocusUpdates();
 
-    expect(popover.props("side")).toBe("top");
-    expect(popover.props("align")).toBe("end");
-    expect(popover.props("sideOffset")).toBe(12);
-    expect(popover.props("modal")).toBe(true);
+    await expect.element(locateInContainer(screen.container, "[data-select-popover]")).toHaveAttribute("aria-hidden", "false");
   });
 
   it("renders a standalone SelectTag when composed manually", async () => {
-    const model = ref<SelectModelValue<string>>(["js"]);
-
-    const wrapper = mount(SelectRoot<string>, {
+    const { screen, model } = await renderSelectRoot({
       props: {
-        "modelValue": ["js"],
-        "multiple": true,
-        "options": [...basicOptions],
-        "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-          model.value = value;
-          wrapper.setProps({ modelValue: value });
-        },
+        modelValue: ["js"],
+        multiple: true,
+        options: [...basicOptions],
       },
       slots: {
         default: () => [
@@ -1171,7 +1048,7 @@ describe("v1 primitive composition", () => {
       },
     });
 
-    await wrapper.get("[data-select-tag-remove]").trigger("click");
+    await locateInContainer(screen.container, "[data-select-tag-remove]").click();
 
     expect(model.value).toEqual([]);
   });

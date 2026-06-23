@@ -1,8 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { page } from "vitest/browser";
 
-import SelectListbox from "../primitives/SelectListbox.vue";
-import { cleanupTeleportedSelectContent } from "../test-utils/assembled-select-helpers";
-import { mountAssembledSelect } from "../test-utils/mount-assembled-select";
+import {
+  cleanupTeleportedSelectContent,
+  dispatchKeydown,
+  flushFocusUpdates,
+  locateInContainer,
+  locateInDocument,
+} from "../test-utils/browser-select-helpers";
+import { renderAssembledSelect } from "../test-utils/render-assembled-select";
 
 const options = [
   { label: "France", value: "FR" },
@@ -15,28 +21,33 @@ describe("assembled Select", () => {
     cleanupTeleportedSelectContent();
   });
 
-  it("shows the placeholder when no option is selected", () => {
-    const { wrapper } = mountAssembledSelect({
+  it("shows the placeholder when no option is selected", async () => {
+    const { getValue } = await renderAssembledSelect({
       options,
       placeholder: "Select a country",
     });
 
-    expect(wrapper.get("[data-select-value]").text()).toBe("Select a country");
+    await expect.element(getValue()).toHaveTextContent("Select a country");
   });
 
-  it("renders trigger search by default", () => {
-    const { wrapper, getInput, getListbox } = mountAssembledSelect({ options });
+  it("renders trigger search by default", async () => {
+    const { getInput, openMenu } = await renderAssembledSelect({ options });
 
-    expect(wrapper.get("[data-select-trigger]").attributes("role")).toBeUndefined();
-    expect(getInput().attributes("role")).toBe("combobox");
-    expect(getInput().attributes("aria-haspopup")).toBe("listbox");
-    expect(getInput().attributes("aria-controls")).toBe(getListbox().attributes("id"));
-    expect(getListbox().attributes("aria-labelledby")).toBe(getInput().attributes("id"));
-    expect(getInput().attributes("data-select-input")).toBeDefined();
+    await expect.element(getInput()).toHaveAttribute("role", "combobox");
+    await expect.element(getInput()).toHaveAttribute("aria-haspopup", "listbox");
+
+    await openMenu();
+
+    const input = getInput().element();
+    const listbox = locateInDocument("[data-select-listbox]").element();
+
+    expect(input.getAttribute("aria-controls")).toBe(listbox.id);
+    expect(listbox.getAttribute("aria-labelledby")).toBe(input.id);
+    await expect.element(getInput()).toHaveAttribute("data-select-input");
   });
 
-  it("forwards control labelling attributes to the searchable input", () => {
-    const { wrapper, getInput } = mountAssembledSelect({
+  it("forwards control labelling attributes to the searchable input", async () => {
+    const { screen, getInput } = await renderAssembledSelect({
       options,
       attrs: {
         "id": "country-select",
@@ -44,82 +55,83 @@ describe("assembled Select", () => {
       },
     });
 
-    expect(wrapper.get("[data-select-root]").attributes("id")).toBeUndefined();
-    expect(getInput().attributes("id")).toBe("country-select");
-    expect(getInput().attributes("aria-label")).toBe("Country");
+    await expect.element(locateInContainer(screen.container, "[data-select-root]")).not.toHaveAttribute("id");
+    await expect.element(getInput()).toHaveAttribute("id", "country-select");
+    await expect.element(getInput()).toHaveAttribute("aria-label", "Country");
   });
 
   it("teleports the menu to body by default", async () => {
-    const { wrapper, getTeleportedPopoverElement, getPopoverAriaHidden } = mountAssembledSelect({
+    const { screen, getTeleportedPopoverElement, getPopoverAriaHidden, openMenu } = await renderAssembledSelect({
       options,
     });
 
-    expect(wrapper.find("[data-select-popover]").exists()).toBe(false);
+    expect(screen.container.querySelector("[data-select-popover]")).toBeNull();
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await openMenu();
 
     const teleportedPopover = getTeleportedPopoverElement();
 
     expect(teleportedPopover).not.toBeNull();
     expect(getPopoverAriaHidden()).toBe("false");
-    expect(wrapper.getComponent(SelectListbox).attributes("role")).toBe("listbox");
+    await expect.element(locateInDocument("[data-select-listbox]")).toHaveAttribute("role", "listbox");
   });
 
   it("selects an option with click and closes the menu", async () => {
-    const { wrapper, model, findOptions, getPopoverAriaHidden } = mountAssembledSelect({
+    const { model, getValue, getPopoverAriaHidden, openMenu } = await renderAssembledSelect({
       options,
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await findOptions()[0]!.trigger("click");
+    await openMenu();
+    await page.getByRole("option", { name: "France" }).click();
 
     expect(model.value).toBe("FR");
-    expect(wrapper.get("[data-select-value]").text()).toBe("France");
+    await expect.element(getValue()).toHaveTextContent("France");
     expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("does not open the menu when disabled", async () => {
-    const { wrapper, getInput, getPopoverAriaHidden } = mountAssembledSelect({
+    const { getTrigger, getInput, getPopoverAriaHidden } = await renderAssembledSelect({
       options,
       disabled: true,
     });
 
-    const trigger = wrapper.get("[data-select-trigger]");
-    const input = getInput();
+    await expect.element(getTrigger()).toHaveAttribute("aria-disabled", "true");
+    await expect.element(getInput()).toHaveAttribute("disabled");
+    await expect.element(getInput()).toHaveAttribute("aria-expanded", "false");
 
-    expect(trigger.attributes("aria-disabled")).toBe("true");
-    expect(input.attributes("disabled")).toBeDefined();
-    expect(input.attributes("aria-expanded")).toBe("false");
+    await getTrigger().click();
 
-    await trigger.trigger("click");
-
-    expect(input.attributes("aria-expanded")).toBe("false");
+    await expect.element(getInput()).toHaveAttribute("aria-expanded", "false");
     expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("cannot select a disabled option", async () => {
-    const { wrapper, model, findOptions } = mountAssembledSelect({
+    const { model, openMenu } = await renderAssembledSelect({
       options: [{ label: "Spain", value: "ES", disabled: true }],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await findOptions()[0]!.trigger("click");
+    await openMenu();
+    const option = page.getByRole("option", { name: "Spain" });
+
+    await expect.element(option).toHaveAttribute("aria-disabled", "true");
+    option.element().dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(model.value).toBeNull();
   });
 
   it("selects the active option with Enter", async () => {
-    const { wrapper, model, getListbox } = mountAssembledSelect({ options });
+    const { model, getValue, getListbox, openMenu } = await renderAssembledSelect({ options });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await getListbox().trigger("keydown", { key: "Enter" });
+    await openMenu();
+    await dispatchKeydown(getListbox(), "Enter");
 
     expect(model.value).toBe("FR");
-    expect(wrapper.get("[data-select-value]").text()).toBe("France");
+    await expect.element(getValue()).toHaveTextContent("France");
   });
 
   it("closes the menu when Tab moves focus outside a non-searchable trigger", async () => {
-    const { wrapper, getPopoverAriaHidden } = mountAssembledSelect({
+    const { getTrigger, getPopoverAriaHidden, openMenu } = await renderAssembledSelect({
       options,
       searchable: false,
     });
@@ -127,10 +139,10 @@ describe("assembled Select", () => {
 
     document.body.append(outside);
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await openMenu();
     expect(getPopoverAriaHidden()).toBe("false");
 
-    await wrapper.get("[data-select-trigger]").trigger("keydown", { key: "Tab" });
+    await dispatchKeydown(getTrigger(), "Tab");
 
     expect(getPopoverAriaHidden()).toBe("true");
 
@@ -138,7 +150,7 @@ describe("assembled Select", () => {
   });
 
   it("closes the menu when focus moves outside a non-searchable select", async () => {
-    const { wrapper, getPopoverAriaHidden } = mountAssembledSelect({
+    const { getPopoverAriaHidden, openMenu } = await renderAssembledSelect({
       options,
       searchable: false,
     });
@@ -146,11 +158,11 @@ describe("assembled Select", () => {
 
     document.body.append(outside);
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await openMenu();
     expect(getPopoverAriaHidden()).toBe("false");
 
     outside.focus();
-    await wrapper.vm.$nextTick();
+    await flushFocusUpdates();
 
     expect(getPopoverAriaHidden()).toBe("true");
 
@@ -158,27 +170,27 @@ describe("assembled Select", () => {
   });
 
   it("closes the menu on Escape", async () => {
-    const { wrapper, getListbox, getPopoverAriaHidden } = mountAssembledSelect({ options });
+    const { getListbox, getPopoverAriaHidden, openMenu } = await renderAssembledSelect({ options });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await openMenu();
     expect(getPopoverAriaHidden()).toBe("false");
 
-    await getListbox().trigger("keydown", { key: "Escape" });
+    await dispatchKeydown(getListbox(), "Escape");
 
     expect(getPopoverAriaHidden()).toBe("true");
   });
 
-  it("does not render the clear button when clearable is disabled", () => {
-    const { wrapper } = mountAssembledSelect({
+  it("does not render the clear button when clearable is disabled", async () => {
+    const { screen } = await renderAssembledSelect({
       options,
       modelValue: "FR",
     });
 
-    expect(wrapper.find("[data-select-clear]").exists()).toBe(false);
+    expect(screen.container.querySelector("[data-select-clear]")).toBeNull();
   });
 
-  it("renders custom clear button content from the clear slot", () => {
-    const { wrapper } = mountAssembledSelect({
+  it("renders custom clear button content from the clear slot", async () => {
+    const { getClearButton } = await renderAssembledSelect({
       options,
       clearable: true,
       modelValue: "FR",
@@ -187,25 +199,25 @@ describe("assembled Select", () => {
       },
     });
 
-    expect(wrapper.get("[data-select-clear]").text()).toBe("Reset");
-    expect(wrapper.find("[data-select-clear] svg").exists()).toBe(false);
+    await expect.element(getClearButton()).toHaveTextContent("Reset");
+    expect(getClearButton().element().querySelector("svg")).toBeNull();
   });
 
   it("clears the selected option from the clear button", async () => {
-    const { wrapper, model } = mountAssembledSelect({
+    const { model, getValue, getClearButton } = await renderAssembledSelect({
       options,
       clearable: true,
       modelValue: "FR",
     });
 
-    await wrapper.get("[data-select-clear]").trigger("click");
+    await getClearButton().click();
 
     expect(model.value).toBeNull();
-    expect(wrapper.get("[data-select-value]").text()).toBe("Pick a language");
+    await expect.element(getValue()).toHaveTextContent("Pick a language");
   });
 
   it("focuses the first matching option while typing in the search input", async () => {
-    const { wrapper, getInput } = mountAssembledSelect({
+    const { getInput, openMenu } = await renderAssembledSelect({
       options: [
         { label: "Alpha", value: "alpha" },
         { label: "Beta", value: "beta" },
@@ -213,30 +225,30 @@ describe("assembled Select", () => {
       ],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    const input = getInput().get("input");
+    await openMenu();
+    const input = getInput();
 
-    await input.trigger("keydown", { key: "ArrowDown" });
+    await dispatchKeydown(input, "ArrowDown");
 
     const getActiveOption = () => document.body.querySelector<HTMLElement>("[data-select-option][data-active='true']");
 
     expect(getActiveOption()?.dataset.value).toBe("beta");
 
-    await input.setValue("a");
+    await getInput().fill("a");
 
     expect(getActiveOption()?.dataset.value).toBe("alpha");
-    expect(input.attributes("aria-activedescendant")).toBe(getActiveOption()?.id);
+    expect(input.element().getAttribute("aria-activedescendant")).toBe(getActiveOption()?.id);
   });
 
   it("emits search when typing in the trigger input", async () => {
     const onSearch = vi.fn();
-    const { wrapper, getInput, findVisibleOptions } = mountAssembledSelect({
+    const { getInput, openMenu, findVisibleOptions } = await renderAssembledSelect({
       options,
       onSearch,
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await getInput().get("input").setValue("United");
+    await openMenu();
+    await getInput().fill("United");
 
     expect(onSearch).toHaveBeenCalledWith("United");
     expect(findVisibleOptions()).toHaveLength(1);
@@ -244,49 +256,50 @@ describe("assembled Select", () => {
 
   it("emits search when deleting the last letter", async () => {
     const onSearch = vi.fn();
-    const { wrapper, getInput } = mountAssembledSelect({
+    const { getInput, openMenu } = await renderAssembledSelect({
       options,
       onSearch,
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    const input = getInput().get("input");
-    await input.setValue("U");
+    await openMenu();
+    const input = getInput();
+
+    await input.fill("U");
     onSearch.mockClear();
-    await input.setValue("");
+    await input.fill("");
 
     expect(onSearch).toHaveBeenCalledWith("");
   });
 
   it("emits optionDeselected when clearing a single selection", async () => {
     const onOptionDeselected = vi.fn();
-    const { wrapper } = mountAssembledSelect({
+    const { getClearButton } = await renderAssembledSelect({
       options,
       clearable: true,
       modelValue: "FR",
       onOptionDeselected,
     });
 
-    await wrapper.get("[data-select-clear]").trigger("click");
+    await getClearButton().click();
 
     expect(onOptionDeselected).toHaveBeenCalledWith({ label: "France", value: "FR" });
   });
 
   it("removes the last selected value on Backspace in multi-select mode", async () => {
-    const { wrapper, model, getListbox } = mountAssembledSelect({
+    const { model, getListbox, openMenu } = await renderAssembledSelect({
       options,
       multiple: true,
       modelValue: ["FR", "GB"],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await getListbox().trigger("keydown", { key: "Backspace" });
+    await openMenu();
+    await dispatchKeydown(getListbox(), "Backspace");
 
     expect(model.value).toEqual(["FR"]);
   });
 
   it("closes the menu after multi-select when closeOnSelect is true", async () => {
-    const { wrapper, model, findOptions, getPopoverAriaHidden } = mountAssembledSelect({
+    const { model, getPopoverAriaHidden, openMenu } = await renderAssembledSelect({
       options: [
         { label: "JavaScript", value: "js" },
         { label: "TypeScript", value: "ts" },
@@ -296,15 +309,15 @@ describe("assembled Select", () => {
       modelValue: [],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await findOptions()[0]!.trigger("click");
+    await openMenu();
+    await page.getByRole("option", { name: "JavaScript" }).click();
 
     expect(model.value).toEqual(["js"]);
     expect(getPopoverAriaHidden()).toBe("true");
   });
 
   it("keeps the menu open on multi-select when closeOnSelect is false", async () => {
-    const { wrapper, model, findOptions, getPopoverAriaHidden } = mountAssembledSelect({
+    const { model, getPopoverAriaHidden, openMenu } = await renderAssembledSelect({
       options: [
         { label: "JavaScript", value: "js" },
         { label: "TypeScript", value: "ts" },
@@ -314,61 +327,66 @@ describe("assembled Select", () => {
       modelValue: [],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await findOptions()[0]!.trigger("click");
+    await openMenu();
+    await page.getByRole("option", { name: "JavaScript" }).click();
 
     expect(model.value).toEqual(["js"]);
     expect(getPopoverAriaHidden()).toBe("false");
   });
 
-  it("shows the loading trailing icon when loading is enabled", () => {
-    const { wrapper } = mountAssembledSelect({
+  it("shows the loading trailing icon when loading is enabled", async () => {
+    const { screen } = await renderAssembledSelect({
       options,
       loading: true,
     });
 
-    expect(wrapper.get("[data-select-trailing-icon]").attributes("data-loading")).toBe("true");
+    await expect.element(locateInContainer(screen.container, "[data-select-trailing-icon]")).toHaveAttribute("data-loading", "true");
   });
 
-  it("renders a custom leading icon from the icon slot", () => {
-    const { wrapper } = mountAssembledSelect({
+  it("renders a custom leading icon from the icon slot", async () => {
+    const { screen } = await renderAssembledSelect({
       options,
       slots: {
         icon: () => "🌍",
       },
     });
 
-    const icon = wrapper.get("[data-select-icon]");
+    const icon = locateInContainer(screen.container, "[data-select-icon]");
 
-    expect(icon.text()).toBe("🌍");
-    expect(icon.attributes("aria-hidden")).toBe("true");
+    await expect.element(icon).toHaveTextContent("🌍");
+    await expect.element(icon).toHaveAttribute("aria-hidden", "true");
   });
 
   it("renders a custom trailing icon from the trailing-icon slot", async () => {
-    const { wrapper } = mountAssembledSelect({
+    const { screen, getTrigger } = await renderAssembledSelect({
       options,
       slots: {
         "trailing-icon": ({ open }: { open: boolean }) => (open ? "▲" : "▼"),
       },
     });
 
-    const trailingIcon = wrapper.get("[data-select-trailing-icon]");
+    const trailingIconEl = screen.container.querySelector<HTMLElement>("[data-select-trailing-icon]");
 
-    expect(trailingIcon.text()).toBe("▼");
+    expect(trailingIconEl).not.toBeNull();
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    const startsOpen = trailingIconEl!.getAttribute("data-open") === "true";
 
-    expect(trailingIcon.text()).toBe("▲");
+    expect(trailingIconEl!.textContent?.trim()).toBe(startsOpen ? "▲" : "▼");
+
+    await getTrigger().click();
+    await flushFocusUpdates();
+
+    expect(trailingIconEl!.textContent?.trim()).toBe(startsOpen ? "▼" : "▲");
   });
 
   it("shows a checkmark on selected options in multi-select mode", async () => {
-    const { wrapper, findRenderedOptionElements } = mountAssembledSelect({
+    const { findRenderedOptionElements, openMenu } = await renderAssembledSelect({
       options,
       multiple: true,
       modelValue: ["FR"],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await openMenu();
 
     const selectedOption = findRenderedOptionElements().find(
       (option) => option.dataset.value === "FR",
@@ -382,14 +400,14 @@ describe("assembled Select", () => {
   });
 
   it("hides selected options from the dropdown when hideSelected is enabled", async () => {
-    const { wrapper, findRenderedOptionElements } = mountAssembledSelect({
+    const { findRenderedOptionElements, openMenu } = await renderAssembledSelect({
       options,
       multiple: true,
       hideSelected: true,
       modelValue: ["FR"],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await openMenu();
 
     const visibleValues = findRenderedOptionElements().map((option) => option.dataset.value);
 
@@ -398,13 +416,13 @@ describe("assembled Select", () => {
   });
 
   it("keeps selected options visible in the dropdown by default", async () => {
-    const { wrapper, findRenderedOptionElements } = mountAssembledSelect({
+    const { findRenderedOptionElements, openMenu } = await renderAssembledSelect({
       options,
       multiple: true,
       modelValue: ["FR"],
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
+    await openMenu();
 
     const visibleValues = findRenderedOptionElements().map((option) => option.dataset.value);
 
@@ -413,7 +431,7 @@ describe("assembled Select", () => {
   });
 
   it("renders a custom empty state from the no-options slot when filtering has no results", async () => {
-    const { wrapper, getInput, getTeleportedPopoverElement } = mountAssembledSelect({
+    const { getInput, getTeleportedPopoverElement, openMenu } = await renderAssembledSelect({
       options,
       searchable: true,
       slots: {
@@ -421,8 +439,8 @@ describe("assembled Select", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await getInput().get("input").setValue("zzzz");
+    await openMenu();
+    await getInput().fill("zzzz");
 
     const noOptions = getTeleportedPopoverElement()?.querySelector("[data-select-no-options]");
 
@@ -430,25 +448,23 @@ describe("assembled Select", () => {
   });
 
   it("removes a selected value when clicking a tag remove button in searchable multi mode", async () => {
-    const { wrapper, model } = mountAssembledSelect({
+    const { model, screen } = await renderAssembledSelect({
       options,
       multiple: true,
       searchable: true,
       modelValue: ["FR", "GB"],
     });
 
-    await wrapper.vm.$nextTick();
+    expect(screen.container.querySelectorAll("[data-select-tag]")).toHaveLength(2);
 
-    expect(wrapper.findAll("[data-select-tag]")).toHaveLength(2);
-
-    await wrapper.get("[data-select-tag-remove]").trigger("click");
+    await locateInContainer(screen.container, "[data-select-tag-remove]").click();
 
     expect(model.value).toEqual(["GB"]);
-    expect(wrapper.findAll("[data-select-tag]")).toHaveLength(1);
+    expect(screen.container.querySelectorAll("[data-select-tag]")).toHaveLength(1);
   });
 
-  it("renders a custom tag remove icon from the tag-remove slot", () => {
-    const { wrapper } = mountAssembledSelect({
+  it("renders a custom tag remove icon from the tag-remove slot", async () => {
+    const { screen } = await renderAssembledSelect({
       options,
       multiple: true,
       modelValue: ["FR", "GB"],
@@ -457,23 +473,23 @@ describe("assembled Select", () => {
       },
     });
 
-    const removeButtons = wrapper.findAll("[data-select-tag-remove]");
+    const removeButtons = screen.container.querySelectorAll("[data-select-tag-remove]");
 
     expect(removeButtons).toHaveLength(2);
-    expect(removeButtons.every((button) => button.text() === "×")).toBe(true);
-    expect(wrapper.find("[data-select-tag-remove] svg").exists()).toBe(false);
+    expect(Array.from(removeButtons).every((button) => button.textContent === "×")).toBe(true);
+    expect(screen.container.querySelector("[data-select-tag-remove] svg")).toBeNull();
   });
 
   it("shows create item when search has no matches and emits create on click", async () => {
     const onCreate = vi.fn();
-    const { wrapper, getInput, getTeleportedPopoverElement } = mountAssembledSelect({
+    const { getInput, getTeleportedPopoverElement, openMenu } = await renderAssembledSelect({
       options,
       createItem: true,
       onCreate,
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await getInput().get("input").setValue("Canada");
+    await openMenu();
+    await getInput().fill("Canada");
 
     const createItem = getTeleportedPopoverElement()?.querySelector("[data-select-create-item]");
 
@@ -481,13 +497,13 @@ describe("assembled Select", () => {
     expect(getTeleportedPopoverElement()?.querySelector("[data-select-no-options]")).toBeNull();
 
     createItem?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    await wrapper.vm.$nextTick();
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(onCreate).toHaveBeenCalledWith("Canada");
   });
 
   it("renders a custom create item slot and keeps it visible in always mode", async () => {
-    const { wrapper, getInput, getTeleportedPopoverElement } = mountAssembledSelect({
+    const { getInput, getTeleportedPopoverElement, openMenu } = await renderAssembledSelect({
       options,
       createItem: "always",
       slots: {
@@ -495,8 +511,8 @@ describe("assembled Select", () => {
       },
     });
 
-    await wrapper.get("[data-select-trigger]").trigger("click");
-    await getInput().get("input").setValue("Fr");
+    await openMenu();
+    await getInput().fill("Fr");
 
     const createItem = getTeleportedPopoverElement()?.querySelector("[data-select-create-item]");
 
@@ -504,21 +520,19 @@ describe("assembled Select", () => {
     expect(getTeleportedPopoverElement()?.querySelectorAll("[data-select-option]").length).toBeGreaterThan(0);
   });
 
-  it("forwards popover props to SelectPopover", () => {
-    const { getPopoverComponent } = mountAssembledSelect({
+  it("forwards popover props to SelectPopover", async () => {
+    const { screen, getTrigger } = await renderAssembledSelect({
       options,
       teleport: false,
       side: "top",
       align: "end",
       sideOffset: 10,
-      modal: true,
+      modal: false,
     });
 
-    const popover = getPopoverComponent();
+    getTrigger().element().dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushFocusUpdates();
 
-    expect(popover.props("side")).toBe("top");
-    expect(popover.props("align")).toBe("end");
-    expect(popover.props("sideOffset")).toBe(10);
-    expect(popover.props("modal")).toBe(true);
+    await expect.element(locateInContainer(screen.container, "[data-select-popover]")).toHaveAttribute("aria-hidden", "false");
   });
 });

@@ -58,11 +58,13 @@ export function provideSelectContext<OptionValue>(context: SelectContext<OptionV
 }
 
 export function injectSelectContext<OptionValue = string>(): SelectContext<OptionValue> {
-  const context = inject(SELECT_CONTEXT_KEY);
-
-  if (!context) {
-    throw new Error("injectSelectContext must be used within SelectRoot");
-  }
+  const context = inject(
+    SELECT_CONTEXT_KEY,
+    () => {
+      throw new Error("injectSelectContext must be used within SelectRoot");
+    },
+    true,
+  );
 
   return context as SelectContext<OptionValue>;
 }

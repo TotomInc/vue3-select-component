@@ -7,6 +7,8 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
+      // eslint-disable-next-line node/prefer-global/process
+      reporters: process.env.CI ? "verbose" : "default",
       coverage: {
         provider: "v8",
         include: ["**/*.vue", "**/*.ts"],

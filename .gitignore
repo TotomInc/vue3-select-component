@@ -30,3 +30,7 @@ coverage
 
 # cursor
 .cursor/hooks/state
+
+# vitest
+__screenshots__
+.vitest-attachments

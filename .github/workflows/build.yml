@@ -29,11 +29,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright browsers
+        run: pnpm --filter vue3-select-component exec playwright install --with-deps chromium
+
       - name: Build library
         run: pnpm --filter vue3-select-component run build
 
       - name: Test library
         run: pnpm --filter vue3-select-component run test
+
+      - name: Test coverage
+        run: pnpm --filter vue3-select-component run test:coverage
 
       - name: Build docs
         run: pnpm run docs:build

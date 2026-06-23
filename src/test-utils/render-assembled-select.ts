@@ -14,6 +14,7 @@ import {
   getTeleportedPopoverElement,
 } from "./browser-select-helpers";
 import { basicOptions } from "./render-primitive-select";
+import "../styles.css";
 
 export type RenderAssembledSelectOptions<
   OptionValue extends string | number = string,

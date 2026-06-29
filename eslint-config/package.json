@@ -23,7 +23,7 @@
     "eslint": "^10.0.0"
   },
   "dependencies": {
-    "@antfu/eslint-config": "9.0.0"
+    "@antfu/eslint-config": "9.1.0"
   },
   "devDependencies": {
     "eslint": "10.5.0",

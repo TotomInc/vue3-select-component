@@ -37,6 +37,9 @@ jobs:
       - name: Build
         run: pnpm --filter vue3-select-component run build
 
+      - name: Install Playwright browsers
+        run: pnpm --filter vue3-select-component exec playwright install --with-deps chromium
+
       - name: Test
         run: pnpm --filter vue3-select-component run test
 

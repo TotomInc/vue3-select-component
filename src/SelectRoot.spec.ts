@@ -297,6 +297,55 @@ describe("v1 SelectRoot core module", () => {
     expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("js");
   });
 
+  it("scrolls the active option into view when navigating with arrow keys", async () => {
+    const manyOptions = Array.from({ length: 10 }, (_, index) => ({
+      label: `Option ${index + 1}`,
+      value: `option-${index + 1}`,
+    }));
+
+    const { screen, getTrigger } = await renderSelectRoot({
+      slots: {
+        default: () => [
+          h(SelectTrigger, null, {
+            default: () => h(SelectValue, { placeholder: "Pick" }),
+          }),
+          h(SelectPopover, { teleport: false }, {
+            default: () => [
+              h(SelectListbox, { style: { maxHeight: "80px", overflowY: "auto" } }, {
+                default: () => manyOptions.map((option) =>
+                  h(SelectOption, {
+                    value: option.value,
+                    label: option.label,
+                  }),
+                ),
+              }),
+            ],
+          }),
+        ],
+      },
+    });
+
+    const listbox = screen.container.querySelector<HTMLElement>("[data-select-listbox]");
+    expect(listbox).not.toBeNull();
+
+    await getTrigger().click();
+
+    for (let index = 0; index < 5; index += 1) {
+      await dispatchKeydown(listbox!, "ArrowDown");
+    }
+
+    await flushFocusUpdates();
+
+    const activeOption = screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']");
+    expect(activeOption?.dataset.value).toBe("option-6");
+
+    const listboxRect = listbox!.getBoundingClientRect();
+    const activeRect = activeOption!.getBoundingClientRect();
+
+    expect(activeRect.top).toBeGreaterThanOrEqual(listboxRect.top);
+    expect(activeRect.bottom).toBeLessThanOrEqual(listboxRect.bottom);
+  });
+
   it("selects the active option on Enter", async () => {
     const { model, getTrigger, getListbox, getPopoverAriaHidden } = await renderPrimitiveSelect();
 

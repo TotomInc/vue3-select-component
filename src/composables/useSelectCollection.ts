@@ -41,6 +41,7 @@ export function useSelectCollection<Value extends string | number>(params: UseSe
   const propOptions = computed(() => params.propOptions().map(toRegisteredOption));
 
   const allOptions = computed(() => {
+    const propByValue = new Map(propOptions.value.map((option) => [String(option.value), option]));
     const byValue = new Map<string, RegisteredOption<Value>>();
 
     for (const option of propOptions.value) {
@@ -48,7 +49,14 @@ export function useSelectCollection<Value extends string | number>(params: UseSe
     }
 
     for (const option of declarativeRegistry.value.values()) {
-      byValue.set(String(option.value), option);
+      // Try to find an existing prop option with the same value.
+      const propOption = propByValue.get(String(option.value));
+      // If found, override the declarative option with the prop option.
+      const optionValue = propOption
+        ? { ...option, label: propOption.label, disabled: propOption.disabled }
+        : option;
+
+      byValue.set(String(option.value), optionValue);
     }
 
     return [...byValue.values()];

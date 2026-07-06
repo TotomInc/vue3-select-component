@@ -2,7 +2,7 @@
 import type { SelectOptionProps } from "@/types/primitives";
 import type { SelectOptionSlots } from "@/types/slots";
 
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, watch } from "vue";
 import { injectSelectContext } from "@/lib/context";
 import { injectOptionalSelectGroupContext } from "@/lib/group-context";
 import { createOptionId } from "@/lib/ids";
@@ -32,23 +32,48 @@ const isVisible = computed(() => context.isOptionVisible(props.value));
 
 const showCheckmark = computed(() => context.multiple.value && isSelected.value);
 
+// Read disabled from the merged collection so behavior stays correct when props are
+// stale (e.g. useVirtualList snapshots item.data). Falls back to the prop for
+// declarative-only usage without an options prop.
+const resolvedOption = computed(() =>
+  context.allOptions.value.find((option) => option.value === props.value),
+);
+
+const isDisabled = computed(() =>
+  resolvedOption.value?.disabled ?? props.disabled ?? false,
+);
+
 function onOptionClick() {
-  if (props.disabled) {
+  if (isDisabled.value) {
     return;
   }
 
   context.select(props.value);
 }
 
-onMounted(() => {
+function registerCurrentOption() {
   context.registerOption({
     id: optionId,
     value: props.value,
     label: props.label,
     disabled: props.disabled ?? false,
   });
+}
+
+onMounted(() => {
+  registerCurrentOption();
   groupContext?.registerOptionValue(props.value);
 });
+
+// Keep the declarative registry in sync when props change. Needed for
+// declarative-only selects. When an options prop is also passed, allOptions
+// already prefers prop metadata on merge.
+watch(
+  () => [props.label, props.disabled] as const,
+  () => {
+    registerCurrentOption();
+  },
+);
 
 onUnmounted(() => {
   context.unregisterOption(optionId);
@@ -65,7 +90,7 @@ onUnmounted(() => {
     :data-value="String(value)"
     :data-active="isActive"
     :aria-selected="isSelected"
-    :aria-disabled="disabled"
+    :aria-disabled="isDisabled"
     @click="onOptionClick"
   >
     <span data-select-option-label>

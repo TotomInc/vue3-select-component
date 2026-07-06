@@ -35,8 +35,36 @@ describe("useSelectCollection", () => {
     const values = collection.allOptions.value.map((option) => option.value);
 
     expect(values).toEqual(["js", "ts", "rs"]);
-    expect(collection.allOptions.value.find((option) => option.value === "ts")?.label).toBe("TS duplicate");
+    expect(collection.allOptions.value.find((option) => option.value === "ts")?.label).toBe("TypeScript");
     expect(collection.allOptions.value.find((option) => option.value === "ts")?.id).toBe("declarative-ts-duplicate");
+  });
+
+  it("prefers prop disabled state over stale declarative registrations", () => {
+    const propOptions = ref([
+      { label: "Option 1", value: "1", disabled: true },
+      { label: "Option 2", value: "2", disabled: false },
+    ]);
+
+    const collection = useSelectCollection({
+      propOptions: () => propOptions.value,
+    });
+
+    collection.register({
+      id: "declarative-1",
+      value: "1",
+      label: "Option 1",
+      disabled: false,
+    });
+
+    expect(collection.allOptions.value.find((option) => option.value === "1")?.disabled).toBe(true);
+
+    propOptions.value = [
+      { label: "Option 1", value: "1", disabled: false },
+      { label: "Option 2", value: "2", disabled: true },
+    ];
+
+    expect(collection.allOptions.value.find((option) => option.value === "1")?.disabled).toBe(false);
+    expect(collection.allOptions.value.find((option) => option.value === "2")?.disabled).toBe(true);
   });
 
   it("unregisters declarative options on unmount", () => {
@@ -56,6 +84,48 @@ describe("useSelectCollection", () => {
     collection.unregister("option-1");
 
     expect(collection.allOptions.value).toHaveLength(0);
+  });
+
+  it("updates declarative options when re-registered with the same id", () => {
+    const collection = useSelectCollection({
+      propOptions: () => [],
+    });
+
+    collection.register({
+      id: "option-1",
+      value: "js",
+      label: "JavaScript",
+      disabled: false,
+    });
+
+    collection.register({
+      id: "option-1",
+      value: "js",
+      label: "JavaScript",
+      disabled: true,
+    });
+
+    expect(collection.allOptions.value).toHaveLength(1);
+    expect(collection.allOptions.value[0]?.disabled).toBe(true);
+  });
+
+  it("keeps declarative metadata when no matching options prop exists", () => {
+    const collection = useSelectCollection({
+      propOptions: () => [],
+    });
+
+    collection.register({
+      id: "declarative-only",
+      value: "custom",
+      label: "Custom label",
+      disabled: true,
+    });
+
+    const option = collection.allOptions.value.find((entry) => entry.value === "custom");
+
+    expect(option?.label).toBe("Custom label");
+    expect(option?.disabled).toBe(true);
+    expect(option?.id).toBe("declarative-only");
   });
 });
 

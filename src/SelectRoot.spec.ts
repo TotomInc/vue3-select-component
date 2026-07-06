@@ -1,8 +1,9 @@
+import type { SelectModelValue } from "./types/model";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render } from "vitest-browser-vue";
 import { page } from "vitest/browser";
-import { defineComponent, h } from "vue";
 
+import { computed, defineComponent, h, ref } from "vue";
 import SelectClear from "./primitives/SelectClear.vue";
 import SelectCreateItem from "./primitives/SelectCreateItem.vue";
 import SelectGroup from "./primitives/SelectGroup.vue";
@@ -12,6 +13,7 @@ import SelectListbox from "./primitives/SelectListbox.vue";
 import SelectNoOptions from "./primitives/SelectNoOptions.vue";
 import SelectOption from "./primitives/SelectOption.vue";
 import SelectPopover from "./primitives/SelectPopover.vue";
+import SelectRoot from "./primitives/SelectRoot.vue";
 import SelectSeparator from "./primitives/SelectSeparator.vue";
 import SelectTag from "./primitives/SelectTag.vue";
 import SelectTrailingIcon from "./primitives/SelectTrailingIcon.vue";
@@ -295,6 +297,144 @@ describe("v1 SelectRoot core module", () => {
     await dispatchKeydown(getListbox(), "ArrowUp");
 
     expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-active='true']")?.dataset.value).toBe("js");
+  });
+
+  it("reactively updates disabled state for declarative SelectOption primitives", async () => {
+    const maxSelectable = 2;
+    const options = [
+      { label: "Option 1", value: "1" },
+      { label: "Option 2", value: "2" },
+      { label: "Option 3", value: "3" },
+    ];
+
+    const SelectWithDynamicDisabled = defineComponent({
+      setup() {
+        const selected = ref<string[]>([]);
+
+        const resolvedOptions = computed(() =>
+          options.map((option) => ({
+            ...option,
+            disabled: selected.value.length >= maxSelectable && !selected.value.includes(option.value),
+          })),
+        );
+
+        return () =>
+          h(SelectRoot<string>, {
+            "modelValue": selected.value,
+            "multiple": true,
+            "options": resolvedOptions.value,
+            "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+              selected.value = Array.isArray(value) ? value : [];
+            },
+          }, {
+            default: () => [
+              h(SelectTrigger, null, {
+                default: () => h(SelectValue, { placeholder: "Pick" }),
+              }),
+              h(SelectPopover, { teleport: false }, {
+                default: () => [
+                  h(SelectListbox, null, {
+                    default: () =>
+                      resolvedOptions.value.map((option) =>
+                        h(SelectOption, {
+                          key: option.value,
+                          value: option.value,
+                          label: option.label,
+                          disabled: option.disabled,
+                        }),
+                      ),
+                  }),
+                ],
+              }),
+            ],
+          });
+      },
+    });
+
+    const screen = await render(SelectWithDynamicDisabled);
+    const getTrigger = () => locateInContainer(screen.container, "[data-select-trigger]");
+
+    await getTrigger().click();
+
+    await locateInContainer(screen.container, "[data-select-option][data-value='1']").click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='2']").click();
+
+    const option3 = screen.container.querySelector<HTMLElement>("[data-select-option][data-value='3']");
+
+    expect(option3?.getAttribute("aria-disabled")).toBe("true");
+
+    await option3?.click();
+
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-value='3'][aria-selected='true']")).toBeNull();
+  });
+
+  it("reactively updates disabled state when SelectOption props are stale", async () => {
+    const maxSelectable = 2;
+    const options = [
+      { label: "Option 1", value: "1" },
+      { label: "Option 2", value: "2" },
+      { label: "Option 3", value: "3" },
+    ];
+
+    const SelectWithStaleOptionProps = defineComponent({
+      setup() {
+        const selected = ref<string[]>([]);
+
+        const resolvedOptions = computed(() =>
+          options.map((option) => ({
+            ...option,
+            disabled: selected.value.length >= maxSelectable && !selected.value.includes(option.value),
+          })),
+        );
+
+        return () =>
+          h(SelectRoot<string>, {
+            "modelValue": selected.value,
+            "multiple": true,
+            "options": resolvedOptions.value,
+            "onUpdate:modelValue": (value: SelectModelValue<string>) => {
+              selected.value = Array.isArray(value) ? value : [];
+            },
+          }, {
+            default: () => [
+              h(SelectTrigger, null, {
+                default: () => h(SelectValue, { placeholder: "Pick" }),
+              }),
+              h(SelectPopover, { teleport: false }, {
+                default: () => [
+                  h(SelectListbox, null, {
+                    default: () =>
+                      options.map((option) =>
+                        h(SelectOption, {
+                          key: option.value,
+                          value: option.value,
+                          label: option.label,
+                          disabled: false,
+                        }),
+                      ),
+                  }),
+                ],
+              }),
+            ],
+          });
+      },
+    });
+
+    const screen = await render(SelectWithStaleOptionProps);
+    const getTrigger = () => locateInContainer(screen.container, "[data-select-trigger]");
+
+    await getTrigger().click();
+
+    await locateInContainer(screen.container, "[data-select-option][data-value='1']").click();
+    await locateInContainer(screen.container, "[data-select-option][data-value='2']").click();
+
+    const option3 = screen.container.querySelector<HTMLElement>("[data-select-option][data-value='3']");
+
+    expect(option3?.getAttribute("aria-disabled")).toBe("true");
+
+    await option3?.click();
+
+    expect(screen.container.querySelector<HTMLElement>("[data-select-option][data-value='3'][aria-selected='true']")).toBeNull();
   });
 
   it("scrolls the active option into view when navigating with arrow keys", async () => {

@@ -303,6 +303,14 @@ This repository is a pnpm workspace:
 
 Changelog and release notes are on [GitHub Releases](https://github.com/TotomInc/vue3-select-component/releases).
 
+## Sponsors
+
+<p align="center">
+  <a href="https://www.heapform.com/" target="_blank">
+    <img src=".github/assets/sponsors/heapform.png" alt="Heapform" height="48" />
+  </a>
+</p>
+
 ## License
 
 MIT Licensed. Copyright (c) Thomas Cazade 2024 - present.

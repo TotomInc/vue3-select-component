@@ -13,10 +13,10 @@
   "dependencies": {
     "@comark/nuxt": "0.5.1",
     "@vercel/analytics": "2.0.1",
-    "@vueuse/core": "14.3.0",
-    "better-sqlite3": "12.11.1",
+    "@vueuse/core": "14.4.0",
+    "better-sqlite3": "13.0.2",
     "docus": "5.12.3",
-    "nuxt": "4.5.0",
+    "nuxt": "4.5.1",
     "vue3-select-component": "workspace:*"
   },
   "devDependencies": {

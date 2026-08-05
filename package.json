@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@vue3-select-component/eslint-config": "workspace:*",
-    "eslint": "10.5.0",
+    "eslint": "10.8.0",
     "jiti": "2.7.0"
   }
 }

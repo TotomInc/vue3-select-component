@@ -8,9 +8,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@vueuse/core": "14.4.0",
-    "vue": "3.5.41",
-    "vue-router": "5.2.0",
+    "@vueuse/core": "15.0.0",
+    "vue": "3.5.43",
+    "vue-router": "5.4.0",
     "vue3-select-component": "workspace:*"
   },
   "devDependencies": {
@@ -18,7 +18,7 @@
     "eslint": "10.8.1",
     "jiti": "2.7.0",
     "typescript": "5.9.3",
-    "unplugin-vue": "7.2.0",
-    "vite": "8.2.1"
+    "unplugin-vue": "8.0.0",
+    "vite": "8.3.4"
   }
 }

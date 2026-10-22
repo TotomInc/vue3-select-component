@@ -21,3 +21,6 @@ shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 10080
 verifyDepsBeforeRun: install
+minimumReleaseAgeExclude:
+  # Renovate security update: vite@8.2.4
+  - vite@8.2.4

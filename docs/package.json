@@ -16,7 +16,7 @@
     "@vueuse/core": "14.4.0",
     "better-sqlite3": "13.0.3",
     "docus": "5.12.3",
-    "nuxt": "4.5.2",
+    "nuxt": "4.6.2",
     "vue3-select-component": "workspace:*"
   },
   "devDependencies": {

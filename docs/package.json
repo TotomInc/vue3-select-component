@@ -11,11 +11,11 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@comark/nuxt": "0.6.2",
+    "@comark/nuxt": "0.8.1",
     "@vercel/analytics": "2.0.1",
-    "@vueuse/core": "14.4.0",
+    "@vueuse/core": "15.0.0",
     "better-sqlite3": "13.0.3",
-    "docus": "5.12.3",
+    "docus": "5.15.0",
     "nuxt": "4.5.2",
     "vue3-select-component": "workspace:*"
   },
@@ -23,6 +23,6 @@
     "@vue3-select-component/eslint-config": "workspace:*",
     "eslint": "10.8.1",
     "jiti": "2.7.0",
-    "vue": "3.5.41"
+    "vue": "3.5.44"
   }
 }

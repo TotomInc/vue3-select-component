@@ -14,7 +14,7 @@
     "@comark/nuxt": "0.9.1",
     "@vercel/analytics": "2.0.1",
     "@vueuse/core": "15.0.0",
-    "better-sqlite3": "13.1.1",
+    "better-sqlite3": "13.0.3",
     "docus": "5.15.0",
     "nuxt": "4.6.4",
     "vue3-select-component": "workspace:*"

@@ -4,6 +4,8 @@
     "config:recommended",
     "schedule:weekly"
   ],
+  "minimumReleaseAge": "1 day",
+  "internalChecksFilter": "strict",
   "groupName": "all dependencies",
   "groupSlug": "all",
   "lockFileMaintenance": {

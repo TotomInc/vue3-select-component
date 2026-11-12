@@ -52,7 +52,9 @@ export default mergeConfig(
               enabled: true,
               headless: true,
               provider: playwright(),
-              instances: [{ browser: "chromium" }],
+              instances: [
+                { browser: "chromium" },
+              ],
             },
           },
         },

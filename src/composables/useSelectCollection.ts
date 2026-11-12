@@ -41,7 +41,10 @@ export function useSelectCollection<Value extends string | number>(params: UseSe
   const propOptions = computed(() => params.propOptions().map(toRegisteredOption));
 
   const allOptions = computed(() => {
-    const propByValue = new Map(propOptions.value.map((option) => [String(option.value), option]));
+    const propByValue = new Map(propOptions.value.map((option) => [
+      String(option.value),
+      option,
+    ]));
     const byValue = new Map<string, RegisteredOption<Value>>();
 
     for (const option of propOptions.value) {
@@ -59,7 +62,9 @@ export function useSelectCollection<Value extends string | number>(params: UseSe
       byValue.set(String(option.value), optionValue);
     }
 
-    return [...byValue.values()];
+    return [
+      ...byValue.values(),
+    ];
   });
 
   return {
@@ -89,7 +94,9 @@ export function findNextEnabledOption<Value>(
     : enabledOptions.findIndex((option) => option.value === currentValue);
 
   const nextIndex = currentIndex === -1
-    ? (direction === 1 ? 0 : enabledOptions.length - 1)
+    ? (direction === 1
+        ? 0
+        : enabledOptions.length - 1)
     : (currentIndex + direction + enabledOptions.length) % enabledOptions.length;
 
   return enabledOptions[nextIndex] ?? null;

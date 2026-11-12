@@ -5,9 +5,24 @@ import { describe, expect, it } from "vitest";
 import { defaultSelectFilterBy, filterOptions } from "./filter";
 
 const options: RegisteredOption<string>[] = [
-  { id: "1", value: "js", label: "JavaScript", disabled: false },
-  { id: "2", value: "ts", label: "TypeScript", disabled: false },
-  { id: "3", value: "py", label: "Python", disabled: false },
+  {
+    id: "1",
+    value: "js",
+    label: "JavaScript",
+    disabled: false,
+  },
+  {
+    id: "2",
+    value: "ts",
+    label: "TypeScript",
+    disabled: false,
+  },
+  {
+    id: "3",
+    value: "py",
+    label: "Python",
+    disabled: false,
+  },
 ];
 
 describe("filterOptions", () => {

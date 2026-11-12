@@ -4,10 +4,16 @@
     "config:recommended",
     "schedule:weekly"
   ],
+  "minimumReleaseAge": "24 hours",
+  "updateNotScheduled": false,
+  "internalChecksFilter": "strict",
   "groupName": "all dependencies",
   "groupSlug": "all",
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": true,
+    "schedule": [
+      "* 0-3 * * 1"
+    ]
   },
   "packageRules": [
     {

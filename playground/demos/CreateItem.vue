@@ -5,10 +5,20 @@ import { Select } from "vue3-select-component";
 import DemoSection from "../components/DemoSection.vue";
 import DemoValue from "../components/DemoValue.vue";
 
-const items = ref(["Backlog", "Todo", "In Progress", "Done"]);
+const items = ref([
+  "Backlog",
+  "Todo",
+  "In Progress",
+  "Done",
+]);
 const value = ref("Backlog");
 const alwaysValue = ref<string | null>(null);
-const alwaysItems = ref(["Backlog", "Todo", "In Progress", "Done"]);
+const alwaysItems = ref([
+  "Backlog",
+  "Todo",
+  "In Progress",
+  "Done",
+]);
 
 function onCreate(item: string) {
   items.value.push(item);

@@ -107,7 +107,9 @@ describe("assembled Select", () => {
 
   it("cannot select a disabled option", async () => {
     const { model, openMenu } = await renderAssembledSelect({
-      options: [{ label: "Spain", value: "ES", disabled: true }],
+      options: [
+        { label: "Spain", value: "ES", disabled: true },
+      ],
     });
 
     await openMenu();

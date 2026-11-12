@@ -5,7 +5,9 @@ import { defineConfig } from "vite";
 const srcDir = fileURLToPath(new URL("../src", import.meta.url));
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+  ],
 
   resolve: {
     alias: {

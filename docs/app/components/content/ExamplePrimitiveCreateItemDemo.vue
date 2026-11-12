@@ -13,7 +13,12 @@ import {
   SelectValue,
 } from "vue3-select-component/primitives";
 
-const statuses = ref(["Backlog", "Todo", "In Progress", "Done"]);
+const statuses = ref([
+  "Backlog",
+  "Todo",
+  "In Progress",
+  "Done",
+]);
 const selected = ref("Backlog");
 
 function onCreate(item: string) {

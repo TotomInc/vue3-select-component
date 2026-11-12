@@ -32,8 +32,18 @@ describe("normalize-options", () => {
       (option, _label, search) => option.id.toLowerCase().includes(search.toLowerCase()),
     );
 
-    expect(filterBy({ label: "France", value: "fr", disabled: false, id: "select-option-1" }, "fra")).toBe(true);
-    expect(filterBy({ label: "USA", value: "us", disabled: false, id: "select-option-2" }, "fra")).toBe(false);
+    expect(filterBy({
+      label: "France",
+      value: "fr",
+      disabled: false,
+      id: "select-option-1",
+    }, "fra")).toBe(true);
+    expect(filterBy({
+      label: "USA",
+      value: "us",
+      disabled: false,
+      id: "select-option-2",
+    }, "fra")).toBe(false);
   });
 
   it("finds the source option from a normalized value", () => {

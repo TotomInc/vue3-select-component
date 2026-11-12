@@ -56,7 +56,9 @@ function createKeyboardContext(overrides: Partial<SelectContext<string>> = {}): 
 
 describe("useSelectKeyboard", () => {
   it("opens the menu from the trigger with arrow keys when closed", () => {
-    const context = createKeyboardContext({ isOpen: ref(false) });
+    const context = createKeyboardContext({
+      isOpen: ref(false),
+    });
     const { handleKeydown } = useSelectKeyboard({ context });
 
     handleKeydown(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
@@ -65,7 +67,9 @@ describe("useSelectKeyboard", () => {
   });
 
   it("navigates and selects options when the menu is open", () => {
-    const context = createKeyboardContext({ isOpen: ref(true) });
+    const context = createKeyboardContext({
+      isOpen: ref(true),
+    });
     const { handleKeydown } = useSelectKeyboard({ context });
 
     const arrowDown = new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true });
@@ -79,7 +83,9 @@ describe("useSelectKeyboard", () => {
   });
 
   it("closes the menu on Escape and Tab", () => {
-    const context = createKeyboardContext({ isOpen: ref(true) });
+    const context = createKeyboardContext({
+      isOpen: ref(true),
+    });
     const { handleKeydown } = useSelectKeyboard({ context });
 
     handleKeydown(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
@@ -95,7 +101,14 @@ describe("useSelectKeyboard", () => {
     const context = createKeyboardContext({
       isOpen: ref(true),
       multiple: ref(true),
-      selectedOptions: computed(() => [{ id: "1", value: "js", label: "JavaScript", disabled: false }]),
+      selectedOptions: computed(() => [
+        {
+          id: "1",
+          value: "js",
+          label: "JavaScript",
+          disabled: false,
+        },
+      ]),
     });
     const { handleKeydown } = useSelectKeyboard({ context });
 

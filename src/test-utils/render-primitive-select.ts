@@ -63,7 +63,9 @@ export async function renderPrimitiveSelect(props: RenderPrimitiveSelectOptions 
       "disabled": props.disabled ?? false,
       "loading": props.loading ?? false,
       "hideSelected": props.hideSelected ?? false,
-      "options": props.usePropOptions ? [...selectOptions] : [],
+      "options": props.usePropOptions
+        ? [...selectOptions]
+        : [],
       "onUpdate:modelValue": (value: SelectModelValue<string>) => {
         model.value = value;
         void screen.rerender({ modelValue: value });
@@ -88,7 +90,9 @@ export async function renderPrimitiveSelect(props: RenderPrimitiveSelectOptions 
                   h(SelectOption, {
                     value: option.value,
                     label: option.label,
-                    disabled: "disabled" in option ? option.disabled ?? false : false,
+                    disabled: "disabled" in option
+                      ? option.disabled ?? false
+                      : false,
                   }),
                 ),
               ],

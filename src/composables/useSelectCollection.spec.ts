@@ -131,9 +131,24 @@ describe("useSelectCollection", () => {
 
 describe("collection navigation helpers", () => {
   const options = [
-    { id: "1", value: "a", label: "A", disabled: false },
-    { id: "2", value: "b", label: "B", disabled: true },
-    { id: "3", value: "c", label: "C", disabled: false },
+    {
+      id: "1",
+      value: "a",
+      label: "A",
+      disabled: false,
+    },
+    {
+      id: "2",
+      value: "b",
+      label: "B",
+      disabled: true,
+    },
+    {
+      id: "3",
+      value: "c",
+      label: "C",
+      disabled: false,
+    },
   ];
 
   it("returns only enabled options", () => {

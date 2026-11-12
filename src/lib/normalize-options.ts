@@ -54,7 +54,10 @@ export function createGenericFilterByAdapter<GenericOption, OptionValue>(
   const sourceByValue = new Map(
     options.map((option) => [
       mappers.getOptionValue(option),
-      { source: option, label: mappers.getOptionLabel(option) },
+      {
+        source: option,
+        label: mappers.getOptionLabel(option),
+      },
     ]),
   );
 

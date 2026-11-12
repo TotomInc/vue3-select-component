@@ -82,7 +82,9 @@ export async function dispatchKeydown(
   key: string,
   init: KeyboardEventInit = {},
 ) {
-  const element = "element" in target ? target.element() : target;
+  const element = "element" in target
+    ? target.element()
+    : target;
 
   element.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, ...init }));
   await new Promise((resolve) => setTimeout(resolve, 0));
@@ -100,7 +102,9 @@ export async function flushFocusUpdates() {
 export function queryHTMLElement(container: ParentNode, selector: string) {
   const element = container.querySelector(selector);
 
-  return element instanceof HTMLElement ? element : null;
+  return element instanceof HTMLElement
+    ? element
+    : null;
 }
 
 export type BrowserSelectScreen = RenderResult<Record<string, unknown>> & {

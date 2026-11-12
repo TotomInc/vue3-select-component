@@ -28,7 +28,10 @@ export function createEslintConfig(additionalIgnores: string[] = []): Awaitable<
       "curly": ["error", "multi-line"],
       "antfu/top-level-function": "off",
       "ts/consistent-type-definitions": ["error", "type"],
-      "vue/max-attributes-per-line": ["error", { singleline: 2, multiline: 1 }],
+      "vue/max-attributes-per-line": [
+        "error",
+        { singleline: 2, multiline: 1 },
+      ],
       "style/arrow-parens": ["error", "always"],
     },
   });

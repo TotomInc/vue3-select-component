@@ -47,7 +47,9 @@ function normalizeSelectedValues<OptionValue>(
   multiple: boolean,
 ): OptionValue[] {
   if (multiple) {
-    return Array.isArray(modelValue) ? modelValue : [];
+    return Array.isArray(modelValue)
+      ? modelValue
+      : [];
   }
 
   if (modelValue == null) {
@@ -190,7 +192,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
           : options.findIndex((option) => option.value === activeOptionValue.value));
 
     const nextIndex = currentIndex === -1
-      ? (direction === 1 ? 0 : totalItems - 1)
+      ? (direction === 1
+          ? 0
+          : totalItems - 1)
       : (currentIndex + direction + totalItems) % totalItems;
 
     if (hasCreateItem && nextIndex === options.length) {
@@ -268,7 +272,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
     }
 
     if (params.multiple.value) {
-      const current = Array.isArray(params.modelValue.value) ? params.modelValue.value : [];
+      const current = Array.isArray(params.modelValue.value)
+        ? params.modelValue.value
+        : [];
       const isAlreadySelected = current.includes(value);
 
       if (isAlreadySelected) {
@@ -345,7 +351,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
       return;
     }
 
-    const current = Array.isArray(params.modelValue.value) ? params.modelValue.value : [];
+    const current = Array.isArray(params.modelValue.value)
+      ? params.modelValue.value
+      : [];
 
     params.modelValue.value = current.filter((item) => item !== value);
     params.events?.onOptionDeselected?.(value);
@@ -356,7 +364,9 @@ export function useSelectState<OptionValue extends string | number>(params: UseS
       return;
     }
 
-    const current = Array.isArray(params.modelValue.value) ? params.modelValue.value : [];
+    const current = Array.isArray(params.modelValue.value)
+      ? params.modelValue.value
+      : [];
     const lastValue = current[current.length - 1];
 
     if (lastValue == null) {

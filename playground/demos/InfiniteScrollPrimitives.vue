@@ -51,10 +51,17 @@ async function loadPosts(append: boolean) {
 
     const nextOptions = posts.map(postToSelectOption);
 
-    options.value = append ? [...options.value, ...nextOptions] : nextOptions;
+    options.value = append
+      ? [
+          ...options.value,
+          ...nextOptions,
+        ]
+      : nextOptions;
   }
   catch (error) {
-    fetchError.value = error instanceof Error ? error.message : "Failed to load posts";
+    fetchError.value = error instanceof Error
+      ? error.message
+      : "Failed to load posts";
   }
   finally {
     isLoading.value = false;

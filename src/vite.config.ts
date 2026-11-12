@@ -35,7 +35,9 @@ export default defineConfig({
         primitives: resolve("./primitives/index.ts"),
       },
       formats: ["es"],
-      fileName: (format, entryName) => entryName === "index" ? `index.${format}.js` : `${entryName}.js`,
+      fileName: (format, entryName) => entryName === "index"
+        ? `index.${format}.js`
+        : `${entryName}.js`,
     },
     rollupOptions: {
       external: (id) => id === "vue" || id.startsWith("vue/") || id.startsWith("@vue/"),

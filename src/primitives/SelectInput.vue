@@ -31,7 +31,9 @@ const searchValue = computed({
 function onInputElement(element: Parameters<typeof resolveHTMLElement>[0]) {
   const resolvedElement = resolveHTMLElement(element);
 
-  context.registerInputElement(resolvedElement instanceof HTMLInputElement ? resolvedElement : null);
+  context.registerInputElement(resolvedElement instanceof HTMLInputElement
+    ? resolvedElement
+    : null);
 }
 
 function onInputClick() {

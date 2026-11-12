@@ -17,7 +17,10 @@ const eventLog = ref<EventEntry[]>([]);
 
 function logEvent(name: string, detail: unknown) {
   eventLog.value = [
-    { name, detail: JSON.stringify(detail) },
+    {
+      name,
+      detail: JSON.stringify(detail),
+    },
     ...eventLog.value,
   ].slice(0, 10);
 }

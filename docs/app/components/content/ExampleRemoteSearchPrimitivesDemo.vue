@@ -50,7 +50,9 @@ async function fetchRemoteOptions(query: string) {
       return;
     }
 
-    fetchError.value = error instanceof Error ? error.message : "Failed to search posts";
+    fetchError.value = error instanceof Error
+      ? error.message
+      : "Failed to search posts";
     options.value = [];
     resultCount.value = 0;
   }

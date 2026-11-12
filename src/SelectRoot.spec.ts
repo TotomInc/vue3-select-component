@@ -324,7 +324,9 @@ describe("v1 SelectRoot core module", () => {
             "multiple": true,
             "options": resolvedOptions.value,
             "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-              selected.value = Array.isArray(value) ? value : [];
+              selected.value = Array.isArray(value)
+                ? value
+                : [];
             },
           }, {
             default: () => [
@@ -393,7 +395,9 @@ describe("v1 SelectRoot core module", () => {
             "multiple": true,
             "options": resolvedOptions.value,
             "onUpdate:modelValue": (value: SelectModelValue<string>) => {
-              selected.value = Array.isArray(value) ? value : [];
+              selected.value = Array.isArray(value)
+                ? value
+                : [];
             },
           }, {
             default: () => [
@@ -451,7 +455,9 @@ describe("v1 SelectRoot core module", () => {
           }),
           h(SelectPopover, { teleport: false }, {
             default: () => [
-              h(SelectListbox, { style: { maxHeight: "80px", overflowY: "auto" } }, {
+              h(SelectListbox, {
+                style: { maxHeight: "80px", overflowY: "auto" },
+              }, {
                 default: () => manyOptions.map((option) =>
                   h(SelectOption, {
                     value: option.value,
@@ -741,7 +747,9 @@ describe("v1 SelectRoot core module", () => {
                     h(SelectOption, {
                       value: option.value,
                       label: option.label,
-                      disabled: "disabled" in option ? option.disabled : false,
+                      disabled: "disabled" in option
+                        ? option.disabled
+                        : false,
                     }),
                   ),
                 ],
@@ -790,7 +798,9 @@ describe("v1 primitive composition", () => {
                 default: () => [
                   h(SelectGroup, null, {
                     default: () => [
-                      h(SelectGroupLabel, null, { default: () => "Frontend" }),
+                      h(SelectGroupLabel, null, {
+                        default: () => "Frontend",
+                      }),
                       h(SelectOption, { value: "js", label: "JavaScript" }),
                       h(SelectOption, { value: "ts", label: "TypeScript" }),
                     ],
@@ -798,7 +808,9 @@ describe("v1 primitive composition", () => {
                   h(SelectSeparator),
                   h(SelectGroup, null, {
                     default: () => [
-                      h(SelectGroupLabel, null, { default: () => "Systems" }),
+                      h(SelectGroupLabel, null, {
+                        default: () => "Systems",
+                      }),
                       h(SelectOption, { value: "rs", label: "Rust" }),
                     ],
                   }),
@@ -836,7 +848,9 @@ describe("v1 primitive composition", () => {
                 default: () => [
                   h(SelectGroup, null, {
                     default: () => [
-                      h(SelectGroupLabel, null, { default: () => "Frontend" }),
+                      h(SelectGroupLabel, null, {
+                        default: () => "Frontend",
+                      }),
                       h(SelectOption, { value: "js", label: "JavaScript" }),
                       h(SelectOption, { value: "ts", label: "TypeScript" }),
                     ],
@@ -844,7 +858,9 @@ describe("v1 primitive composition", () => {
                   h(SelectSeparator),
                   h(SelectGroup, null, {
                     default: () => [
-                      h(SelectGroupLabel, null, { default: () => "Systems" }),
+                      h(SelectGroupLabel, null, {
+                        default: () => "Systems",
+                      }),
                       h(SelectOption, { value: "rs", label: "Rust" }),
                     ],
                   }),
@@ -888,14 +904,18 @@ describe("v1 primitive composition", () => {
                 default: () => [
                   h(SelectGroup, null, {
                     default: () => [
-                      h(SelectGroupLabel, null, { default: () => "Frontend" }),
+                      h(SelectGroupLabel, null, {
+                        default: () => "Frontend",
+                      }),
                       h(SelectOption, { value: "js", label: "JavaScript" }),
                       h(SelectOption, { value: "ts", label: "TypeScript" }),
                     ],
                   }),
                   h(SelectGroup, null, {
                     default: () => [
-                      h(SelectGroupLabel, null, { default: () => "Systems" }),
+                      h(SelectGroupLabel, null, {
+                        default: () => "Systems",
+                      }),
                       h(SelectOption, { value: "rs", label: "Rust" }),
                     ],
                   }),

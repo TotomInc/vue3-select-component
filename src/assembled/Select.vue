@@ -73,8 +73,12 @@ const controlAttrs = computed(() =>
   ),
 );
 
-const triggerAttrs = computed(() => props.searchable ? {} : controlAttrs.value);
-const inputAttrs = computed(() => props.searchable ? controlAttrs.value : {});
+const triggerAttrs = computed(() => props.searchable
+  ? {}
+  : controlAttrs.value);
+const inputAttrs = computed(() => props.searchable
+  ? controlAttrs.value
+  : {});
 
 const optionMappers = computed(() => createOptionMappers<GenericOption, OptionValue>({
   getOptionValue: props.getOptionValue,

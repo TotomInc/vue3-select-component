@@ -19,7 +19,9 @@ const isSelected = computed(() => {
   const { modelValue, multiple } = context;
 
   if (multiple.value) {
-    const values = Array.isArray(modelValue.value) ? modelValue.value : [];
+    const values = Array.isArray(modelValue.value)
+      ? modelValue.value
+      : [];
     return values.includes(props.value);
   }
 

@@ -68,7 +68,7 @@
     "reka-ui": "2.11.0"
   },
   "devDependencies": {
-    "@tsconfig/node24": "24.0.5",
+    "@tsconfig/node24": "24.0.6",
     "@types/node": "26.6.6",
     "@vitest/browser-playwright": "5.1.0",
     "@vitest/browser-preview": "5.1.0",
@@ -80,7 +80,7 @@
     "eslint": "10.14.0",
     "jiti": "2.7.0",
     "npm-run-all2": "9.0.4",
-    "playwright": "1.65.0",
+    "playwright": "1.65.1",
     "typescript": "5.9.3",
     "unplugin-dts": "1.1.2",
     "unplugin-vue": "8.0.1",

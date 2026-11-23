@@ -111,9 +111,9 @@ importers:
         specifier: 2.11.0
         version: 2.11.0(vue@3.5.45(typescript@5.9.3))
     devDependencies:
-      '@tsconfig/node24':
-        specifier: 24.0.6
-        version: 24.0.6
+      '@tsconfig/node26':
+        specifier: 26.0.0
+        version: 26.0.0
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
@@ -3189,8 +3189,8 @@ packages:
       y-protocols: ^1.0.1
       yjs: ^13.6.13
 
-  '@tsconfig/node24@24.0.6':
-    resolution: {integrity: sha512-/SK4JuydRQLGSCq7+hbiQ8fdAVR4Suv5EcBvkIAG3zo3GbXQvGoSclz4olL12Ar4OpH8gwGYJ67P4wwQqBRxKw==}
+  '@tsconfig/node26@26.0.0':
+    resolution: {integrity: sha512-AlW882moMu/JzvTVjdGqJEsrqD5nSWHiFD7Aeuw6Rb58S4Aig+09mDUFFlXJx/y6/y77NwGYLlqhWxvolcC0sw==}
 
   '@tybys/wasm-util@0.10.4':
     resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
@@ -11453,7 +11453,7 @@ snapshots:
       y-protocols: 1.0.7(yjs@13.6.33)
       yjs: 13.6.33
 
-  '@tsconfig/node24@24.0.6': {}
+  '@tsconfig/node26@26.0.0': {}
 
   '@tybys/wasm-util@0.10.4':
     dependencies:

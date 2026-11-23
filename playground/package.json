@@ -17,7 +17,7 @@
     "@vue3-select-component/eslint-config": "workspace:*",
     "eslint": "10.14.0",
     "jiti": "2.7.0",
-    "typescript": "5.9.3",
+    "typescript": "6.0.3",
     "unplugin-vue": "8.0.1",
     "vite": "8.3.8"
   }
